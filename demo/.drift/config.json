@@ -1,5 +1,10 @@
 {
-  "version": "1.0.0",
+  "version": "2.0.0",
+  "project": {
+    "id": "220759e9-5344-42b1-8926-f5677ab48c6f",
+    "name": "demo",
+    "initializedAt": "2026-01-22T13:21:52.756Z"
+  },
   "severity": {},
   "ignore": [
     "node_modules/**",
@@ -22,5 +27,11 @@
     "maxWorkers": 4,
     "cacheEnabled": true,
     "incrementalAnalysis": true
+  },
+  "features": {
+    "callGraph": true,
+    "boundaries": true,
+    "dna": true,
+    "contracts": true
   }
 }

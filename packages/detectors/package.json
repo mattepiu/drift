@@ -1,6 +1,6 @@
 {
   "name": "driftdetect-detectors",
-  "version": "0.4.4",
+  "version": "0.4.5",
   "description": "Pattern detectors for Drift - 150+ detectors across 15 categories",
   "license": "MIT",
   "repository": {
@@ -14,6 +14,9 @@
     "detectors",
     "linting"
   ],
+  "engines": {
+    "node": ">=18 <25"
+  },
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -38,7 +41,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "driftdetect-core": "workspace:*"
+    "driftdetect-core": "^0.4.5"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",
