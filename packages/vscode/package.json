@@ -2,7 +2,7 @@
   "name": "driftdetect-vscode",
   "displayName": "Drift - Architectural Drift Detection",
   "description": "Detect and prevent architectural drift in your codebase. Pattern detection, call graph analysis, and security visualization for TypeScript, Python, C#, Java, and PHP.",
-  "version": "0.4.6",
+  "version": "0.5.0",
   "publisher": "driftdetect",
   "license": "MIT",
   "icon": "resources/drift-icon.png",
@@ -361,7 +361,7 @@
     "package": "vsce package --no-dependencies"
   },
   "dependencies": {
-    "driftdetect-lsp": "^0.4.2",
+    "driftdetect-lsp": "^0.5.0",
     "vscode-languageclient": "^9.0.1"
   },
   "devDependencies": {

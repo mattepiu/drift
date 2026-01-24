@@ -1,6 +1,6 @@
 {
   "name": "driftdetect-lsp",
-  "version": "0.4.6",
+  "version": "0.5.0",
   "description": "Language Server Protocol implementation for Drift",
   "license": "MIT",
   "repository": {
