@@ -72,8 +72,14 @@ drift ignore <pattern-id> --reason "Legacy code, migrating to new pattern"
 Define architectural constraints that Drift should enforce:
 
 ```bash
-# Create a constraint
-drift constraints add
+# Extract constraints from your codebase
+drift constraints extract
+
+# List discovered constraints
+drift constraints list
+
+# Approve a constraint
+drift constraints approve <constraint-id>
 ```
 
 ### Constraint Types
@@ -111,11 +117,14 @@ Skills are reusable pattern templates that Drift can apply to your codebase.
 # List available skills
 drift skills list
 
-# Apply a skill
-drift skills apply circuit-breaker
+# Install a skill
+drift skills install circuit-breaker
 
-# Preview what a skill would do
-drift skills preview circuit-breaker
+# Show skill details
+drift skills info circuit-breaker
+
+# Search for skills
+drift skills search "retry"
 ```
 
 ### Available Skills
@@ -150,29 +159,27 @@ Create your own skills in `.drift/skills/`:
 
 ### Report False Positives
 
-If Drift detects a pattern incorrectly:
+If Drift detects a pattern incorrectly, you can ignore it with a reason:
 
 ```bash
-# Report a false positive
-drift report false-positive <pattern-id> --file <file>
+# Ignore a pattern with explanation
+drift ignore <pattern-id> --reason "False positive - this is intentional"
 ```
 
 ### Suggest New Patterns
 
-If Drift misses a pattern in your codebase:
-
-```bash
-# Suggest a new pattern
-drift suggest-pattern --category api --description "Our custom API pattern"
-```
+To suggest patterns Drift should detect, open a GitHub issue with:
+- Category (api, auth, errors, etc.)
+- Description of the pattern
+- Example code showing the pattern
 
 ### Provide Examples
 
-Help Drift learn by providing good examples:
+Help Drift learn by approving patterns that represent good examples:
 
 ```bash
-# Mark a file as a good example
-drift example add <file> --pattern <pattern-id>
+# Approve a pattern as a good example
+drift approve <pattern-id> --note "Good example of our API pattern"
 ```
 
 ---

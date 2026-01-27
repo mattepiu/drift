@@ -68,11 +68,11 @@ Run 'drift dashboard' to explore in the web UI
 # Open web dashboard
 drift dashboard
 
-# Or list patterns in terminal
-drift patterns list
+# Or use the where command to find patterns
+drift where "API" --limit 10
 
-# See patterns in a specific category
-drift patterns list --category api
+# See patterns in a specific file
+drift files src/api/users.ts
 ```
 
 ### 2. Approve Patterns
@@ -92,12 +92,7 @@ drift status --pending
 
 ### 3. Connect to AI
 
-Connect Drift to Claude, Cursor, or other AI agents:
-
-```bash
-# Start MCP server
-drift mcp
-```
+Connect Drift to Claude, Cursor, or other AI agents via MCP.
 
 See [MCP Setup](MCP-Setup) for detailed configuration.
 
@@ -240,10 +235,8 @@ See [Configuration](Configuration) for all options.
 | `drift scan` | Scan codebase for patterns |
 | `drift status` | Show current status |
 | `drift dashboard` | Open web dashboard |
-| `drift approve <id>` | Approve a pattern |
-| `drift ignore <id>` | Ignore a pattern |
+| `drift where <pattern>` | Find pattern locations |
 | `drift check` | Check for violations |
-| `drift mcp` | Start MCP server |
 
 See [CLI Reference](CLI-Reference) for all commands.
 
