@@ -79,12 +79,24 @@ All data is stored in `.drift/` at your project root. This includes:
 **Yes, commit these:**
 - `.drift/config.json` — Project configuration
 - `.drift/patterns/approved/` — Approved patterns
-- `.drift/boundaries/rules.json` — Security rules
+- `.drift/boundaries/` — Security boundaries and access rules
+- `.drift/indexes/` — Pattern indexes (small, fast to rebuild but nice to share)
+- `.drift/views/` — Cached views (small, speeds up status checks)
+- `.drift/constraints/approved/` — Approved architectural constraints
 
 **Don't commit these (add to .gitignore):**
-- `.drift/lake/` — Large cached data
+- `.drift/lake/` — Large cached data (call graph, examples, security tables)
 - `.drift/cache/` — Temporary cache
 - `.drift/history/` — Historical snapshots
+- `.drift/call-graph/` — Call graph cache (rebuilt on scan)
+
+**Example .gitignore:**
+```gitignore
+.drift/lake/
+.drift/cache/
+.drift/history/
+.drift/call-graph/
+```
 
 ---
 
@@ -176,6 +188,21 @@ drift approve <pattern-id>
 # Approve all in a category
 drift approve --category api
 ```
+
+### How do I auto-approve patterns?
+
+Set `learning.autoApproveThreshold` in `.drift/config.json`:
+
+```json
+{
+  "learning": {
+    "autoApproveThreshold": 0.9,
+    "minOccurrences": 3
+  }
+}
+```
+
+Patterns with confidence ≥ 0.9 and at least 3 occurrences will be auto-approved. Set to `1.0` to disable.
 
 ### What happens when I approve a pattern?
 

@@ -8,7 +8,7 @@ Drift stores configuration in `.drift/config.json`:
 
 ```json
 {
-  "version": "1.0",
+  "version": "2.0.0",
   "project": {
     "name": "my-project",
     "language": "typescript"
@@ -19,8 +19,11 @@ Drift stores configuration in `.drift/config.json`:
     "timeout": 300000
   },
   "patterns": {
-    "minConfidence": 0.7,
-    "autoApprove": false
+    "minConfidence": 0.7
+  },
+  "learning": {
+    "autoApproveThreshold": 0.95,
+    "minOccurrences": 3
   },
   "callgraph": {
     "maxDepth": 10,
@@ -57,6 +60,15 @@ Drift stores configuration in `.drift/config.json`:
 | `patterns.minConfidence` | number | `0.5` | Minimum confidence to report |
 | `patterns.autoApprove` | boolean | `false` | Auto-approve high-confidence patterns |
 | `patterns.categories` | array | all | Categories to detect |
+
+### Learning Settings
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `learning.autoApproveThreshold` | number | `0.95` | Auto-approve patterns above this confidence (0-1) |
+| `learning.minOccurrences` | number | `3` | Minimum occurrences before pattern is detected |
+
+**Note:** `learning.autoApproveThreshold` is the recommended way to auto-approve patterns. Set to `1.0` to disable auto-approval, or lower (e.g., `0.8`) to be more permissive. The older `patterns.autoApprove: true` enables auto-approval at the `minConfidence` threshold.
 
 ### Call Graph Settings
 
