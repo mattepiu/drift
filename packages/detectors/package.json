@@ -1,6 +1,6 @@
 {
   "name": "driftdetect-detectors",
-  "version": "0.9.9",
+  "version": "0.9.20",
   "description": "Pattern detectors for Drift - 150+ detectors across 15 categories",
   "license": "Apache-2.0",
   "repository": {
@@ -15,7 +15,7 @@
     "linting"
   ],
   "engines": {
-    "node": ">=18 <25"
+    "node": ">=18"
   },
   "type": "module",
   "main": "./dist/index.js",
@@ -41,7 +41,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "driftdetect-core": "workspace:*"
+    "driftdetect-core": "^0.9.20"
   },
   "devDependencies": {
     "@types/node": "^20.10.0",

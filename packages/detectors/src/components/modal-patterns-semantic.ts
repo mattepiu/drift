@@ -23,7 +23,7 @@ export class ModalPatternsSemanticDetector extends SemanticDetector {
   readonly subcategory = 'modal-patterns';
 
   override readonly supportedLanguages: Language[] = [
-    'typescript', 'javascript', 'python', 'css', 'scss', 'json', 'yaml', 'markdown'
+    'typescript', 'javascript', 'python', 'css', 'scss'
   ];
 
   constructor() {
@@ -74,19 +74,13 @@ export class ModalPatternsSemanticDetector extends SemanticDetector {
       'clearSearch',
       'resetState',
       
-      // Loading states
+      // Loading states in modals
       'isSaving',
-      'isLoading',
-      'isPending',
       'isSubmitting',
       
-      // Form validation
-      'isValid',
-      'validate',
-      'validation',
-      'isNaN',
-      'parseFloat',
-      'parseInt',
+      // Modal-specific validation
+      'validateModal',
+      'validateDialog',
     ];
   }
 
