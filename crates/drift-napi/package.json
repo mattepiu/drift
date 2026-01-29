@@ -1,0 +1,52 @@
+{
+  "name": "@drift/native",
+  "version": "0.1.0",
+  "description": "Native Rust core for Drift - high-performance code analysis",
+  "main": "index.js",
+  "types": "index.d.ts",
+  "napi": {
+    "name": "drift-native",
+    "triples": {
+      "defaults": true,
+      "additional": [
+        "aarch64-apple-darwin",
+        "aarch64-unknown-linux-gnu",
+        "aarch64-unknown-linux-musl",
+        "x86_64-unknown-linux-musl"
+      ]
+    }
+  },
+  "files": [
+    "index.js",
+    "index.d.ts",
+    "*.node"
+  ],
+  "engines": {
+    "node": ">= 18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AgenDrift/drift.git",
+    "directory": "crates/drift-napi"
+  },
+  "keywords": [
+    "drift",
+    "code-analysis",
+    "ast",
+    "parser",
+    "call-graph",
+    "rust",
+    "napi"
+  ],
+  "license": "MIT",
+  "devDependencies": {
+    "@napi-rs/cli": "^2.18.0"
+  },
+  "scripts": {
+    "build": "napi build --platform --release",
+    "build:debug": "napi build --platform",
+    "prepublishOnly": "napi prepublish -t npm",
+    "artifacts": "napi artifacts",
+    "version": "napi version"
+  }
+}

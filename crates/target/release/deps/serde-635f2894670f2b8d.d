@@ -1,0 +1,14 @@
+/Users/geoffreyfernald/drift/drift/crates/target/release/deps/serde-635f2894670f2b8d.d: /Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/geoffreyfernald/drift/drift/crates/target/release/build/serde-180ed7b2f2931704/out/private.rs
+
+/Users/geoffreyfernald/drift/drift/crates/target/release/deps/libserde-635f2894670f2b8d.rlib: /Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/geoffreyfernald/drift/drift/crates/target/release/build/serde-180ed7b2f2931704/out/private.rs
+
+/Users/geoffreyfernald/drift/drift/crates/target/release/deps/libserde-635f2894670f2b8d.rmeta: /Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs /Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs /Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs /Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs /Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs /Users/geoffreyfernald/drift/drift/crates/target/release/build/serde-180ed7b2f2931704/out/private.rs
+
+/Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/lib.rs:
+/Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/integer128.rs:
+/Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/mod.rs:
+/Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/de.rs:
+/Users/geoffreyfernald/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/serde-1.0.228/src/private/ser.rs:
+/Users/geoffreyfernald/drift/drift/crates/target/release/build/serde-180ed7b2f2931704/out/private.rs:
+
+# env-dep:OUT_DIR=/Users/geoffreyfernald/drift/drift/crates/target/release/build/serde-180ed7b2f2931704/out

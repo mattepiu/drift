@@ -1,4 +1,4 @@
-# Styling DNA
+lets # Styling DNA
 
 Drift's Styling DNA feature analyzes how your codebase implements patterns for both frontend styling (variants, responsive design, theming, spacing, animations) and backend conventions (API responses, error handling, logging, configuration).
 

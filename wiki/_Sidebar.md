@@ -52,6 +52,7 @@
 
 ## 🔧 CI/CD Integration
 - [Quality Gates](Quality-Gates)
+- [Audit System](Audit-System)
 - [CI Integration](CI-Integration)
 - [Git Hooks](Git-Hooks)
 - [Incremental Scans](Incremental-Scans)

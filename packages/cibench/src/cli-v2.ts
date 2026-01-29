@@ -84,6 +84,17 @@ program
   });
 
 // ============================================================================
+// Compare Command
+// ============================================================================
+
+program
+  .command('compare <results1> <results2>')
+  .description('Compare two benchmark results side-by-side')
+  .action(async (results1: string, results2: string) => {
+    await compareResults(results1, results2);
+  });
+
+// ============================================================================
 // Implementation
 // ============================================================================
 
@@ -291,6 +302,13 @@ async function getToolOutput(tool: string, codebasePath: string, verbose: boolea
     const { runDriftAnalysis, convertToCIBenchFormat } = await import('./adapters/drift-adapter.js');
     const driftResult = await runDriftAnalysis(codebasePath, { verbose });
     return convertToCIBenchFormat(driftResult, 'drift');
+  }
+  
+  if (tool === 'baseline') {
+    // Baseline adapter - simulates vanilla AI without specialized tooling
+    const { runBaselineAnalysis, convertToCIBenchFormat } = await import('./adapters/baseline-adapter.js');
+    const baselineResult = await runBaselineAnalysis(codebasePath, { verbose });
+    return convertToCIBenchFormat(baselineResult, 'baseline');
   }
   
   // Placeholder for other tools
@@ -703,6 +721,133 @@ async function generateReport(resultsPath: string, format: string): Promise<void
       console.log();
     }
   }
+}
+
+async function compareResults(results1Path: string, results2Path: string): Promise<void> {
+  const r1 = JSON.parse(await fs.readFile(results1Path, 'utf-8'));
+  const r2 = JSON.parse(await fs.readFile(results2Path, 'utf-8'));
+  
+  console.log(chalk.bold('📊 CIBench Comparison Report'));
+  console.log(chalk.gray('━'.repeat(70)));
+  console.log();
+  
+  // Header
+  const col1 = r1.tool.toUpperCase();
+  const col2 = r2.tool.toUpperCase();
+  const colWidth = 20;
+  
+  console.log(chalk.bold(`${'Metric'.padEnd(35)}${col1.padStart(colWidth)}${col2.padStart(colWidth)}${'Δ'.padStart(10)}`));
+  console.log(chalk.gray('─'.repeat(70)));
+  
+  // Overall
+  const overallDelta = r1.overallScore - r2.overallScore;
+  const deltaColor = overallDelta > 0 ? chalk.green : overallDelta < 0 ? chalk.red : chalk.gray;
+  console.log(
+    chalk.bold('Overall Score'.padEnd(35)) +
+    formatScoreCompact(r1.overallScore).padStart(colWidth) +
+    formatScoreCompact(r2.overallScore).padStart(colWidth) +
+    deltaColor(`${overallDelta > 0 ? '+' : ''}${overallDelta.toFixed(1)}%`.padStart(10))
+  );
+  console.log();
+  
+  // Per-level comparison
+  const corpus1 = r1.corpora[0];
+  const corpus2 = r2.corpora[0];
+  
+  if (corpus1?.levels?.perception && corpus2?.levels?.perception) {
+    console.log(chalk.cyan('Level 1: Perception'));
+    printCategoryComparison(corpus1.levels.perception.categories, corpus2.levels.perception.categories, colWidth);
+    const percDelta = corpus1.levels.perception.score - corpus2.levels.perception.score;
+    const percColor = percDelta > 0 ? chalk.green : percDelta < 0 ? chalk.red : chalk.gray;
+    console.log(
+      chalk.bold('  Subtotal'.padEnd(35)) +
+      formatScoreCompact(corpus1.levels.perception.score).padStart(colWidth) +
+      formatScoreCompact(corpus2.levels.perception.score).padStart(colWidth) +
+      percColor(`${percDelta > 0 ? '+' : ''}${percDelta.toFixed(1)}%`.padStart(10))
+    );
+    console.log();
+  }
+  
+  if (corpus1?.levels?.understanding && corpus2?.levels?.understanding) {
+    console.log(chalk.cyan('Level 2: Understanding'));
+    printCategoryComparison(corpus1.levels.understanding.categories, corpus2.levels.understanding.categories, colWidth);
+    const undDelta = corpus1.levels.understanding.score - corpus2.levels.understanding.score;
+    const undColor = undDelta > 0 ? chalk.green : undDelta < 0 ? chalk.red : chalk.gray;
+    console.log(
+      chalk.bold('  Subtotal'.padEnd(35)) +
+      formatScoreCompact(corpus1.levels.understanding.score).padStart(colWidth) +
+      formatScoreCompact(corpus2.levels.understanding.score).padStart(colWidth) +
+      undColor(`${undDelta > 0 ? '+' : ''}${undDelta.toFixed(1)}%`.padStart(10))
+    );
+    console.log();
+  }
+  
+  if (corpus1?.levels?.application && corpus2?.levels?.application) {
+    console.log(chalk.cyan('Level 3: Application'));
+    printCategoryComparison(corpus1.levels.application.categories, corpus2.levels.application.categories, colWidth);
+    const appDelta = corpus1.levels.application.score - corpus2.levels.application.score;
+    const appColor = appDelta > 0 ? chalk.green : appDelta < 0 ? chalk.red : chalk.gray;
+    console.log(
+      chalk.bold('  Subtotal'.padEnd(35)) +
+      formatScoreCompact(corpus1.levels.application.score).padStart(colWidth) +
+      formatScoreCompact(corpus2.levels.application.score).padStart(colWidth) +
+      appColor(`${appDelta > 0 ? '+' : ''}${appDelta.toFixed(1)}%`.padStart(10))
+    );
+    console.log();
+  }
+  
+  // Summary
+  console.log(chalk.gray('━'.repeat(70)));
+  const improvement = ((r1.overallScore - r2.overallScore) / r2.overallScore * 100);
+  if (improvement > 0) {
+    console.log(chalk.green.bold(`✓ ${col1} outperforms ${col2} by ${improvement.toFixed(1)}%`));
+  } else if (improvement < 0) {
+    console.log(chalk.red.bold(`✗ ${col2} outperforms ${col1} by ${Math.abs(improvement).toFixed(1)}%`));
+  } else {
+    console.log(chalk.gray('Tools performed equally'));
+  }
+  
+  // Key insights
+  console.log();
+  console.log(chalk.bold('Key Insights:'));
+  
+  const p1 = corpus1?.levels?.perception?.categories?.patternRecognition || 0;
+  const p2 = corpus2?.levels?.perception?.categories?.patternRecognition || 0;
+  if (p1 > p2) {
+    console.log(chalk.green(`  • ${col1} detects ${((p1 - p2) / p2 * 100).toFixed(0)}% more patterns than ${col2}`));
+  }
+  
+  if (p1 === 100 && p2 < 100) {
+    console.log(chalk.green(`  • ${col1} achieves perfect pattern recognition (100%)`));
+  }
+  
+  if (corpus1?.levels?.perception?.score > corpus2?.levels?.perception?.score) {
+    console.log(chalk.green(`  • ${col1} has superior perception capabilities`));
+  }
+}
+
+function printCategoryComparison(
+  cat1: Record<string, number>,
+  cat2: Record<string, number>,
+  colWidth: number
+): void {
+  const allKeys = new Set([...Object.keys(cat1), ...Object.keys(cat2)]);
+  for (const key of allKeys) {
+    const v1 = cat1[key] ?? 0;
+    const v2 = cat2[key] ?? 0;
+    const delta = v1 - v2;
+    const deltaColor = delta > 0 ? chalk.green : delta < 0 ? chalk.red : chalk.gray;
+    console.log(
+      `  ${key}`.padEnd(35) +
+      formatScoreCompact(v1).padStart(colWidth) +
+      formatScoreCompact(v2).padStart(colWidth) +
+      deltaColor(`${delta > 0 ? '+' : ''}${delta.toFixed(1)}%`.padStart(10))
+    );
+  }
+}
+
+function formatScoreCompact(score: number): string {
+  return `${score.toFixed(1)}%`;
 }
 
 // ============================================================================
