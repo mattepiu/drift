@@ -54,7 +54,7 @@ export class AttributeExtractor {
     let match;
     while ((match = ATTRIBUTE_BLOCK_PATTERN.exec(content)) !== null) {
       const blockContent = match[1];
-      if (!blockContent) continue;
+      if (!blockContent) {continue;}
 
       const line = this.getLineNumber(content, match.index);
       const attributes = this.parseAttributeBlock(blockContent, line, match.index);
@@ -80,7 +80,7 @@ export class AttributeExtractor {
     let match;
     while ((match = ATTRIBUTE_BLOCK_PATTERN.exec(content)) !== null) {
       const blockContent = match[1];
-      if (!blockContent) continue;
+      if (!blockContent) {continue;}
 
       const line = this.getLineNumber(content, match.index);
       const attributes = this.parseAttributeBlock(blockContent, line, match.index);
@@ -154,7 +154,7 @@ export class AttributeExtractor {
       const name = match[1];
       const argsStr = match[2] || '';
 
-      if (!name) continue;
+      if (!name) {continue;}
 
       const { positional, named } = this.parseArguments(argsStr);
 
@@ -190,11 +190,11 @@ export class AttributeExtractor {
 
     for (const arg of args) {
       const trimmed = arg.trim();
-      if (!trimmed) continue;
+      if (!trimmed) {continue;}
 
       // Check if named argument
       const namedMatch = trimmed.match(NAMED_ARG_PATTERN);
-      if (namedMatch && namedMatch[1] && namedMatch[2]) {
+      if (namedMatch?.[1] && namedMatch[2]) {
         named[namedMatch[1]] = this.parseArgumentValue(namedMatch[2].trim());
       } else {
         positional.push(this.parseArgumentValue(trimmed));
@@ -230,8 +230,8 @@ export class AttributeExtractor {
 
       // Handle nesting
       if (!inString) {
-        if (char === '[' || char === '(' || char === '{') depth++;
-        if (char === ']' || char === ')' || char === '}') depth--;
+        if (char === '[' || char === '(' || char === '{') {depth++;}
+        if (char === ']' || char === ')' || char === '}') {depth--;}
 
         // Split on comma at depth 0
         if (char === ',' && depth === 0) {

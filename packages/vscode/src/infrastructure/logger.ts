@@ -76,13 +76,13 @@ export class Logger implements ILogger {
       const argsStr = args
         .map(arg => {
           if (arg instanceof Error) {
-            return `${arg.message}\n${arg.stack}`;
+            return `${arg.message}\n${arg.stack ?? ''}`;
           }
-          if (typeof arg === 'object') {
+          if (typeof arg === 'object' && arg !== null) {
             try {
               return JSON.stringify(arg, null, 2);
             } catch {
-              return String(arg);
+              return '[Object]';
             }
           }
           return String(arg);
@@ -92,11 +92,6 @@ export class Logger implements ILogger {
     }
 
     this.channel.appendLine(formattedMessage);
-
-    // Also log errors to console for debugging
-    if (level === 'error') {
-      console.error(`[Drift] ${message}`, ...args);
-    }
   }
 }
 

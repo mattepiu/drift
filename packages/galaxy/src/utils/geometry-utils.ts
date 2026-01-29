@@ -5,6 +5,7 @@
  */
 
 import * as THREE from 'three';
+
 import type { Vector3D } from '../types/index.js';
 
 // ============================================================================
@@ -51,7 +52,7 @@ export function midpoint(a: Vector3D, b: Vector3D): Vector3D {
  */
 export function normalize(v: Vector3D): Vector3D {
   const len = Math.sqrt(v.x * v.x + v.y * v.y + v.z * v.z);
-  if (len === 0) return { x: 0, y: 0, z: 0 };
+  if (len === 0) {return { x: 0, y: 0, z: 0 };}
   return { x: v.x / len, y: v.y / len, z: v.z / len };
 }
 
@@ -199,7 +200,7 @@ export function calculateBoundingSphere(points: Vector3D[]): { center: Vector3D;
   let maxDist = 0;
   for (const p of points) {
     const dist = distance(center, p);
-    if (dist > maxDist) maxDist = dist;
+    if (dist > maxDist) {maxDist = dist;}
   }
   
   return { center, radius: maxDist };

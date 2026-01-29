@@ -56,14 +56,14 @@ export class RequestMiddleware {
         
         if (attempt < opts.retries) {
           this.logger.warn(
-            `Request ${method} failed (attempt ${attempt + 1}/${opts.retries + 1}): ${lastError.message}`
+            `Request ${method} failed (attempt ${String(attempt + 1)}/${String(opts.retries + 1)}): ${lastError.message}`
           );
           await this.delay(opts.retryDelay * (attempt + 1));
         }
       }
     }
 
-    this.logger.error(`Request ${method} failed after ${opts.retries + 1} attempts`);
+    this.logger.error(`Request ${method} failed after ${String(opts.retries + 1)} attempts`);
     throw lastError;
   }
 
@@ -72,7 +72,7 @@ export class RequestMiddleware {
    */
   notify(method: string, params?: unknown): void {
     try {
-      this.client.sendNotification(method, params);
+      void this.client.sendNotification(method, params);
     } catch (error) {
       this.logger.error(`Notification ${method} failed:`, error);
     }
@@ -85,7 +85,7 @@ export class RequestMiddleware {
   ): Promise<T> {
     return new Promise<T>((resolve, reject) => {
       const timer = setTimeout(() => {
-        reject(new Error(`Request ${method} timed out after ${timeout}ms`));
+        reject(new Error(`Request ${method} timed out after ${String(timeout)}ms`));
       }, timeout);
 
       this.client
@@ -94,9 +94,9 @@ export class RequestMiddleware {
           clearTimeout(timer);
           resolve(result);
         })
-        .catch((error) => {
+        .catch((error: unknown) => {
           clearTimeout(timer);
-          reject(error);
+          reject(error instanceof Error ? error : new Error(String(error)));
         });
     });
   }

@@ -5,13 +5,17 @@
  * Command-line interface for running codebase intelligence benchmarks.
  */
 
-import { Command } from 'commander';
-import chalk from 'chalk';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+
+import chalk from 'chalk';
+import { Command } from 'commander';
+
 import { loadGroundTruth, Evaluator } from './evaluator/index.js';
-import type { ToolOutput, EvaluationResult } from './evaluator/types.js';
+
 import { VERSION } from './index.js';
+
+import type { ToolOutput, EvaluationResult } from './evaluator/types.js';
 
 const program = new Command();
 

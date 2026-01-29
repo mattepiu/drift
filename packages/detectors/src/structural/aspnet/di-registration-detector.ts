@@ -8,9 +8,10 @@
  * - Decorator patterns
  */
 
-import type { PatternMatch, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { PatternMatch, Language } from 'driftdetect-core';
 
 export interface DIRegistrationInfo {
   type: 'scoped' | 'transient' | 'singleton' | 'extension' | 'keyed' | 'factory';
@@ -41,7 +42,7 @@ export class DIRegistrationDetector extends BaseDetector {
 
   async detect(context: DetectionContext): Promise<DetectionResult> {
     const { content, file } = context;
-    if (!this.isRelevantFile(content)) return this.createEmptyResult();
+    if (!this.isRelevantFile(content)) {return this.createEmptyResult();}
 
     const analysis = this.analyzeDIRegistration(content, file);
     const patterns: PatternMatch[] = analysis.patterns.map(p => ({

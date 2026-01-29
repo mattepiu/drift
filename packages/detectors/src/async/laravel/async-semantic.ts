@@ -8,12 +8,13 @@
  * - Scheduled tasks
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 const ASYNC_FILE_PATTERNS = [
   /jobs\//i, /events\//i, /listeners\//i,
@@ -110,7 +111,7 @@ export class LaravelAsyncSemanticDetector extends SemanticDetector {
       const hasContext = ASYNC_CONTEXT_KEYWORDS.some(k => contextLower.includes(k));
       if (!hasContext) {
         const inAsyncFile = ASYNC_FILE_PATTERNS.some(p => p.test(file));
-        if (!inAsyncFile) return false;
+        if (!inAsyncFile) {return false;}
       }
     }
 

@@ -7,12 +7,13 @@
  * @module data-access/laravel/extractors/relationship-extractor
  */
 
+import { RELATIONSHIP_TYPES, MORPH_RELATIONSHIP_TYPES } from '../types.js';
+
 import type {
   RelationshipInfo,
   RelationshipType,
   RelationshipExtractionResult,
 } from '../types.js';
-import { RELATIONSHIP_TYPES, MORPH_RELATIONSHIP_TYPES } from '../types.js';
 
 // ============================================================================
 // Regex Patterns
@@ -177,14 +178,14 @@ export class RelationshipExtractor {
    */
   private extractMethodBody(content: string, startIndex: number): string {
     const openBrace = content.indexOf('{', startIndex);
-    if (openBrace === -1) return '';
+    if (openBrace === -1) {return '';}
 
     let depth = 1;
     let i = openBrace + 1;
 
     while (i < content.length && depth > 0) {
-      if (content[i] === '{') depth++;
-      else if (content[i] === '}') depth--;
+      if (content[i] === '{') {depth++;}
+      else if (content[i] === '}') {depth--;}
       i++;
     }
 

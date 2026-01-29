@@ -3,9 +3,10 @@
  * @requirements 21.1 - JSDoc patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 export type JsdocPatternType = 'jsdoc-block' | 'param-tag' | 'returns-tag' | 'example-tag' | 'deprecated-tag' | 'see-tag' | 'throws-tag' | 'type-tag';
 export type JsdocViolationType = 'missing-jsdoc' | 'incomplete-jsdoc' | 'outdated-jsdoc';
@@ -70,7 +71,7 @@ export function detectThrowsTag(content: string, filePath: string): JsdocPattern
 export function detectTypeTag(content: string, filePath: string): JsdocPatternInfo[] { return detectPatterns(content, filePath, TYPE_TAG_PATTERNS, 'type-tag'); }
 
 export function analyzeJsdocPatterns(content: string, filePath: string): JsdocAnalysis {
-  if (shouldExcludeFile(filePath)) return { patterns: [], violations: [], jsdocBlockCount: 0, paramTagCount: 0, hasExamples: false, confidence: 1.0 };
+  if (shouldExcludeFile(filePath)) {return { patterns: [], violations: [], jsdocBlockCount: 0, paramTagCount: 0, hasExamples: false, confidence: 1.0 };}
   const isPython = filePath.endsWith('.py');
   const patterns: JsdocPatternInfo[] = isPython
     ? [...detectPythonDocstring(content, filePath), ...detectPythonParam(content, filePath), ...detectPythonReturns(content, filePath), ...detectPythonRaises(content, filePath), ...detectPythonExample(content, filePath)]
@@ -79,7 +80,7 @@ export function analyzeJsdocPatterns(content: string, filePath: string): JsdocAn
   const jsdocBlockCount = patterns.filter((p) => p.type === 'jsdoc-block').length;
   const paramTagCount = patterns.filter((p) => p.type === 'param-tag').length;
   const hasExamples = patterns.some((p) => p.type === 'example-tag');
-  let confidence = 0.7; if (patterns.length > 0) confidence += 0.15; if (hasExamples) confidence += 0.1; confidence = Math.min(confidence, 0.95);
+  let confidence = 0.7; if (patterns.length > 0) {confidence += 0.15;} if (hasExamples) {confidence += 0.1;} confidence = Math.min(confidence, 0.95);
   return { patterns, violations, jsdocBlockCount, paramTagCount, hasExamples, confidence };
 }
 
@@ -92,9 +93,9 @@ export class JsdocPatternsDetector extends RegexDetector {
   readonly supportedLanguages: Language[] = ['typescript', 'javascript', 'python'];
 
   async detect(context: DetectionContext): Promise<DetectionResult> {
-    if (!this.supportsLanguage(context.language)) return this.createEmptyResult();
+    if (!this.supportsLanguage(context.language)) {return this.createEmptyResult();}
     const analysis = analyzeJsdocPatterns(context.content, context.file);
-    if (analysis.patterns.length === 0 && analysis.violations.length === 0) return this.createEmptyResult();
+    if (analysis.patterns.length === 0 && analysis.violations.length === 0) {return this.createEmptyResult();}
     
     // Convert internal violations to standard Violation format
     const violations = this.convertViolationInfos(

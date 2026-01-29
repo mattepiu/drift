@@ -8,12 +8,13 @@
  * - Validation messages
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 const VALIDATION_FILE_PATTERNS = [
   /requests\//i, /rules\//i, /controllers\//i,
@@ -109,7 +110,7 @@ export class LaravelValidationSemanticDetector extends SemanticDetector {
       const hasContext = VALIDATION_CONTEXT_KEYWORDS.some(k => contextLower.includes(k));
       if (!hasContext) {
         const inValidationFile = VALIDATION_FILE_PATTERNS.some(p => p.test(file));
-        if (!inValidationFile) return false;
+        if (!inValidationFile) {return false;}
       }
     }
 

@@ -16,8 +16,9 @@
  * @requirements 11.5 - Resource ownership patterns
  */
 
-import type { Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -179,7 +180,7 @@ function isInsideComment(content: string, index: number): boolean {
   const before = content.slice(0, index);
   const lastNewline = before.lastIndexOf('\n');
   const line = before.slice(lastNewline + 1);
-  if (line.includes('//') && index - lastNewline - 1 > line.indexOf('//')) return true;
+  if (line.includes('//') && index - lastNewline - 1 > line.indexOf('//')) {return true;}
   return before.lastIndexOf('/*') > before.lastIndexOf('*/');
 }
 
@@ -200,7 +201,7 @@ export function detectUserIdChecks(content: string, file: string): OwnershipPatt
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'user-id-check',
@@ -221,7 +222,7 @@ export function detectOwnerFields(content: string, file: string): OwnershipPatte
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'owner-field',
@@ -243,7 +244,7 @@ export function detectTenantScoping(content: string, file: string): OwnershipPat
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'tenant-scope',
@@ -264,7 +265,7 @@ export function detectCreatedByPatterns(content: string, file: string): Ownershi
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'created-by',
@@ -285,7 +286,7 @@ export function detectOwnershipQueries(content: string, file: string): Ownership
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'ownership-query',
@@ -317,7 +318,7 @@ export function detectMissingOwnershipViolations(
       const regex = new RegExp(pattern.source, pattern.flags);
       let match;
       while ((match = regex.exec(content)) !== null) {
-        if (isInsideComment(content, match.index)) continue;
+        if (isInsideComment(content, match.index)) {continue;}
         const { line, column } = getPosition(content, match.index);
         violations.push({
           type: 'missing-ownership-check',
@@ -394,7 +395,7 @@ export class ResourceOwnershipDetector extends RegexDetector {
   
   async detect(context: DetectionContext): Promise<DetectionResult> {
     const { content, file } = context;
-    if (shouldExcludeFile(file)) return this.createEmptyResult();
+    if (shouldExcludeFile(file)) {return this.createEmptyResult();}
     
     const analysis = analyzeOwnership(content, file);
     

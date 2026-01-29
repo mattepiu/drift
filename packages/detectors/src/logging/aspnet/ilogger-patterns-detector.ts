@@ -9,9 +9,10 @@
  * - High-performance logging patterns
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -126,7 +127,7 @@ export class ILoggerPatternsDetector extends BaseDetector {
 
       // Detect ILogger<T> injection
       const loggerInjectionMatch = line.match(/ILogger<(\w+)>/);
-      if (loggerInjectionMatch && loggerInjectionMatch[1]) {
+      if (loggerInjectionMatch?.[1]) {
         loggerTypes.add(loggerInjectionMatch[1]);
         patterns.push({
           type: 'logger-injection',
@@ -140,7 +141,7 @@ export class ILoggerPatternsDetector extends BaseDetector {
 
       // Detect log calls with levels
       const logCallMatch = line.match(/(?:_logger|logger|Logger)\s*\.\s*Log(Debug|Information|Warning|Error|Critical|Trace)\s*\(/i);
-      if (logCallMatch && logCallMatch[1]) {
+      if (logCallMatch?.[1]) {
         const level = logCallMatch[1] as ILoggerPatternInfo['level'];
         logLevels.add(level || 'Unknown');
         

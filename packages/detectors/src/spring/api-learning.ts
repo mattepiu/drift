@@ -9,7 +9,7 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
+import { SPRING_KEYWORD_GROUPS } from './keywords.js';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,7 +17,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
-import { SPRING_KEYWORD_GROUPS } from './keywords.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -59,7 +60,7 @@ function extractAPIPatterns(content: string, file: string): APIPatternInfo[] {
   
   for (const keyword of keywords) {
     // Only process mapping annotations
-    if (!keyword.includes('Mapping')) continue;
+    if (!keyword.includes('Mapping')) {continue;}
     
     const pattern = new RegExp(`@${keyword}\\b`, 'g');
     let match;
@@ -67,7 +68,7 @@ function extractAPIPatterns(content: string, file: string): APIPatternInfo[] {
       // Skip imports
       const lineStart = content.lastIndexOf('\n', match.index) + 1;
       const lineContent = content.slice(lineStart, content.indexOf('\n', match.index));
-      if (lineContent.trim().startsWith('import ')) continue;
+      if (lineContent.trim().startsWith('import ')) {continue;}
       
       const beforeMatch = content.slice(0, match.index);
       const line = beforeMatch.split('\n').length;
@@ -119,10 +120,10 @@ export class SpringAPILearningDetector extends LearningDetector<SpringAPIConvent
     context: DetectionContext,
     distributions: Map<keyof SpringAPIConventions, ValueDistribution>
   ): void {
-    if (context.language !== 'java') return;
+    if (context.language !== 'java') {return;}
 
     const patterns = extractAPIPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const mappingStyleDist = distributions.get('mappingStyle')!;
     const responseStyleDist = distributions.get('responseStyle')!;

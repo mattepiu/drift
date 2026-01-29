@@ -9,9 +9,10 @@
  * - Try-catch patterns
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -120,7 +121,7 @@ export class ExceptionPatternsDetector extends BaseDetector {
 
       // Detect custom exception classes
       const exceptionMatch = line.match(/class\s+(\w+Exception)\s*:\s*(\w*Exception)/);
-      if (exceptionMatch && exceptionMatch[1]) {
+      if (exceptionMatch?.[1]) {
         customExceptions.push(exceptionMatch[1]);
         patterns.push({
           type: 'custom-exception',
@@ -135,7 +136,7 @@ export class ExceptionPatternsDetector extends BaseDetector {
       if (line.includes('IExceptionHandler')) {
         hasGlobalHandler = true;
         const handlerMatch = line.match(/class\s+(\w+)\s*:\s*IExceptionHandler/);
-        if (handlerMatch && handlerMatch[1]) {
+        if (handlerMatch?.[1]) {
           handlers.push(handlerMatch[1]);
           patterns.push({
             type: 'exception-handler',
@@ -161,7 +162,7 @@ export class ExceptionPatternsDetector extends BaseDetector {
 
       // Detect exception filters
       const filterMatch = line.match(/class\s+(\w+)\s*:\s*(?:IExceptionFilter|ExceptionFilterAttribute)/);
-      if (filterMatch && filterMatch[1]) {
+      if (filterMatch?.[1]) {
         handlers.push(filterMatch[1]);
         patterns.push({
           type: 'exception-filter',
@@ -216,7 +217,7 @@ export class ExceptionPatternsDetector extends BaseDetector {
             hasLogging = true;
             break;
           }
-          if (checkLine.includes('}')) break;
+          if (checkLine.includes('}')) {break;}
         }
         if (!hasLogging) {
           issues.push(`Catch-all exception without logging at line ${lineNum}`);

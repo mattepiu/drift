@@ -335,8 +335,8 @@ export class CustomExceptionExtractor {
     let i = startIndex;
 
     while (i < content.length && depth > 0) {
-      if (content[i] === '{') depth++;
-      else if (content[i] === '}') depth--;
+      if (content[i] === '{') {depth++;}
+      else if (content[i] === '}') {depth--;}
       i++;
     }
 
@@ -358,10 +358,10 @@ export class CustomExceptionExtractor {
 
     let confidence = 0.5;
 
-    if (exceptions.length > 0) confidence += 0.2;
-    if (throws.length > 0) confidence += 0.15;
-    if (tryCatches.length > 0) confidence += 0.1;
-    if (aborts.length > 0) confidence += 0.05;
+    if (exceptions.length > 0) {confidence += 0.2;}
+    if (throws.length > 0) {confidence += 0.15;}
+    if (tryCatches.length > 0) {confidence += 0.1;}
+    if (aborts.length > 0) {confidence += 0.05;}
 
     return Math.min(confidence, 1.0);
   }

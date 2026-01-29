@@ -7,9 +7,10 @@
  * @requirements 6.7 - THE Detector_System SHALL support lazy loading of detectors
  */
 
-import type { BaseDetector } from '../base/base-detector.js';
-import type { DetectorInfo, DetectorRegistrationOptions } from './types.js';
 import { DetectorRegistry, DetectorRegistrationError } from './detector-registry.js';
+
+import type { DetectorInfo, DetectorRegistrationOptions } from './types.js';
+import type { BaseDetector } from '../base/base-detector.js';
 
 // ============================================================================
 // Types

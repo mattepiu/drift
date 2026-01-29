@@ -15,8 +15,9 @@
  * @requirements 12.2 - Error code patterns
  */
 
-import type { Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -118,7 +119,7 @@ function isInsideComment(content: string, index: number): boolean {
   const before = content.slice(0, index);
   const lastNewline = before.lastIndexOf('\n');
   const line = before.slice(lastNewline + 1);
-  if (line.includes('//') && index - lastNewline - 1 > line.indexOf('//')) return true;
+  if (line.includes('//') && index - lastNewline - 1 > line.indexOf('//')) {return true;}
   return before.lastIndexOf('/*') > before.lastIndexOf('*/');
 }
 
@@ -139,7 +140,7 @@ export function detectErrorCodeEnums(content: string, file: string): ErrorCodePa
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'error-code-enum',
@@ -160,7 +161,7 @@ export function detectErrorCodeConstants(content: string, file: string): ErrorCo
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'error-code-const',
@@ -182,7 +183,7 @@ export function detectErrorCodeUsage(content: string, file: string): ErrorCodePa
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'error-code-usage',
@@ -205,13 +206,13 @@ export function detectMagicStringViolations(
   const hasErrorCodeEnum = patterns.some(p => p.type === 'error-code-enum');
   
   // Only flag magic strings if there's an ErrorCode enum
-  if (!hasErrorCodeEnum) return violations;
+  if (!hasErrorCodeEnum) {return violations;}
   
   for (const pattern of MAGIC_STRING_CODE_PATTERNS) {
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       violations.push({
         type: 'magic-string-code',
@@ -274,7 +275,7 @@ export class ErrorCodesDetector extends RegexDetector {
   
   async detect(context: DetectionContext): Promise<DetectionResult> {
     const { content, file } = context;
-    if (shouldExcludeFile(file)) return this.createEmptyResult();
+    if (shouldExcludeFile(file)) {return this.createEmptyResult();}
     
     const analysis = analyzeErrorCodes(content, file);
     

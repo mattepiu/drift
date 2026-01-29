@@ -5,6 +5,7 @@
  */
 
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+
 import type {
   Pattern,
   PatternWithLocations,
@@ -72,10 +73,10 @@ export function useStats() {
 // Pattern hooks
 export function usePatterns(filters?: PatternFilters) {
   const params = new URLSearchParams();
-  if (filters?.category) params.set('category', filters.category);
-  if (filters?.status) params.set('status', filters.status);
-  if (filters?.minConfidence) params.set('minConfidence', String(filters.minConfidence));
-  if (filters?.search) params.set('search', filters.search);
+  if (filters?.category) {params.set('category', filters.category);}
+  if (filters?.status) {params.set('status', filters.status);}
+  if (filters?.minConfidence) {params.set('minConfidence', String(filters.minConfidence));}
+  if (filters?.search) {params.set('search', filters.search);}
 
   const queryString = params.toString();
   return useQuery({
@@ -143,10 +144,10 @@ export function useBulkApprovePatterns() {
 // Violation hooks
 export function useViolations(filters?: ViolationFilters) {
   const params = new URLSearchParams();
-  if (filters?.severity) params.set('severity', filters.severity);
-  if (filters?.file) params.set('file', filters.file);
-  if (filters?.patternId) params.set('patternId', filters.patternId);
-  if (filters?.search) params.set('search', filters.search);
+  if (filters?.severity) {params.set('severity', filters.severity);}
+  if (filters?.file) {params.set('file', filters.file);}
+  if (filters?.patternId) {params.set('patternId', filters.patternId);}
+  if (filters?.search) {params.set('search', filters.search);}
 
   const queryString = params.toString();
   return useQuery({
@@ -214,10 +215,10 @@ import type { Contract, ContractStats, ContractFilters } from '../types';
 
 export function useContracts(filters?: ContractFilters) {
   const params = new URLSearchParams();
-  if (filters?.status) params.set('status', filters.status);
-  if (filters?.method) params.set('method', filters.method);
-  if (filters?.hasMismatches !== undefined) params.set('hasMismatches', String(filters.hasMismatches));
-  if (filters?.search) params.set('search', filters.search);
+  if (filters?.status) {params.set('status', filters.status);}
+  if (filters?.method) {params.set('method', filters.method);}
+  if (filters?.hasMismatches !== undefined) {params.set('hasMismatches', String(filters.hasMismatches));}
+  if (filters?.search) {params.set('search', filters.search);}
 
   const queryString = params.toString();
   return useQuery({

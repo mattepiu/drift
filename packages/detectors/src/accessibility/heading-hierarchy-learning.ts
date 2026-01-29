@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -110,9 +111,9 @@ export class HeadingHierarchyLearningDetector extends LearningDetector<HeadingHi
     const hasNative = headings.some(h => h.isNative);
     const hasComponent = headings.some(h => !h.isNative);
     
-    if (hasNative && hasComponent) styleDist.add('mixed', context.file);
-    else if (hasNative) styleDist.add('native', context.file);
-    else if (hasComponent) styleDist.add('component', context.file);
+    if (hasNative && hasComponent) {styleDist.add('mixed', context.file);}
+    else if (hasNative) {styleDist.add('native', context.file);}
+    else if (hasComponent) {styleDist.add('component', context.file);}
     
     for (const heading of headings) {
       levelDist.add(heading.level, context.file);

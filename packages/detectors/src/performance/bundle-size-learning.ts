@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -85,8 +86,8 @@ function extractBundlePatterns(content: string, file: string): BundlePatternInfo
   const defaultPattern = /import\s+(\w+)\s+from\s+['"]([^'"]+)['"]/g;
   while ((match = defaultPattern.exec(content)) !== null) {
     // Skip if it's a named import
-    if (content.slice(match.index).startsWith('import {')) continue;
-    if (content.slice(match.index).startsWith('import *')) continue;
+    if (content.slice(match.index).startsWith('import {')) {continue;}
+    if (content.slice(match.index).startsWith('import *')) {continue;}
 
     const beforeMatch = content.slice(0, match.index);
     const line = beforeMatch.split('\n').length;
@@ -126,7 +127,7 @@ export class BundleSizeLearningDetector extends LearningDetector<BundleSizeConve
     distributions: Map<keyof BundleSizeConventions, ValueDistribution>
   ): void {
     const patterns = extractBundlePatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const styleDist = distributions.get('importStyle')!;
     const dynamicDist = distributions.get('usesDynamicImports')!;

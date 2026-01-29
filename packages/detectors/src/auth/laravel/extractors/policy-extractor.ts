@@ -6,6 +6,8 @@
  * @module auth/laravel/extractors/policy-extractor
  */
 
+import { isStandardPolicyAction } from '../types.js';
+
 import type {
   PolicyInfo,
   PolicyMethod,
@@ -15,7 +17,6 @@ import type {
   CanMiddleware,
   PolicyExtractionResult,
 } from '../types.js';
-import { isStandardPolicyAction } from '../types.js';
 
 // ============================================================================
 // Regex Patterns
@@ -281,7 +282,7 @@ export class PolicyExtractor {
 
     for (let i = 0; i < parts.length; i++) {
       const part = parts[i]?.trim();
-      if (!part) continue;
+      if (!part) {continue;}
 
       const match = part.match(/(?:(\??\w+(?:\|\w+)*)\s+)?\$(\w+)/);
       if (match) {
@@ -326,8 +327,8 @@ export class PolicyExtractor {
     let i = startIndex;
 
     while (i < content.length && depth > 0) {
-      if (content[i] === '{') depth++;
-      else if (content[i] === '}') depth--;
+      if (content[i] === '{') {depth++;}
+      else if (content[i] === '}') {depth--;}
       i++;
     }
 
@@ -356,9 +357,9 @@ export class PolicyExtractor {
 
     let confidence = 0.5;
 
-    if (policies.length > 0) confidence += 0.25;
-    if (registrations.length > 0) confidence += 0.15;
-    if (authorizeCalls.length > 0) confidence += 0.1;
+    if (policies.length > 0) {confidence += 0.25;}
+    if (registrations.length > 0) {confidence += 0.15;}
+    if (authorizeCalls.length > 0) {confidence += 0.1;}
 
     return Math.min(confidence, 1.0);
   }

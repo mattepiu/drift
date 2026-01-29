@@ -3,9 +3,10 @@
  * @requirements 20.3 - Keyboard navigation patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 export type KeyboardNavPatternType = 'tabindex' | 'onkeydown' | 'onkeyup' | 'onkeypress' | 'focus-trap' | 'skip-link';
 export type KeyboardNavViolationType = 'positive-tabindex' | 'missing-keyboard-handler' | 'mouse-only-handler';
@@ -67,12 +68,12 @@ export function detectPositiveTabindexViolations(content: string, filePath: stri
 }
 
 export function analyzeKeyboardNav(content: string, filePath: string): KeyboardNavAnalysis {
-  if (shouldExcludeFile(filePath)) return { patterns: [], violations: [], tabindexCount: 0, keyboardHandlerCount: 0, confidence: 1.0 };
+  if (shouldExcludeFile(filePath)) {return { patterns: [], violations: [], tabindexCount: 0, keyboardHandlerCount: 0, confidence: 1.0 };}
   const patterns: KeyboardNavPatternInfo[] = [...detectTabindex(content, filePath), ...detectOnKeyDown(content, filePath), ...detectOnKeyUp(content, filePath), ...detectOnKeyPress(content, filePath), ...detectFocusTrap(content, filePath), ...detectSkipLink(content, filePath)];
   const violations: KeyboardNavViolationInfo[] = [...detectPositiveTabindexViolations(content, filePath)];
   const tabindexCount = patterns.filter((p) => p.type === 'tabindex').length;
   const keyboardHandlerCount = patterns.filter((p) => p.type.startsWith('onkey')).length;
-  let confidence = 0.7; if (patterns.length > 0) confidence += 0.15; if (violations.length === 0) confidence += 0.1; confidence = Math.min(confidence, 0.95);
+  let confidence = 0.7; if (patterns.length > 0) {confidence += 0.15;} if (violations.length === 0) {confidence += 0.1;} confidence = Math.min(confidence, 0.95);
   return { patterns, violations, tabindexCount, keyboardHandlerCount, confidence };
 }
 
@@ -85,9 +86,9 @@ export class KeyboardNavDetector extends RegexDetector {
   readonly supportedLanguages: Language[] = ['typescript', 'javascript'];
 
   async detect(context: DetectionContext): Promise<DetectionResult> {
-    if (!this.supportsLanguage(context.language)) return this.createEmptyResult();
+    if (!this.supportsLanguage(context.language)) {return this.createEmptyResult();}
     const analysis = analyzeKeyboardNav(context.content, context.file);
-    if (analysis.patterns.length === 0 && analysis.violations.length === 0) return this.createEmptyResult();
+    if (analysis.patterns.length === 0 && analysis.violations.length === 0) {return this.createEmptyResult();}
     
     // Convert internal violations to standard Violation format
     const violations = this.convertViolationInfos(analysis.violations.map(v => ({

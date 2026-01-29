@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -53,7 +54,7 @@ function extractImports(content: string, file: string): ImportInfo[] {
     const source = match[1] || '';
     
     // Skip external packages
-    if (!source.startsWith('.') && !source.startsWith('@/')) continue;
+    if (!source.startsWith('.') && !source.startsWith('@/')) {continue;}
 
     const beforeMatch = content.slice(0, match.index);
     const line = beforeMatch.split('\n').length;
@@ -97,7 +98,7 @@ export class ModuleBoundariesLearningDetector extends LearningDetector<ModuleBou
     distributions: Map<keyof ModuleBoundariesConventions, ValueDistribution>
   ): void {
     const imports = extractImports(context.content, context.file);
-    if (imports.length === 0) return;
+    if (imports.length === 0) {return;}
 
     const styleDist = distributions.get('importStyle')!;
     const deepImportDist = distributions.get('allowsDeepImports')!;
@@ -106,8 +107,8 @@ export class ModuleBoundariesLearningDetector extends LearningDetector<ModuleBou
     let hasIndex = false;
 
     for (const imp of imports) {
-      if (imp.isDeepImport) hasDeep = true;
-      if (imp.isIndexImport) hasIndex = true;
+      if (imp.isDeepImport) {hasDeep = true;}
+      if (imp.isIndexImport) {hasIndex = true;}
       deepImportDist.add(imp.isDeepImport, context.file);
     }
 

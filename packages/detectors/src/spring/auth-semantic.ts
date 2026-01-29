@@ -7,13 +7,14 @@
  * NO HARDCODED RULES - learns what's normal from frequency.
  */
 
-import type { Violation, Language } from 'driftdetect-core';
+import { SPRING_KEYWORD_GROUPS } from './keywords.js';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../base/semantic-detector.js';
-import { SPRING_KEYWORD_GROUPS } from './keywords.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 /** File paths that indicate auth-related code */
 const AUTH_FILE_PATTERNS = [

@@ -87,7 +87,7 @@ export class StateManager implements vscode.Disposable {
     this.listeners.add(listener);
 
     return {
-      dispose: () => {
+      dispose: (): void => {
         this.listeners.delete(listener);
       },
     };
@@ -99,7 +99,7 @@ export class StateManager implements vscode.Disposable {
   subscribeAll(callback: (state: ExtensionState) => void): vscode.Disposable {
     this.listeners.add(callback);
     return {
-      dispose: () => {
+      dispose: (): void => {
         this.listeners.delete(callback);
       },
     };
@@ -130,8 +130,8 @@ export class StateManager implements vscode.Disposable {
     for (const listener of this.listeners) {
       try {
         listener(this.state);
-      } catch (error) {
-        console.error('[Drift] State listener error:', error);
+      } catch {
+        // Listener error, continue with others
       }
     }
   }
@@ -141,7 +141,7 @@ export class StateManager implements vscode.Disposable {
     
     try {
       const persisted = this.context.globalState.get<Partial<ExtensionState>>(PERSISTENCE_KEY);
-      if (persisted) {
+      if (persisted?.preferences !== undefined) {
         // Only restore preferences, not transient state
         return {
           ...initial,
@@ -151,8 +151,8 @@ export class StateManager implements vscode.Disposable {
           },
         };
       }
-    } catch (error) {
-      console.error('[Drift] Failed to load persisted state:', error);
+    } catch {
+      // Failed to load persisted state, use initial
     }
 
     return initial;
@@ -164,10 +164,7 @@ export class StateManager implements vscode.Disposable {
       preferences: this.state.preferences,
     };
 
-    this.context.globalState.update(PERSISTENCE_KEY, toPersist).then(
-      () => {},
-      (error) => { console.error('[Drift] Failed to persist state:', error); }
-    );
+    void this.context.globalState.update(PERSISTENCE_KEY, toPersist);
   }
 
   private shallowEqual(a: unknown, b: unknown): boolean {

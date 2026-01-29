@@ -9,6 +9,7 @@
  * @requirements 6.6 - THE Detector SHALL be independently testable with mock AST inputs
  */
 
+import type { DetectionMethod, DetectorInfo } from '../registry/types.js';
 import type {
   PatternCategory,
   Language,
@@ -18,7 +19,6 @@ import type {
   AST,
 } from 'driftdetect-core';
 
-import type { DetectionMethod, DetectorInfo } from '../registry/types.js';
 
 // ============================================================================
 // Detection Context Types

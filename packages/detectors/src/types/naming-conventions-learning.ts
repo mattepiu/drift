@@ -8,7 +8,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -16,6 +15,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -112,7 +113,7 @@ export class TypeNamingConventionsLearningDetector extends LearningDetector<Type
     distributions: Map<keyof TypeNamingConventions, ValueDistribution>
   ): void {
     const typeNames = extractTypeNames(context.content, context.file);
-    if (typeNames.length === 0) return;
+    if (typeNames.length === 0) {return;}
 
     const iPrefixDist = distributions.get('usesIPrefix')!;
 

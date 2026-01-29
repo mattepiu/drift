@@ -83,7 +83,10 @@ export async function runDriftAnalysis(
   
   if (!hasDriftData) {
     // Run drift scan first
-    if (verbose) console.log('Running drift scan...');
+    if (verbose) {
+      // eslint-disable-next-line no-console
+      console.log('Running drift scan...');
+    }
     await runDriftCommand(['scan'], actualCodebasePath, timeout);
   }
   
@@ -149,13 +152,13 @@ async function getDriftStatus(codebasePath: string, _timeout: number): Promise<D
     // Read from .drift/views/status.json
     const statusPath = path.join(codebasePath, '.drift', 'views', 'status.json');
     const content = await fs.readFile(statusPath, 'utf-8');
-    const status = JSON.parse(content);
+    const status = JSON.parse(content) as Record<string, unknown>;
     
     return {
-      health: status.health ?? 0,
-      patterns: status.patterns ?? 0,
-      outliers: status.outliers ?? 0,
-      files: status.files ?? 0,
+      health: typeof status['health'] === 'number' ? status['health'] : 0,
+      patterns: typeof status['patterns'] === 'number' ? status['patterns'] : 0,
+      outliers: typeof status['outliers'] === 'number' ? status['outliers'] : 0,
+      files: typeof status['files'] === 'number' ? status['files'] : 0,
     };
   } catch {
     return { health: 0, patterns: 0, outliers: 0, files: 0 };
@@ -169,50 +172,88 @@ async function getDriftPatterns(
   const patterns: DriftPattern[] = [];
   const outliers: DriftOutlier[] = [];
   
+  interface PatternLocation {
+    file: string;
+    line: number;
+    isOutlier?: boolean;
+    reason?: string;
+  }
+  
+  interface PatternOutlier {
+    file?: string;
+    line?: number;
+    reason?: string;
+    severity?: string;
+  }
+  
+  interface PatternData {
+    id: string;
+    category?: string;
+    name: string;
+    description?: string;
+    locations?: PatternLocation[];
+    confidence?: number | { score: number };
+    outliers?: PatternOutlier[];
+  }
+  
+  interface PatternFile {
+    category?: string;
+    patterns?: PatternData[];
+  }
+  
   try {
     // Read from .drift/patterns/discovered/
     const discoveredDir = path.join(codebasePath, '.drift', 'patterns', 'discovered');
-    const files = await fs.readdir(discoveredDir).catch(() => []);
+    const files = await fs.readdir(discoveredDir).catch(() => [] as string[]);
     
     for (const file of files) {
-      if (!file.endsWith('.json')) continue;
+      if (!file.endsWith('.json')) {continue;}
       
       const content = await fs.readFile(path.join(discoveredDir, file), 'utf-8');
-      const data = JSON.parse(content);
+      const data = JSON.parse(content) as PatternFile | PatternData;
       
       // The file contains a patterns array
-      const filePatterns = data.patterns || [data];
+      const filePatterns: PatternData[] = 'patterns' in data && Array.isArray(data.patterns) 
+        ? data.patterns 
+        : [data as PatternData];
+      const fileCategory = 'category' in data ? data.category : undefined;
       
       for (const pattern of filePatterns) {
+        const confidenceValue = typeof pattern.confidence === 'object' && pattern.confidence !== null
+          ? pattern.confidence.score
+          : typeof pattern.confidence === 'number'
+            ? pattern.confidence
+            : 0.8;
+            
         patterns.push({
           id: pattern.id,
-          category: data.category || pattern.category,
+          category: fileCategory ?? pattern.category ?? 'unknown',
           name: pattern.name,
-          description: pattern.description,
-          locations: pattern.locations || [],
-          confidence: pattern.confidence?.score ?? pattern.confidence ?? 0.8,
+          description: pattern.description ?? '',
+          locations: pattern.locations ?? [],
+          confidence: confidenceValue,
         });
         
         // Extract outliers from pattern
-        if (pattern.outliers) {
+        if (pattern.outliers && Array.isArray(pattern.outliers)) {
           for (const outlier of pattern.outliers) {
             outliers.push({
               patternId: pattern.id,
-              location: outlier,
-              reason: outlier.reason || 'Pattern violation detected',
-              severity: outlier.severity || 'warning',
+              location: { file: outlier.file ?? '', line: outlier.line ?? 0 },
+              reason: outlier.reason ?? 'Pattern violation detected',
+              severity: outlier.severity ?? 'warning',
             });
           }
         }
         
         // Also check locations for outliers
-        if (pattern.locations) {
+        if (pattern.locations && Array.isArray(pattern.locations)) {
           for (const loc of pattern.locations) {
             if (loc.isOutlier) {
               outliers.push({
                 patternId: pattern.id,
                 location: { file: loc.file, line: loc.line },
-                reason: loc.reason || 'Location marked as outlier',
+                reason: loc.reason ?? 'Location marked as outlier',
                 severity: 'warning',
               });
             }
@@ -223,27 +264,28 @@ async function getDriftPatterns(
     
     // Also check approved patterns
     const approvedDir = path.join(codebasePath, '.drift', 'patterns', 'approved');
-    const approvedFiles = await fs.readdir(approvedDir).catch(() => []);
+    const approvedFiles = await fs.readdir(approvedDir).catch(() => [] as string[]);
     
     for (const file of approvedFiles) {
-      if (!file.endsWith('.json')) continue;
+      if (!file.endsWith('.json')) {continue;}
       
       const content = await fs.readFile(path.join(approvedDir, file), 'utf-8');
-      const pattern = JSON.parse(content);
+      const pattern = JSON.parse(content) as PatternData;
       
       // Don't duplicate if already in discovered
       if (!patterns.find(p => p.id === pattern.id)) {
+        const confidenceValue = typeof pattern.confidence === 'number' ? pattern.confidence : 0.9;
         patterns.push({
           id: pattern.id,
-          category: pattern.category,
+          category: pattern.category ?? 'unknown',
           name: pattern.name,
-          description: pattern.description,
-          locations: pattern.locations || [],
-          confidence: pattern.confidence ?? 0.9,
+          description: pattern.description ?? '',
+          locations: pattern.locations ?? [],
+          confidence: confidenceValue,
         });
       }
     }
-  } catch (err) {
+  } catch {
     // Patterns not available
   }
   
@@ -254,45 +296,67 @@ async function getDriftCallGraph(
   codebasePath: string,
   _timeout: number
 ): Promise<DriftCallGraph> {
+  interface CallGraphFunction {
+    id?: string;
+    name: string;
+    line: number;
+    type?: string;
+    isEntryPoint?: boolean;
+  }
+  
+  interface CallGraphCall {
+    caller: string;
+    callee: string;
+    line?: number;
+    callSite?: { file: string; line: number };
+  }
+  
+  interface CallGraphFile {
+    file: string;
+    functions?: CallGraphFunction[];
+    calls?: CallGraphCall[];
+  }
+  
   try {
     // Read from .drift/lake/callgraph/
     const callGraphDir = path.join(codebasePath, '.drift', 'lake', 'callgraph', 'files');
-    const files = await fs.readdir(callGraphDir).catch(() => []);
+    const files = await fs.readdir(callGraphDir).catch(() => [] as string[]);
     
     const functions: DriftCallGraph['functions'] = [];
     const calls: DriftCallGraph['calls'] = [];
     const entryPoints: string[] = [];
     
     for (const file of files) {
-      if (!file.endsWith('.json')) continue;
+      if (!file.endsWith('.json')) {continue;}
       
       const content = await fs.readFile(path.join(callGraphDir, file), 'utf-8');
-      const data = JSON.parse(content);
+      const data = JSON.parse(content) as CallGraphFile;
       
       // Extract functions
-      if (data.functions) {
+      if (data.functions && Array.isArray(data.functions)) {
         for (const func of data.functions) {
+          const funcId = func.id ?? `${data.file}:${func.name}`;
           functions.push({
-            id: func.id || `${data.file}:${func.name}`,
+            id: funcId,
             file: data.file,
             name: func.name,
             line: func.line,
-            type: func.type || 'function',
+            type: func.type ?? 'function',
           });
           
           if (func.isEntryPoint) {
-            entryPoints.push(func.id || `${data.file}:${func.name}`);
+            entryPoints.push(funcId);
           }
         }
       }
       
       // Extract calls
-      if (data.calls) {
+      if (data.calls && Array.isArray(data.calls)) {
         for (const call of data.calls) {
           calls.push({
             caller: call.caller,
             callee: call.callee,
-            callSite: call.callSite || { file: data.file, line: call.line },
+            callSite: call.callSite ?? { file: data.file, line: call.line ?? 0 },
           });
         }
       }

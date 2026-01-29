@@ -15,8 +15,9 @@
  * @requirements 12.1 - Exception hierarchy patterns
  */
 
-import type { Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -139,7 +140,7 @@ function isInsideComment(content: string, index: number): boolean {
   const before = content.slice(0, index);
   const lastNewline = before.lastIndexOf('\n');
   const line = before.slice(lastNewline + 1);
-  if (line.includes('//') && index - lastNewline - 1 > line.indexOf('//')) return true;
+  if (line.includes('//') && index - lastNewline - 1 > line.indexOf('//')) {return true;}
   return before.lastIndexOf('/*') > before.lastIndexOf('*/');
 }
 
@@ -160,7 +161,7 @@ export function detectAppErrorClasses(content: string, file: string): ExceptionP
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'app-error-class',
@@ -182,7 +183,7 @@ export function detectCustomErrorClasses(content: string, file: string): Excepti
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       const classMatch = match[0].match(/class\s+(\w+)\s+extends\s+(\w+)/);
       results.push({
@@ -206,7 +207,7 @@ export function detectErrorInheritance(content: string, file: string): Exception
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       const classMatch = match[0].match(/class\s+(\w+)\s+extends\s+(\w+)/);
       results.push({
@@ -230,7 +231,7 @@ export function detectErrorFactories(content: string, file: string): ExceptionPa
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'error-factory',
@@ -253,13 +254,13 @@ export function detectRawErrorViolations(
   const hasCustomErrors = patterns.length > 0;
   
   // Only flag raw errors if the file has custom error classes
-  if (!hasCustomErrors) return violations;
+  if (!hasCustomErrors) {return violations;}
   
   for (const pattern of RAW_ERROR_PATTERNS) {
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       violations.push({
         type: 'raw-error-throw',
@@ -324,7 +325,7 @@ export class ExceptionHierarchyDetector extends RegexDetector {
   
   async detect(context: DetectionContext): Promise<DetectionResult> {
     const { content, file } = context;
-    if (shouldExcludeFile(file)) return this.createEmptyResult();
+    if (shouldExcludeFile(file)) {return this.createEmptyResult();}
     
     const analysis = analyzeExceptionHierarchy(content, file);
     

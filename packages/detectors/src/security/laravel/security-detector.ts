@@ -4,13 +4,14 @@
  * @module security/laravel/security-detector
  */
 
-import type { Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
-import { BaseDetector } from '../../base/base-detector.js';
-import type { LaravelSecurityAnalysis } from './types.js';
 import { CSRFExtractor } from './extractors/csrf-extractor.js';
 import { MassAssignmentExtractor } from './extractors/mass-assignment-extractor.js';
 import { XSSExtractor } from './extractors/xss-extractor.js';
+import { BaseDetector } from '../../base/base-detector.js';
+
+import type { LaravelSecurityAnalysis } from './types.js';
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { Language } from 'driftdetect-core';
 
 export class LaravelSecurityDetector extends BaseDetector {
   readonly id = 'security/laravel-security';

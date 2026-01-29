@@ -10,8 +10,9 @@
  * @requirements 8.4 - THE Component_Detector SHALL detect near-duplicate components that should be abstracted
  */
 
-import type { PatternMatch, Violation, QuickFix, Language, Range, ASTNode, AST } from 'driftdetect-core';
 import { ASTDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language, Range, ASTNode, AST } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -306,10 +307,10 @@ function calculateChildSimilarities(
     let bestIndex = -1;
     
     for (let j = 0; j < children2.length; j++) {
-      if (used2.has(j)) continue;
+      if (used2.has(j)) {continue;}
       
       const child2 = children2[j];
-      if (!child2) continue;
+      if (!child2) {continue;}
       
       const score = calculateASTSimilarity(child1, child2);
       if (score > bestScore) {
@@ -442,7 +443,7 @@ export function extractComponentNameFromNode(node: ASTNode, content: string): st
   const line = lines[node.startPosition.row];
   if (line) {
     const match = line.match(/(?:const|let|var|export\s+(?:const|let|var)?)\s+([A-Z][a-zA-Z0-9]*)\s*[=:]/);
-    if (match && match[1]) {
+    if (match?.[1]) {
       return match[1];
     }
   }
@@ -900,7 +901,7 @@ export class DuplicateDetector extends ASTDetector {
       let match;
       while ((match = pattern.exec(content)) !== null) {
         const name = match[1];
-        if (!name) continue;
+        if (!name) {continue;}
         
         const sourceCode = match[0];
         const beforeMatch = content.slice(0, match.index);
@@ -1060,7 +1061,7 @@ export class DuplicateDetector extends ASTDetector {
   generateQuickFix(violation: Violation): QuickFix | null {
     // Extract component names from the violation message
     const match = violation.message.match(/similar to '([^']+)'/);
-    if (!match || !match[1]) {
+    if (!match?.[1]) {
       return null;
     }
 

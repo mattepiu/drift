@@ -7,6 +7,8 @@
  * @requirements 6.2 - THE Detector_System SHALL provide a registry for detector discovery and management
  */
 
+import { BaseDetector, isBaseDetector, type DetectorFactory } from '../base/base-detector.js';
+
 import type {
   DetectorInfo,
   DetectorQuery,
@@ -15,7 +17,6 @@ import type {
   RegisteredDetector,
 } from './types.js';
 
-import { BaseDetector, isBaseDetector, type DetectorFactory } from '../base/base-detector.js';
 
 // ============================================================================
 // Error Types
@@ -519,7 +520,7 @@ export class DetectorRegistry {
       );
     }
 
-    this.validateDetectorId((detector as BaseDetector).id);
+    this.validateDetectorId((detector).id);
   }
 
   /**

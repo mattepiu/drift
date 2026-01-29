@@ -13,9 +13,10 @@
  * @requirements 18.6 - Type assertion patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -198,7 +199,7 @@ export function detectAsAssertions(
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     // Skip as const, as unknown, as any (handled separately)
-    if (/as\s+(const|unknown|any)\b/.test(line)) continue;
+    if (/as\s+(const|unknown|any)\b/.test(line)) {continue;}
     
     for (const pattern of AS_ASSERTION_PATTERNS) {
       const regex = new RegExp(pattern.source, pattern.flags);
@@ -319,7 +320,7 @@ export function detectAngleBracket(
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     // Skip JSX/TSX files for angle bracket detection
-    if (filePath.endsWith('.tsx') || filePath.endsWith('.jsx')) continue;
+    if (filePath.endsWith('.tsx') || filePath.endsWith('.jsx')) {continue;}
     
     for (const pattern of ANGLE_BRACKET_PATTERNS) {
       const regex = new RegExp(pattern.source, pattern.flags);
@@ -351,16 +352,16 @@ export function detectNonNullAssertion(
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     // Skip definite assignment assertions
-    if (/\w+!:/.test(line)) continue;
+    if (/\w+!:/.test(line)) {continue;}
     // Skip comments
-    if (/^\s*\/\//.test(line)) continue;
+    if (/^\s*\/\//.test(line)) {continue;}
     
     for (const pattern of NON_NULL_ASSERTION_PATTERNS) {
       const regex = new RegExp(pattern.source, pattern.flags);
       let match;
       while ((match = regex.exec(line)) !== null) {
         // Skip if it's !== or !=
-        if (line.slice(match.index).startsWith('!==') || line.slice(match.index).startsWith('!=')) continue;
+        if (line.slice(match.index).startsWith('!==') || line.slice(match.index).startsWith('!=')) {continue;}
         
         results.push({
           type: 'non-null-assertion',
@@ -502,7 +503,7 @@ export function detectTypeGuardIn(
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     // Skip for...in loops
-    if (/for\s*\(/.test(line)) continue;
+    if (/for\s*\(/.test(line)) {continue;}
     
     for (const pattern of TYPE_GUARD_IN_PATTERNS) {
       const regex = new RegExp(pattern.source, pattern.flags);
@@ -783,9 +784,9 @@ export function analyzeTypeAssertions(
   const usesConstAssertions = patterns.some((p) => p.type === 'as-const');
 
   let confidence = 0.7;
-  if (patterns.length > 0) confidence += 0.15;
-  if (typeGuardCount > 0) confidence += 0.05;
-  if (violations.length === 0) confidence += 0.05;
+  if (patterns.length > 0) {confidence += 0.15;}
+  if (typeGuardCount > 0) {confidence += 0.05;}
+  if (violations.length === 0) {confidence += 0.05;}
   confidence = Math.min(confidence, 0.95);
 
   return {

@@ -11,7 +11,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -19,6 +18,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -68,10 +69,10 @@ function detectCatchStyle(catchContent: string): CatchHandlingStyle {
   const hasLog = /\b(?:console|logger|log)\.\w+/.test(catchContent);
   const hasNewError = /new\s+\w*Error/.test(catchContent);
 
-  if (hasThrow && hasNewError) return 'wrap-and-throw';
-  if (hasThrow && hasLog) return 'log-and-rethrow';
-  if (hasThrow) return 'rethrow';
-  if (hasLog && !hasThrow) return 'log-and-swallow';
+  if (hasThrow && hasNewError) {return 'wrap-and-throw';}
+  if (hasThrow && hasLog) {return 'log-and-rethrow';}
+  if (hasThrow) {return 'rethrow';}
+  if (hasLog && !hasThrow) {return 'log-and-swallow';}
   return 'handle';
 }
 
@@ -157,7 +158,7 @@ export class TryCatchLearningDetector extends LearningDetector<TryCatchConventio
   ): void {
     const patterns = extractTryCatchPatterns(context.content, context.file);
 
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const catchStyleDist = distributions.get('catchStyle')!;
     const finallyDist = distributions.get('usesFinally')!;

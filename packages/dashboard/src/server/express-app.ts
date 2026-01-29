@@ -8,10 +8,12 @@
  * @requirements 1.7 - Operate without authentication (local-only security model)
  */
 
-import express, { type Express } from 'express';
 import * as path from 'node:path';
-import { DriftDataReader } from './drift-data-reader.js';
+
+import express, { type Express } from 'express';
+
 import { createApiRoutes, errorHandler, notFoundHandler } from './api-routes.js';
+import { DriftDataReader } from './drift-data-reader.js';
 
 export interface ExpressAppOptions {
   /** DriftDataReader instance */

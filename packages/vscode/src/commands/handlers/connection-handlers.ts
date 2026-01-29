@@ -44,10 +44,10 @@ export function createConnectionHandlers(
 
       const items = [
         `Connection: ${connection.status}`,
-        `Server Version: ${connection.serverVersion || 'Unknown'}`,
-        `Patterns: ${patterns.total}`,
-        `Violations: ${violations.total}`,
-        `Last Scan: ${workspace.lastScanTime ? new Date(workspace.lastScanTime).toLocaleString() : 'Never'}`,
+        `Server Version: ${connection.serverVersion ?? 'Unknown'}`,
+        `Patterns: ${String(patterns.total)}`,
+        `Violations: ${String(violations.total)}`,
+        `Last Scan: ${workspace.lastScanTime !== null ? new Date(workspace.lastScanTime).toLocaleString() : 'Never'}`,
       ];
 
       await notifications.info(items.join('\n'), [], { detail: 'Drift Status' });
@@ -61,7 +61,7 @@ export function createConnectionHandlers(
       const state = stateManager.getState();
       const error = state.connection.lastError;
 
-      if (error) {
+      if (error !== null && error !== '') {
         await notifications.error(error, [
           { title: 'Retry', command: DRIFT_COMMANDS.reconnect },
           { title: 'Show Logs', command: 'drift.showLogs' },

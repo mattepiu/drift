@@ -12,12 +12,13 @@
  * Works in ANY language: TypeScript, JavaScript, Python, Go, Rust, Java, etc.
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Context Validation Patterns
@@ -163,9 +164,9 @@ export class RBACSemanticDetector extends SemanticDetector {
     // Require positive auth context for ambiguous keywords
     if (authContextScore === 0 && nonAuthContextScore === 0) {
       // No clear context - check for common false positive patterns
-      if (/className=|class=/i.test(lineContent)) return false; // CSS class
-      if (/style=/i.test(lineContent)) return false; // inline style
-      if (/<\w+.*role/i.test(lineContent)) return false; // HTML element with role
+      if (/className=|class=/i.test(lineContent)) {return false;} // CSS class
+      if (/style=/i.test(lineContent)) {return false;} // inline style
+      if (/<\w+.*role/i.test(lineContent)) {return false;} // HTML element with role
     }
     
     return authContextScore > nonAuthContextScore;

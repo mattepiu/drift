@@ -16,14 +16,15 @@
  * @requirements 28.9 - drift.showViolations
  */
 
+import { DRIFT_COMMANDS } from '../capabilities.js';
+
+import type { DiagnosticsHandler } from './diagnostics.js';
 import type {
   Connection,
   TextDocuments,
   ExecuteCommandParams,
 } from 'vscode-languageserver';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
-import type { DiagnosticsHandler } from './diagnostics.js';
-import { DRIFT_COMMANDS } from '../capabilities.js';
 
 // ============================================================================
 // Types

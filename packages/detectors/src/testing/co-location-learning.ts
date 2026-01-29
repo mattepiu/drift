@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -36,9 +37,9 @@ export interface TestCoLocationConventions {
 // ============================================================================
 
 function detectTestCoLocation(filePath: string): TestCoLocationStyle | null {
-  if (/\/__tests__\//.test(filePath)) return 'adjacent-folder';
-  if (/\/tests?\//.test(filePath) && !/src\//.test(filePath)) return 'root-tests';
-  if (/\.(?:test|spec)\.[tj]sx?$/.test(filePath)) return 'same-directory';
+  if (/\/__tests__\//.test(filePath)) {return 'adjacent-folder';}
+  if (/\/tests?\//.test(filePath) && !/src\//.test(filePath)) {return 'root-tests';}
+  if (/\.(?:test|spec)\.[tj]sx?$/.test(filePath)) {return 'same-directory';}
   return null;
 }
 

@@ -9,13 +9,15 @@
  */
 
 import { useMemo, useState, useCallback } from 'react';
-import { useViolations } from '../../hooks';
-import { useDashboardStore } from '../../store';
-import type { ViewMode, SortConfig } from './types';
-import { ViolationStats } from './ViolationStats';
+
+import { calculateStatistics, sortViolations, mergeViolations } from './utils';
 import { ViolationFilters } from './ViolationFilters';
 import { ViolationList } from './ViolationList';
-import { calculateStatistics, sortViolations, mergeViolations } from './utils';
+import { ViolationStats } from './ViolationStats';
+import { useViolations } from '../../hooks';
+import { useDashboardStore } from '../../store';
+
+import type { ViewMode, SortConfig } from './types';
 
 export function ViolationsTab() {
   // Global state
@@ -37,7 +39,7 @@ export function ViolationsTab() {
 
   // Merge realtime violations with fetched ones
   const allViolations = useMemo(() => {
-    if (!fetchedViolations) return realtimeViolations;
+    if (!fetchedViolations) {return realtimeViolations;}
     return mergeViolations(fetchedViolations, realtimeViolations);
   }, [fetchedViolations, realtimeViolations]);
 

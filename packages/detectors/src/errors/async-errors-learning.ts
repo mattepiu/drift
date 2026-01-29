@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -118,7 +119,7 @@ export class AsyncErrorsLearningDetector extends LearningDetector<AsyncErrorsCon
     distributions: Map<keyof AsyncErrorsConventions, ValueDistribution>
   ): void {
     const patterns = extractAsyncErrorPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const styleDist = distributions.get('style')!;
     const boundaryDist = distributions.get('usesErrorBoundaries')!;
@@ -127,7 +128,7 @@ export class AsyncErrorsLearningDetector extends LearningDetector<AsyncErrorsCon
 
     for (const pattern of patterns) {
       styleDist.add(pattern.style, context.file);
-      if (pattern.style === 'error-boundary') hasBoundary = true;
+      if (pattern.style === 'error-boundary') {hasBoundary = true;}
     }
 
     boundaryDist.add(hasBoundary, context.file);

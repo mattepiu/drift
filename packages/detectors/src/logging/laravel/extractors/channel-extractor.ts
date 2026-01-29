@@ -106,7 +106,7 @@ export class ChannelExtractor {
     // Find channels config section
     CHANNELS_CONFIG_PATTERN.lastIndex = 0;
     const configMatch = CHANNELS_CONFIG_PATTERN.exec(content);
-    if (!configMatch) return channels;
+    if (!configMatch) {return channels;}
 
     const channelsContent = configMatch[1] || '';
     const configLine = this.getLineNumber(content, configMatch.index);
@@ -124,7 +124,7 @@ export class ChannelExtractor {
       const driver = (driverMatch ? driverMatch[1] : 'single') as LogDriver;
 
       // Skip stacks (handled separately)
-      if (driver === 'stack') continue;
+      if (driver === 'stack') {continue;}
 
       // Extract path
       const pathMatch = channelConfig.match(PATH_PATTERN);
@@ -161,7 +161,7 @@ export class ChannelExtractor {
     // Find channels config section
     CHANNELS_CONFIG_PATTERN.lastIndex = 0;
     const configMatch = CHANNELS_CONFIG_PATTERN.exec(content);
-    if (!configMatch) return stacks;
+    if (!configMatch) {return stacks;}
 
     const channelsContent = configMatch[1] || '';
     const configLine = this.getLineNumber(content, configMatch.index);
@@ -176,7 +176,7 @@ export class ChannelExtractor {
 
       // Check if it's a stack
       const driverMatch = channelConfig.match(DRIVER_PATTERN);
-      if (driverMatch && driverMatch[1] === 'stack') {
+      if (driverMatch?.[1] === 'stack') {
         // Extract channels in stack
         const stackChannelsMatch = channelConfig.match(STACK_CHANNELS_PATTERN);
         const channels = stackChannelsMatch

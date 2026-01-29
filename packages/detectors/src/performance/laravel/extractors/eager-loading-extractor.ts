@@ -212,7 +212,7 @@ export class EagerLoadingExtractor {
 
       // Find the loop body
       const loopStart = content.indexOf('{', match.index);
-      if (loopStart === -1) continue;
+      if (loopStart === -1) {continue;}
 
       const loopBody = this.extractBlockBody(content, loopStart);
 
@@ -241,7 +241,7 @@ export class EagerLoadingExtractor {
 
     // Check if this is a model file
     const modelMatch = content.match(/class\s+(\w+)\s+extends\s+(?:Illuminate\\Database\\Eloquent\\)?Model/);
-    if (!modelMatch) return defaults;
+    if (!modelMatch) {return defaults;}
 
     const model = modelMatch[1] || '';
     const line = modelMatch.index !== undefined ? this.getLineNumber(content, modelMatch.index) : 1;
@@ -306,8 +306,8 @@ export class EagerLoadingExtractor {
     let i = startIndex + 1;
 
     while (i < content.length && depth > 0) {
-      if (content[i] === '{') depth++;
-      else if (content[i] === '}') depth--;
+      if (content[i] === '{') {depth++;}
+      else if (content[i] === '}') {depth--;}
       i++;
     }
 

@@ -5,8 +5,9 @@
  * Groups tables by domain clusters and applies physics simulation.
  */
 
-import type { TableNode, EntryPointNode, Vector3D, TableRelationship } from '../types/index.js';
 import { GALAXY_LAYOUT, DOMAIN_CLUSTERS } from '../constants/index.js';
+
+import type { TableNode, EntryPointNode, Vector3D, TableRelationship } from '../types/index.js';
 
 // ============================================================================
 // Types
@@ -84,7 +85,7 @@ function applyRepulsion(nodes: LayoutNode[], strength: number): void {
       const a = nodes[i];
       const b = nodes[j];
       
-      if (a.fixed && b.fixed) continue;
+      if (a.fixed && b.fixed) {continue;}
       
       const dx = b.x - a.x;
       const dy = b.y - a.y;
@@ -124,8 +125,8 @@ function applyAttraction(nodes: LayoutNode[], links: LayoutLink[], distance: num
     const source = nodeMap.get(link.source);
     const target = nodeMap.get(link.target);
     
-    if (!source || !target) continue;
-    if (source.fixed && target.fixed) continue;
+    if (!source || !target) {continue;}
+    if (source.fixed && target.fixed) {continue;}
     
     const dx = target.x - source.x;
     const dy = target.y - source.y;
@@ -161,10 +162,10 @@ function applyClusterCentering(
   strength: number
 ): void {
   for (const node of nodes) {
-    if (node.fixed) continue;
+    if (node.fixed) {continue;}
     
     const center = clusterCenters.get(node.cluster);
-    if (!center) continue;
+    if (!center) {continue;}
     
     const dx = center.x - node.x;
     const dy = center.y - node.y;
@@ -181,7 +182,7 @@ function applyClusterCentering(
  */
 function applyVelocity(nodes: LayoutNode[], damping: number): void {
   for (const node of nodes) {
-    if (node.fixed) continue;
+    if (node.fixed) {continue;}
     
     node.x += node.vx;
     node.y += node.vy;

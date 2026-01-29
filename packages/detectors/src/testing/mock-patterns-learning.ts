@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -128,10 +129,10 @@ export class MockPatternsLearningDetector extends LearningDetector<MockPatternsC
     context: DetectionContext,
     distributions: Map<keyof MockPatternsConventions, ValueDistribution>
   ): void {
-    if (!context.isTestFile) return;
+    if (!context.isTestFile) {return;}
 
     const patterns = extractMockPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const libraryDist = distributions.get('library')!;
     const prefixDist = distributions.get('usesMockPrefix')!;

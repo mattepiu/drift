@@ -5,8 +5,10 @@
  */
 
 import { useState, useCallback } from 'react';
-import { useGalaxyStore } from '../../store/index.js';
+
 import { useGalaxySound } from '../../audio/index.js';
+import { useGalaxyStore } from '../../store/index.js';
+
 import type { ViewMode, SensitivityLevel, DataOperation } from '../../types/index.js';
 
 // ============================================================================
@@ -55,7 +57,7 @@ export function ControlsPanel() {
     setSoundConfig(prev => ({ ...prev, volume }));
   }, [setVolume]);
   
-  if (!isPanelOpen || activePanel !== 'settings') return null;
+  if (!isPanelOpen || activePanel !== 'settings') {return null;}
   
   return (
     <div className="absolute right-4 top-4 w-72 max-h-[calc(100vh-8rem)] overflow-y-auto bg-slate-900/95 backdrop-blur-sm rounded-lg border border-slate-700 shadow-xl">
@@ -80,7 +82,7 @@ export function ControlsPanel() {
             {VIEW_MODES.map(mode => (
               <button
                 key={mode.value}
-                onClick={() => setViewMode(mode.value)}
+                onClick={() => { setViewMode(mode.value); }}
                 className={`p-2 rounded text-sm transition-colors ${
                   viewMode === mode.value
                     ? 'bg-blue-500/20 text-blue-400 border border-blue-500/50'
@@ -101,7 +103,7 @@ export function ControlsPanel() {
               <label className="text-xs text-slate-400 block mb-1">Min Sensitivity</label>
               <select
                 value={filters.minSensitivity || ''}
-                onChange={(e) => setFilters({ minSensitivity: (e.target.value || null) as SensitivityLevel | null })}
+                onChange={(e) => { setFilters({ minSensitivity: (e.target.value || null) as SensitivityLevel | null }); }}
                 className="w-full p-2 rounded bg-slate-800 text-slate-300 text-sm border border-slate-700"
               >
                 <option value="">All</option>
@@ -117,7 +119,7 @@ export function ControlsPanel() {
               <label className="text-xs text-slate-400 block mb-1">Operation Type</label>
               <select
                 value={filters.operationType || ''}
-                onChange={(e) => setFilters({ operationType: (e.target.value || null) as DataOperation | null })}
+                onChange={(e) => { setFilters({ operationType: (e.target.value || null) as DataOperation | null }); }}
                 className="w-full p-2 rounded bg-slate-800 text-slate-300 text-sm border border-slate-700"
               >
                 <option value="">All</option>
@@ -131,12 +133,12 @@ export function ControlsPanel() {
             <Toggle
               label="Untested paths only"
               checked={filters.untestedOnly}
-              onChange={(checked) => setFilters({ untestedOnly: checked })}
+              onChange={(checked) => { setFilters({ untestedOnly: checked }); }}
             />
             <Toggle
               label="Public endpoints only"
               checked={filters.publicOnly}
-              onChange={(checked) => setFilters({ publicOnly: checked })}
+              onChange={(checked) => { setFilters({ publicOnly: checked }); }}
             />
             
             <button
@@ -154,27 +156,27 @@ export function ControlsPanel() {
             <Toggle
               label="Show field moons"
               checked={display.showFields}
-              onChange={(checked) => setDisplay({ showFields: checked })}
+              onChange={(checked) => { setDisplay({ showFields: checked }); }}
             />
             <Toggle
               label="Show data paths"
               checked={display.showPaths}
-              onChange={(checked) => setDisplay({ showPaths: checked })}
+              onChange={(checked) => { setDisplay({ showPaths: checked }); }}
             />
             <Toggle
               label="Show relationships"
               checked={display.showRelationships}
-              onChange={(checked) => setDisplay({ showRelationships: checked })}
+              onChange={(checked) => { setDisplay({ showRelationships: checked }); }}
             />
             <Toggle
               label="Show labels"
               checked={display.showLabels}
-              onChange={(checked) => setDisplay({ showLabels: checked })}
+              onChange={(checked) => { setDisplay({ showLabels: checked }); }}
             />
             <Toggle
               label="Enable bloom effect"
               checked={display.enableBloom}
-              onChange={(checked) => setDisplay({ enableBloom: checked })}
+              onChange={(checked) => { setDisplay({ enableBloom: checked }); }}
             />
             
             {/* Animation speed */}
@@ -188,7 +190,7 @@ export function ControlsPanel() {
                 max="2"
                 step="0.1"
                 value={display.animationSpeed}
-                onChange={(e) => setDisplay({ animationSpeed: parseFloat(e.target.value) })}
+                onChange={(e) => { setDisplay({ animationSpeed: parseFloat(e.target.value) }); }}
                 className="w-full"
               />
             </div>
@@ -204,7 +206,7 @@ export function ControlsPanel() {
                 max="1"
                 step="0.1"
                 value={display.pathOpacity}
-                onChange={(e) => setDisplay({ pathOpacity: parseFloat(e.target.value) })}
+                onChange={(e) => { setDisplay({ pathOpacity: parseFloat(e.target.value) }); }}
                 className="w-full"
               />
             </div>
@@ -246,7 +248,7 @@ export function ControlsPanel() {
                 max="1"
                 step="0.1"
                 value={soundConfig.volume}
-                onChange={(e) => handleVolumeChange(parseFloat(e.target.value))}
+                onChange={(e) => { handleVolumeChange(parseFloat(e.target.value)); }}
                 className="w-full"
                 disabled={!soundConfig.enabled || soundConfig.muted}
               />
@@ -255,14 +257,14 @@ export function ControlsPanel() {
             {/* Test sounds */}
             <div className="flex gap-2">
               <button
-                onClick={() => play('hover')}
+                onClick={() => { play('hover'); }}
                 className="flex-1 p-2 rounded bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs transition-colors"
                 disabled={!soundConfig.enabled || soundConfig.muted}
               >
                 🔊 Test
               </button>
               <button
-                onClick={() => play('alertCritical')}
+                onClick={() => { play('alertCritical'); }}
                 className="flex-1 p-2 rounded bg-red-900/50 hover:bg-red-800/50 text-red-300 text-xs transition-colors"
                 disabled={!soundConfig.enabled || soundConfig.muted}
               >
@@ -312,7 +314,7 @@ function Toggle({ label, checked, onChange }: ToggleProps) {
     <label className="flex items-center justify-between cursor-pointer">
       <span className="text-sm text-slate-300">{label}</span>
       <button
-        onClick={() => onChange(!checked)}
+        onClick={() => { onChange(!checked); }}
         className={`w-10 h-5 rounded-full transition-colors ${
           checked ? 'bg-blue-500' : 'bg-slate-700'
         }`}

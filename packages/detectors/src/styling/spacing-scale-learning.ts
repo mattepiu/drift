@@ -11,7 +11,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -19,6 +18,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -124,7 +125,7 @@ function extractCSSSpacing(content: string, file: string): SpacingPatternInfo[] 
     const pxValue = unit === 'px' ? value : value * 16;
 
     // Skip 0 and 1px values
-    if (pxValue <= 1) continue;
+    if (pxValue <= 1) {continue;}
 
     results.push({
       method: 'inline',
@@ -172,7 +173,7 @@ function extractCSSVarSpacing(content: string, file: string): SpacingPatternInfo
  * Determine scale type from values
  */
 function determineScaleType(values: number[]): SpacingScaleType {
-  if (values.length === 0) return 'custom';
+  if (values.length === 0) {return 'custom';}
 
   const on4pxScale = values.filter(v => v % 4 === 0).length;
   const on8pxScale = values.filter(v => v % 8 === 0).length;
@@ -180,8 +181,8 @@ function determineScaleType(values: number[]): SpacingScaleType {
   const ratio4px = on4pxScale / values.length;
   const ratio8px = on8pxScale / values.length;
 
-  if (ratio8px > 0.8) return '8px';
-  if (ratio4px > 0.8) return '4px';
+  if (ratio8px > 0.8) {return '8px';}
+  if (ratio4px > 0.8) {return '4px';}
   return 'custom';
 }
 
@@ -222,7 +223,7 @@ export class SpacingScaleLearningDetector extends LearningDetector<SpacingScaleC
     const cssVarSpacing = extractCSSVarSpacing(context.content, context.file);
     const allPatterns = [...tailwindSpacing, ...cssSpacing, ...cssVarSpacing];
 
-    if (allPatterns.length === 0) return;
+    if (allPatterns.length === 0) {return;}
 
     const methodDist = distributions.get('method')!;
     const commonValuesDist = distributions.get('commonValues')!;

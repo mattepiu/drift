@@ -20,8 +20,9 @@
  * @requirements 10.6 - THE API_Detector SHALL detect API client patterns (fetch wrapper usage)
  */
 
-import type { Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -197,11 +198,11 @@ function isInsideComment(content: string, index: number): boolean {
   if (currentLine.includes('//')) {
     const commentStart = currentLine.indexOf('//');
     const positionInLine = index - lastNewline - 1;
-    if (positionInLine > commentStart) return true;
+    if (positionInLine > commentStart) {return true;}
   }
   const lastBlockCommentStart = beforeIndex.lastIndexOf('/*');
   const lastBlockCommentEnd = beforeIndex.lastIndexOf('*/');
-  if (lastBlockCommentStart > lastBlockCommentEnd) return true;
+  if (lastBlockCommentStart > lastBlockCommentEnd) {return true;}
   return false;
 }
 
@@ -220,13 +221,13 @@ export function hasErrorHandling(content: string, index: number): boolean {
   const afterIndex = content.slice(index, Math.min(content.length, index + 200));
   
   // Check for try/catch
-  if (beforeIndex.includes('try') && afterIndex.includes('catch')) return true;
+  if (beforeIndex.includes('try') && afterIndex.includes('catch')) {return true;}
   
   // Check for .catch()
-  if (afterIndex.includes('.catch(')) return true;
+  if (afterIndex.includes('.catch(')) {return true;}
   
   // Check for error handling in async/await
-  if (beforeIndex.includes('try {') || afterIndex.includes('} catch')) return true;
+  if (beforeIndex.includes('try {') || afterIndex.includes('} catch')) {return true;}
   
   return false;
 }
@@ -255,7 +256,7 @@ export function detectFetchWrappers(content: string, file: string): ClientPatter
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       
       results.push({
@@ -282,7 +283,7 @@ export function detectAxiosInstances(content: string, file: string): ClientPatte
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       
       results.push({
@@ -309,7 +310,7 @@ export function detectReactQuery(content: string, file: string): ClientPatternIn
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       
       results.push({
@@ -335,7 +336,7 @@ export function detectSWR(content: string, file: string): ClientPatternInfo[] {
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       
       results.push({
@@ -361,7 +362,7 @@ export function detectDirectFetch(content: string, file: string): ClientPatternI
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       
       results.push({
@@ -387,7 +388,7 @@ export function detectDirectAxios(content: string, file: string): ClientPatternI
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       
       results.push({

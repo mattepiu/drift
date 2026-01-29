@@ -6,6 +6,7 @@
  */
 
 import { useCallback, useEffect, useRef } from 'react';
+
 import { getGalaxySoundEngine, type SoundType, type SoundConfig } from './sound-effects.js';
 
 // ============================================================================
@@ -100,7 +101,7 @@ export function useGalaxySound(options: UseGalaxySoundOptions = {}): UseGalaxySo
 
   // Play alert
   const playAlert = useCallback((severity: 'low' | 'medium' | 'high' | 'critical') => {
-    engine.playAlert(severity);
+    void engine.playAlert(severity);
   }, [engine]);
 
   // Toggle mute
@@ -141,10 +142,10 @@ export function useGalaxySound(options: UseGalaxySoundOptions = {}): UseGalaxySo
 /**
  * Hook for hover sound effects
  */
-export function useHoverSound() {
+export function useHoverSound(): () => void {
   const { play } = useGalaxySound({ debounceMs: 100 });
   
-  return useCallback(() => {
+  return useCallback((): void => {
     play('hover');
   }, [play]);
 }
@@ -152,14 +153,14 @@ export function useHoverSound() {
 /**
  * Hook for selection sound effects
  */
-export function useSelectionSound() {
+export function useSelectionSound(): { onSelect: () => void; onDeselect: () => void } {
   const { play } = useGalaxySound();
   
-  const onSelect = useCallback(() => {
+  const onSelect = useCallback((): void => {
     play('select');
   }, [play]);
   
-  const onDeselect = useCallback(() => {
+  const onDeselect = useCallback((): void => {
     play('deselect');
   }, [play]);
   
@@ -169,14 +170,14 @@ export function useSelectionSound() {
 /**
  * Hook for path activation sounds
  */
-export function usePathSound() {
+export function usePathSound(): { onActivate: () => void; onDataFlow: () => void } {
   const { play, playVaried } = useGalaxySound({ debounceMs: 100 });
   
-  const onActivate = useCallback(() => {
+  const onActivate = useCallback((): void => {
     play('pathActivate');
   }, [play]);
   
-  const onDataFlow = useCallback(() => {
+  const onDataFlow = useCallback((): void => {
     playVaried('dataFlow', 0.2);
   }, [playVaried]);
   

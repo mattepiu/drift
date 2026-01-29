@@ -192,10 +192,11 @@ export {
 } from './async-learning.js';
 
 // Import for use in factory functions
-import { createSpringStructuralSemanticDetector } from './structural-semantic.js';
-import { createSpringAPISemanticDetector } from './api-semantic.js';
-import { createSpringAuthSemanticDetector } from './auth-semantic.js';
-import { createSpringDataSemanticDetector } from './data-semantic.js';
+import { createSpringAPILearningDetector , SpringAPILearningDetector } from './api-learning.js';
+import { createSpringAPISemanticDetector , SpringAPISemanticDetector } from './api-semantic.js';
+import { createSpringAsyncLearningDetector , SpringAsyncLearningDetector } from './async-learning.js';
+import { createSpringAsyncSemanticDetector , SpringAsyncSemanticDetector } from './async-semantic.js';
+import { createSpringDataSemanticDetector , SpringDataSemanticDetector } from './data-semantic.js';
 import { createSpringDISemanticDetector } from './di-semantic.js';
 import { createSpringConfigSemanticDetector } from './config-semantic.js';
 import { createSpringValidationSemanticDetector } from './validation-semantic.js';
@@ -203,12 +204,8 @@ import { createSpringErrorsSemanticDetector } from './errors-semantic.js';
 import { createSpringLoggingSemanticDetector } from './logging-semantic.js';
 import { createSpringTestingSemanticDetector } from './testing-semantic.js';
 import { createSpringTransactionSemanticDetector } from './transaction-semantic.js';
-import { createSpringAsyncSemanticDetector } from './async-semantic.js';
 
 import { SpringStructuralSemanticDetector } from './structural-semantic.js';
-import { SpringAPISemanticDetector } from './api-semantic.js';
-import { SpringAuthSemanticDetector } from './auth-semantic.js';
-import { SpringDataSemanticDetector } from './data-semantic.js';
 import { SpringDISemanticDetector } from './di-semantic.js';
 import { SpringConfigSemanticDetector } from './config-semantic.js';
 import { SpringValidationSemanticDetector } from './validation-semantic.js';
@@ -216,34 +213,26 @@ import { SpringErrorsSemanticDetector } from './errors-semantic.js';
 import { SpringLoggingSemanticDetector } from './logging-semantic.js';
 import { SpringTestingSemanticDetector } from './testing-semantic.js';
 import { SpringTransactionSemanticDetector } from './transaction-semantic.js';
-import { SpringAsyncSemanticDetector } from './async-semantic.js';
 
 // Learning detector imports
-import { createSpringStructuralLearningDetector } from './structural-learning.js';
-import { createSpringAPILearningDetector } from './api-learning.js';
-import { createSpringAuthLearningDetector } from './auth-learning.js';
-import { createSpringDataLearningDetector } from './data-learning.js';
-import { createSpringDILearningDetector } from './di-learning.js';
-import { createSpringConfigLearningDetector } from './config-learning.js';
-import { createSpringValidationLearningDetector } from './validation-learning.js';
+import { createSpringAuthLearningDetector , SpringAuthLearningDetector } from './auth-learning.js';
+import { createSpringAuthSemanticDetector , SpringAuthSemanticDetector } from './auth-semantic.js';
+import { createSpringDataLearningDetector , SpringDataLearningDetector } from './data-learning.js';
+import { createSpringConfigLearningDetector , SpringConfigLearningDetector } from './config-learning.js';
+import { createSpringDILearningDetector , SpringDILearningDetector } from './di-learning.js';
+import { createSpringValidationLearningDetector , SpringValidationLearningDetector } from './validation-learning.js';
 import { createSpringErrorsLearningDetector } from './errors-learning.js';
 import { createSpringLoggingLearningDetector } from './logging-learning.js';
 import { createSpringTestingLearningDetector } from './testing-learning.js';
 import { createSpringTransactionLearningDetector } from './transaction-learning.js';
-import { createSpringAsyncLearningDetector } from './async-learning.js';
 
 import { SpringStructuralLearningDetector } from './structural-learning.js';
-import { SpringAPILearningDetector } from './api-learning.js';
-import { SpringAuthLearningDetector } from './auth-learning.js';
-import { SpringDataLearningDetector } from './data-learning.js';
-import { SpringDILearningDetector } from './di-learning.js';
-import { SpringConfigLearningDetector } from './config-learning.js';
-import { SpringValidationLearningDetector } from './validation-learning.js';
 import { SpringErrorsLearningDetector } from './errors-learning.js';
 import { SpringLoggingLearningDetector } from './logging-learning.js';
+import { createSpringStructuralLearningDetector } from './structural-learning.js';
+import { createSpringStructuralSemanticDetector } from './structural-semantic.js';
 import { SpringTestingLearningDetector } from './testing-learning.js';
 import { SpringTransactionLearningDetector } from './transaction-learning.js';
-import { SpringAsyncLearningDetector } from './async-learning.js';
 
 /**
  * Create all Spring semantic detectors

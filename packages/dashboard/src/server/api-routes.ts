@@ -17,10 +17,11 @@
  * @requirements 8.12 - Return appropriate HTTP status codes and error messages
  */
 
+import { getProjectRegistry } from 'driftdetect-core';
 import { Router, type Request, type Response, type NextFunction } from 'express';
+
 import { DriftDataReader, type PatternQuery, type ViolationQuery, type DriftConfig } from './drift-data-reader.js';
 import { createGalaxyDataTransformer } from './galaxy-data-transformer.js';
-import { getProjectRegistry } from 'driftdetect-core';
 import { handleQualityGatesRequest } from './quality-gates-api.js';
 
 // ============================================================================

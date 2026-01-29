@@ -10,14 +10,15 @@
  * @requirements Constant & Enum Extraction Feature
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
-
 import {
   UnifiedDetector,
   type DetectionStrategy,
   type StrategyResult,
   type DetectionContext,
 } from '../base/unified-detector.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
+
 
 // ============================================================================
 // Types

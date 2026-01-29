@@ -10,9 +10,10 @@
  * @requirements 19.5 - Debounce and throttle patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -214,7 +215,7 @@ export function detectMissingDebounceViolations(
 
   // Check if file already uses debounce/throttle
   const hasDebounce = /debounce|throttle/i.test(content);
-  if (hasDebounce) return results;
+  if (hasDebounce) {return results;}
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
@@ -278,8 +279,8 @@ export function analyzeDebounceThrottle(
   const usesRAF = patterns.some((p) => p.type === 'request-animation-frame');
 
   let confidence = 0.7;
-  if (patterns.length > 0) confidence += 0.15;
-  if (violations.length === 0) confidence += 0.1;
+  if (patterns.length > 0) {confidence += 0.15;}
+  if (violations.length === 0) {confidence += 0.1;}
   confidence = Math.min(confidence, 0.95);
 
   return {

@@ -5,10 +5,12 @@
  */
 
 import { useState } from 'react';
-import type { Pattern } from '../../types';
-import type { CategoryGroup, DetectorGroup, ViewMode } from './types';
+
 import { STATUS_CONFIG, CATEGORY_CONFIG } from './constants';
 import { formatPercentage, getConfidenceColor } from './utils';
+
+import type { CategoryGroup, DetectorGroup, ViewMode } from './types';
+import type { Pattern } from '../../types';
 
 // ============================================================================
 // Pattern Row (Flat View)

@@ -151,7 +151,7 @@ export function filterTables(
       const hasSensitiveType = table.sensitiveFields.some(
         f => f.sensitivityType === filters.sensitivityType
       );
-      if (!hasSensitiveType) return false;
+      if (!hasSensitiveType) {return false;}
     }
 
     // Operation filter
@@ -159,7 +159,7 @@ export function filterTables(
       const hasOperation = table.accessedBy.some(
         ap => ap.operation === filters.operation
       );
-      if (!hasOperation) return false;
+      if (!hasOperation) {return false;}
     }
 
     return true;
@@ -272,17 +272,17 @@ export function formatConfidence(score: number): string {
 }
 
 export function getConfidenceColor(score: number): string {
-  if (score >= 0.85) return 'text-green-400';
-  if (score >= 0.65) return 'text-yellow-400';
-  if (score >= 0.45) return 'text-orange-400';
+  if (score >= 0.85) {return 'text-green-400';}
+  if (score >= 0.65) {return 'text-yellow-400';}
+  if (score >= 0.45) {return 'text-orange-400';}
   return 'text-red-400';
 }
 
 export function truncatePath(path: string, maxLength: number = 40): string {
-  if (path.length <= maxLength) return path;
+  if (path.length <= maxLength) {return path;}
   
   const parts = path.split('/');
-  if (parts.length <= 2) return path;
+  if (parts.length <= 2) {return path;}
   
   // Keep first and last parts
   return `${parts[0]}/.../${parts[parts.length - 1]}`;

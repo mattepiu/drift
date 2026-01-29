@@ -11,9 +11,10 @@
  * @requirements 19.6 - Bundle size patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -332,8 +333,8 @@ export function analyzeBundleSize(
   const dynamicImportCount = patterns.filter((p) => p.type === 'dynamic-import').length;
 
   let confidence = 0.7;
-  if (patterns.length > 0) confidence += 0.15;
-  if (violations.length === 0) confidence += 0.1;
+  if (patterns.length > 0) {confidence += 0.15;}
+  if (violations.length === 0) {confidence += 0.1;}
   confidence = Math.min(confidence, 0.95);
 
   return {

@@ -11,9 +11,10 @@
  * @requirements 19.4 - Caching patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -300,8 +301,8 @@ export function analyzeCachingPatterns(
   const usesSWR = patterns.some((p) => p.type === 'swr');
 
   let confidence = 0.7;
-  if (patterns.length > 0) confidence += 0.15;
-  if (usesReactQuery || usesSWR) confidence += 0.1;
+  if (patterns.length > 0) {confidence += 0.15;}
+  if (usesReactQuery || usesSWR) {confidence += 0.1;}
   confidence = Math.min(confidence, 0.95);
 
   return {

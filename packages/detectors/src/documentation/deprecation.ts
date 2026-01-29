@@ -3,9 +3,10 @@
  * @requirements 21.4 - Deprecation patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 export type DeprecationPatternType = 'jsdoc-deprecated' | 'decorator-deprecated' | 'console-warn' | 'deprecation-notice' | 'legacy-marker';
 export type DeprecationViolationType = 'missing-alternative' | 'missing-removal-date';
@@ -66,7 +67,7 @@ export function detectDeprecationNotice(content: string, filePath: string): Depr
 export function detectLegacyMarker(content: string, filePath: string): DeprecationPatternInfo[] { return detectPatterns(content, filePath, LEGACY_MARKER_PATTERNS, 'legacy-marker'); }
 
 export function analyzeDeprecation(content: string, filePath: string): DeprecationAnalysis {
-  if (shouldExcludeFile(filePath)) return { patterns: [], violations: [], deprecatedCount: 0, hasAlternatives: false, confidence: 1.0 };
+  if (shouldExcludeFile(filePath)) {return { patterns: [], violations: [], deprecatedCount: 0, hasAlternatives: false, confidence: 1.0 };}
   const isPython = filePath.endsWith('.py');
   const patterns: DeprecationPatternInfo[] = isPython
     ? [...detectPythonDeprecatedDecorator(content, filePath), ...detectPythonWarnings(content, filePath), ...detectPythonDocstringDeprecated(content, filePath), ...detectDeprecationNotice(content, filePath), ...detectLegacyMarker(content, filePath)]
@@ -74,7 +75,7 @@ export function analyzeDeprecation(content: string, filePath: string): Deprecati
   const violations: DeprecationViolationInfo[] = [];
   const deprecatedCount = patterns.length;
   const hasAlternatives = patterns.some((p) => p.alternative);
-  let confidence = 0.7; if (patterns.length > 0) confidence += 0.2; confidence = Math.min(confidence, 0.95);
+  let confidence = 0.7; if (patterns.length > 0) {confidence += 0.2;} confidence = Math.min(confidence, 0.95);
   return { patterns, violations, deprecatedCount, hasAlternatives, confidence };
 }
 
@@ -87,9 +88,9 @@ export class DeprecationDetector extends RegexDetector {
   readonly supportedLanguages: Language[] = ['typescript', 'javascript', 'python'];
 
   async detect(context: DetectionContext): Promise<DetectionResult> {
-    if (!this.supportsLanguage(context.language)) return this.createEmptyResult();
+    if (!this.supportsLanguage(context.language)) {return this.createEmptyResult();}
     const analysis = analyzeDeprecation(context.content, context.file);
-    if (analysis.patterns.length === 0 && analysis.violations.length === 0) return this.createEmptyResult();
+    if (analysis.patterns.length === 0 && analysis.violations.length === 0) {return this.createEmptyResult();}
     
     // Convert internal violations to standard Violation format
     const violations = this.convertViolationInfos(

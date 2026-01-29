@@ -5,12 +5,13 @@
  * by looking for semantic concepts like public/private access.
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 export class ModuleBoundariesSemanticDetector extends SemanticDetector {
   readonly id = 'structural/module-boundaries';

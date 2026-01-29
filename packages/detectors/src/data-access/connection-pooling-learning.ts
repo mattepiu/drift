@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -45,7 +46,7 @@ const POOL_PATTERNS: Array<{ pattern: RegExp; library: PoolLibrary }> = [
 
 function detectPoolLibrary(content: string): PoolLibrary | null {
   for (const { pattern, library } of POOL_PATTERNS) {
-    if (pattern.test(content)) return library;
+    if (pattern.test(content)) {return library;}
   }
   return null;
 }
@@ -82,8 +83,8 @@ export class ConnectionPoolingLearningDetector extends LearningDetector<Connecti
     const sizeDist = distributions.get('defaultPoolSize')!;
     const timeoutDist = distributions.get('usesConnectionTimeout')!;
     
-    if (library) libraryDist.add(library, context.file);
-    if (poolSize) sizeDist.add(poolSize, context.file);
+    if (library) {libraryDist.add(library, context.file);}
+    if (poolSize) {sizeDist.add(poolSize, context.file);}
     
     const hasTimeout = /connectionTimeout|acquireTimeout|idleTimeout/i.test(context.content);
     timeoutDist.add(hasTimeout, context.file);

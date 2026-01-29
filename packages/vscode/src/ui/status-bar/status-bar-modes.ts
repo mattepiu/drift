@@ -90,30 +90,45 @@ export function getStatusBarMode(
 ): StatusBarMode {
   // Connection states take priority
   if (connectionState !== 'connected') {
-    return StatusBarModes[connectionState] ?? StatusBarModes['disconnected']!;
+    const mode = StatusBarModes[connectionState];
+    return mode ?? StatusBarModes['disconnected'] ?? {
+      icon: '$(circle-slash)',
+      text: 'Drift: Disconnected',
+      tooltip: 'Drift is not connected.',
+    };
   }
 
   // Scanning state
   if (scanning) {
-    return StatusBarModes['scanning']!;
+    const scanningMode = StatusBarModes['scanning'];
+    return scanningMode ?? {
+      icon: '$(sync~spin)',
+      text: 'Drift: Scanning...',
+      tooltip: 'Scanning workspace for patterns...',
+    };
   }
 
   // Violation-based states
   if (violations > 0) {
-    const warningMode = StatusBarModes['warning']!;
+    const warningMode = StatusBarModes['warning'];
     const result: StatusBarMode = {
-      icon: warningMode.icon,
-      text: `Drift: ${violations}`,
-      tooltip: `${violations} violation${violations === 1 ? '' : 's'} found. Click to view.`,
+      icon: warningMode?.icon ?? '$(warning)',
+      text: `Drift: ${String(violations)}`,
+      tooltip: `${String(violations)} violation${violations === 1 ? '' : 's'} found. Click to view.`,
     };
-    if (warningMode.backgroundColor) {
+    if (warningMode?.backgroundColor) {
       result.backgroundColor = warningMode.backgroundColor;
     }
-    if (warningMode.command) {
+    if (warningMode?.command) {
       result.command = warningMode.command;
     }
     return result;
   }
 
-  return StatusBarModes['healthy']!;
+  const healthyMode = StatusBarModes['healthy'];
+  return healthyMode ?? {
+    icon: '$(pass)',
+    text: 'Drift',
+    tooltip: 'No violations found.',
+  };
 }

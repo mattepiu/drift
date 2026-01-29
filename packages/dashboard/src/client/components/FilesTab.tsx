@@ -5,8 +5,10 @@
  */
 
 import React, { useState } from 'react';
+
 import { useFileTree, useFileDetails } from '../hooks';
 import { useDashboardStore } from '../store';
+
 import type { FileTreeNode, Severity } from '../types';
 
 function FileTreeItem({

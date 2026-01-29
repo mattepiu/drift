@@ -29,19 +29,19 @@ export class ServiceContainer implements IServiceContainer {
   /**
    * Register a service instance directly
    */
-  register<T>(key: string, instance: T): void {
+  register(key: string, instance: unknown): void {
     this.instances.set(key, instance);
   }
 
   /**
    * Register a service factory for lazy instantiation
    */
-  registerFactory<T>(
+  registerFactory(
     key: string,
-    factory: ServiceFactory<T>,
+    factory: ServiceFactory<unknown>,
     options: ServiceOptions = { singleton: true }
   ): void {
-    this.factories.set(key, factory as ServiceFactory<unknown>);
+    this.factories.set(key, factory);
     this.options.set(key, options);
   }
 
@@ -83,11 +83,10 @@ export class ServiceContainer implements IServiceContainer {
    * Try to get a service, returning undefined if not found
    */
   tryGet<T>(key: string): T | undefined {
-    try {
+    if (this.has(key)) {
       return this.get<T>(key);
-    } catch {
-      return undefined;
     }
+    return undefined;
   }
 
   /**

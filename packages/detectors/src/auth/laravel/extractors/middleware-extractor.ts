@@ -377,7 +377,7 @@ export class MiddlewareExtractor {
 
     for (const part of parts) {
       const trimmed = part.trim().replace(/['"]/g, '');
-      if (!trimmed) continue;
+      if (!trimmed) {continue;}
 
       // Handle middleware:param1,param2 format
       const colonIndex = trimmed.indexOf(':');
@@ -413,8 +413,8 @@ export class MiddlewareExtractor {
     let i = startIndex;
 
     while (i < content.length && depth > 0) {
-      if (content[i] === '{') depth++;
-      else if (content[i] === '}') depth--;
+      if (content[i] === '{') {depth++;}
+      else if (content[i] === '}') {depth--;}
       i++;
     }
 
@@ -435,9 +435,9 @@ export class MiddlewareExtractor {
 
     let confidence = 0.5;
 
-    if (middlewares.length > 0) confidence += 0.2;
-    if (registrations.length > 0) confidence += 0.2;
-    if (usages.length > 0) confidence += 0.1;
+    if (middlewares.length > 0) {confidence += 0.2;}
+    if (registrations.length > 0) {confidence += 0.2;}
+    if (usages.length > 0) {confidence += 0.1;}
 
     return Math.min(confidence, 1.0);
   }

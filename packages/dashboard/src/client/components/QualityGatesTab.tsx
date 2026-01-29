@@ -6,8 +6,8 @@
  * @license Apache-2.0
  */
 
-import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import React, { useState } from 'react';
 
 // ============================================================================
 // Types
@@ -168,8 +168,8 @@ function StatusBadge({ status, size = 'md' }: { status: string; size?: 'sm' | 'm
 
 function ScoreGauge({ score, size = 'md' }: { score: number; size?: 'sm' | 'md' | 'lg' }) {
   const getColor = (s: number) => {
-    if (s >= 80) return 'text-green-400';
-    if (s >= 60) return 'text-yellow-400';
+    if (s >= 80) {return 'text-green-400';}
+    if (s >= 60) {return 'text-yellow-400';}
     return 'text-red-400';
   };
 
@@ -626,7 +626,7 @@ export function QualityGatesTab(): React.ReactElement {
       {runGates.isError && (
         <div className="card bg-red-500/10 border-red-500/30">
           <div className="text-red-400">
-            Failed to run gates: {(runGates.error as Error).message}
+            Failed to run gates: {(runGates.error).message}
           </div>
         </div>
       )}

@@ -277,7 +277,7 @@ export class MockExtractor {
 
     // Get the statement containing the mock (until semicolon or next statement)
     const statementEnd = content.indexOf(';', startIndex);
-    if (statementEnd === -1) return expectations;
+    if (statementEnd === -1) {return expectations;}
 
     const statement = content.substring(startIndex, statementEnd);
 
@@ -324,12 +324,12 @@ export class MockExtractor {
    * Extract times from expectation chain
    */
   private extractTimes(chain: string): number | null {
-    if (ONCE_PATTERN.test(chain)) return 1;
-    if (TWICE_PATTERN.test(chain)) return 2;
-    if (NEVER_PATTERN.test(chain)) return 0;
+    if (ONCE_PATTERN.test(chain)) {return 1;}
+    if (TWICE_PATTERN.test(chain)) {return 2;}
+    if (NEVER_PATTERN.test(chain)) {return 0;}
 
     const timesMatch = chain.match(TIMES_PATTERN);
-    if (timesMatch && timesMatch[1]) {
+    if (timesMatch?.[1]) {
       return parseInt(timesMatch[1], 10);
     }
 

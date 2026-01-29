@@ -5,9 +5,8 @@
  * Uses tree-sitter-c-sharp for semantic parsing when available, falls back to regex.
  */
 
-import type { ContractField, HttpMethod, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
 import type {
   AspNetEndpoint,
   AspNetExtractionResult,
@@ -15,6 +14,8 @@ import type {
   AspNetParameter,
   AspNetAuthAttribute,
 } from './types.js';
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { ContractField, HttpMethod, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Type Mapping
@@ -61,13 +62,13 @@ function mapCSharpType(csharpType: string): string {
   
   // Handle Task<T> - extract inner type
   const taskMatch = baseType.match(/Task<(.+)>/);
-  if (taskMatch && taskMatch[1]) {
+  if (taskMatch?.[1]) {
     return mapCSharpType(taskMatch[1]);
   }
   
   // Handle ActionResult<T>, IActionResult<T>
   const actionResultMatch = baseType.match(/(?:I)?ActionResult<(.+)>/);
-  if (actionResultMatch && actionResultMatch[1]) {
+  if (actionResultMatch?.[1]) {
     return mapCSharpType(actionResultMatch[1]);
   }
   
@@ -95,7 +96,7 @@ function normalizePath(path: string): string {
 }
 
 function resolveControllerRoute(baseRoute: string | null, controllerName: string): string {
-  if (!baseRoute) return '';
+  if (!baseRoute) {return '';}
   
   return baseRoute
     .replace(/\[controller\]/gi, controllerName.replace(/Controller$/, '').toLowerCase())
@@ -106,9 +107,9 @@ function combineRoutes(controllerRoute: string, actionRoute: string | null): str
   const base = controllerRoute || '';
   const action = actionRoute || '';
   
-  if (!base && !action) return '/';
-  if (!base) return action.startsWith('/') ? action : `/${action}`;
-  if (!action) return base.startsWith('/') ? base : `/${base}`;
+  if (!base && !action) {return '/';}
+  if (!base) {return action.startsWith('/') ? action : `/${action}`;}
+  if (!action) {return base.startsWith('/') ? base : `/${base}`;}
   
   const normalizedBase = base.endsWith('/') ? base.slice(0, -1) : base;
   const normalizedAction = action.startsWith('/') ? action : `/${action}`;
@@ -223,7 +224,7 @@ export class AspNetEndpointDetector extends BaseDetector {
       
       // Extract HTTP method from attribute
       const httpMethodMatch = attributeBlock.match(/\[Http(Get|Post|Put|Patch|Delete|Head|Options)/i);
-      if (!httpMethodMatch) continue;
+      if (!httpMethodMatch) {continue;}
       
       const method = httpMethodMatch[1]?.toUpperCase() as HttpMethod || 'GET';
       const line = content.substring(0, match.index).split('\n').length;
@@ -310,14 +311,14 @@ export class AspNetEndpointDetector extends BaseDetector {
    */
   private extractParameters(paramsStr: string, _content: string): AspNetParameter[] {
     const params: AspNetParameter[] = [];
-    if (!paramsStr.trim()) return params;
+    if (!paramsStr.trim()) {return params;}
     
     // Split by comma, but handle generic types
     const paramParts = this.splitParameters(paramsStr);
     
     for (const part of paramParts) {
       const trimmed = part.trim();
-      if (!trimmed) continue;
+      if (!trimmed) {continue;}
       
       // Check for source attributes
       let source: AspNetParameter['source'] = 'unknown';
@@ -368,8 +369,8 @@ export class AspNetEndpointDetector extends BaseDetector {
     let depth = 0;
     
     for (const char of paramsStr) {
-      if (char === '<') depth++;
-      else if (char === '>') depth--;
+      if (char === '<') {depth++;}
+      else if (char === '>') {depth--;}
       else if (char === ',' && depth === 0) {
         result.push(current);
         current = '';
@@ -406,19 +407,19 @@ export class AspNetEndpointDetector extends BaseDetector {
         
         // Extract Roles
         const rolesMatch = args.match(/Roles\s*=\s*["']([^"']+)["']/);
-        if (rolesMatch && rolesMatch[1]) {
+        if (rolesMatch?.[1]) {
           attr.roles = rolesMatch[1].split(',').map(r => r.trim());
         }
         
         // Extract Policy
         const policyMatch = args.match(/Policy\s*=\s*["']([^"']+)["']/);
-        if (policyMatch && policyMatch[1]) {
+        if (policyMatch?.[1]) {
           attr.policy = policyMatch[1];
         }
         
         // Extract AuthenticationSchemes
         const schemesMatch = args.match(/AuthenticationSchemes\s*=\s*["']([^"']+)["']/);
-        if (schemesMatch && schemesMatch[1]) {
+        if (schemesMatch?.[1]) {
           attr.authenticationSchemes = schemesMatch[1].split(',').map(s => s.trim());
         }
       }
@@ -444,7 +445,7 @@ export class AspNetEndpointDetector extends BaseDetector {
    */
   private extractRequestFields(parameters: AspNetParameter[], content: string): ContractField[] {
     const bodyParam = parameters.find(p => p.source === 'body');
-    if (!bodyParam) return [];
+    if (!bodyParam) {return [];}
     
     return this.extractDtoFields(bodyParam.type, content);
   }
@@ -470,7 +471,7 @@ export class AspNetEndpointDetector extends BaseDetector {
     // Handle generic types - extract inner type
     const genericMatch = typeName.match(/(?:List|IEnumerable|IList|ICollection)<(\w+)>/);
     const actualType = genericMatch ? genericMatch[1] : typeName;
-    if (!actualType) return fields;
+    if (!actualType) {return fields;}
     
     // Find class/record definition
     const classPattern = new RegExp(
@@ -486,12 +487,12 @@ export class AspNetEndpointDetector extends BaseDetector {
         'g'
       );
       const recordMatch = recordPattern.exec(content);
-      if (recordMatch && recordMatch[1]) {
+      if (recordMatch?.[1]) {
         // Parse primary constructor parameters as fields
         const params = this.splitParameters(recordMatch[1]);
         for (const param of params) {
           const paramMatch = param.trim().match(/(\w+(?:<[^>]+>)?)\??\s+(\w+)/);
-          if (paramMatch && paramMatch[1] && paramMatch[2]) {
+          if (paramMatch?.[1] && paramMatch[2]) {
             fields.push({
               name: paramMatch[2],
               type: mapCSharpType(paramMatch[1]),
@@ -506,7 +507,7 @@ export class AspNetEndpointDetector extends BaseDetector {
     }
     
     // Extract properties from class body
-    const classStart = classMatch.index! + classMatch[0].length;
+    const classStart = classMatch.index + classMatch[0].length;
     const classBody = this.extractClassBody(content, classStart);
     
     // Match properties: public Type Name { get; set; }
@@ -536,8 +537,8 @@ export class AspNetEndpointDetector extends BaseDetector {
     let i = startIndex;
     
     while (i < content.length && depth > 0) {
-      if (content[i] === '{') depth++;
-      else if (content[i] === '}') depth--;
+      if (content[i] === '{') {depth++;}
+      else if (content[i] === '}') {depth--;}
       i++;
     }
     

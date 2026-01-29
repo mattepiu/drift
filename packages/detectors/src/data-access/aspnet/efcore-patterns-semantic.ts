@@ -18,12 +18,13 @@
  * - Transaction patterns
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Context Validation Patterns
@@ -164,9 +165,9 @@ export class EfCorePatternsSemanticDetector extends SemanticDetector {
     // Require positive EF Core context for ambiguous keywords
     if (efCoreContextScore === 0 && nonEfCoreContextScore === 0) {
       // No clear context - check for common C# EF Core patterns
-      if (/:\s*DbContext/i.test(lineContent)) return true; // Inherits DbContext
-      if (/DbSet<\w+>/i.test(lineContent)) return true; // DbSet property
-      if (/\.Include\s*\(\s*\w+\s*=>/i.test(lineContent)) return true; // Include with lambda
+      if (/:\s*DbContext/i.test(lineContent)) {return true;} // Inherits DbContext
+      if (/DbSet<\w+>/i.test(lineContent)) {return true;} // DbSet property
+      if (/\.Include\s*\(\s*\w+\s*=>/i.test(lineContent)) {return true;} // Include with lambda
     }
 
     return efCoreContextScore > nonEfCoreContextScore;

@@ -5,9 +5,11 @@
  */
 
 import React, { Suspense, lazy } from 'react';
-import { useDashboardStore } from './store';
-import { useWebSocket } from './hooks';
+
 import { OverviewTab, PatternsTab, ViolationsTab, FilesTab, SettingsTab, ContractsTab, QualityGatesTab } from './components';
+import { useWebSocket } from './hooks';
+import { useDashboardStore } from './store';
+
 import type { TabId, ConnectionStatus } from './types';
 
 // Lazy load Galaxy tab since it includes heavy Three.js dependencies

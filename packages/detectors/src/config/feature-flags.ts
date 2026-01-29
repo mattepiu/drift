@@ -10,9 +10,10 @@
  * @requirements 17.4 - Feature flag patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -261,14 +262,14 @@ export function detectFlagService(
       while ((match = regex.exec(line)) !== null) {
         let service = 'unknown';
         const matchLower = match[0].toLowerCase();
-        if (/launchdarkly|ldclient|ld_sdk/i.test(matchLower)) service = 'launchdarkly';
-        else if (/unleash/i.test(matchLower)) service = 'unleash';
-        else if (/configcat/i.test(matchLower)) service = 'configcat';
-        else if (/split/i.test(matchLower)) service = 'split';
-        else if (/flagsmith/i.test(matchLower)) service = 'flagsmith';
-        else if (/growthbook/i.test(matchLower)) service = 'growthbook';
-        else if (/posthog/i.test(matchLower)) service = 'posthog';
-        else if (/statsig/i.test(matchLower)) service = 'statsig';
+        if (/launchdarkly|ldclient|ld_sdk/i.test(matchLower)) {service = 'launchdarkly';}
+        else if (/unleash/i.test(matchLower)) {service = 'unleash';}
+        else if (/configcat/i.test(matchLower)) {service = 'configcat';}
+        else if (/split/i.test(matchLower)) {service = 'split';}
+        else if (/flagsmith/i.test(matchLower)) {service = 'flagsmith';}
+        else if (/growthbook/i.test(matchLower)) {service = 'growthbook';}
+        else if (/posthog/i.test(matchLower)) {service = 'posthog';}
+        else if (/statsig/i.test(matchLower)) {service = 'statsig';}
 
         results.push({
           type: 'flag-service',
@@ -380,7 +381,7 @@ export function detectHardcodedFlagViolations(
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     // Skip comments
-    if (/^\s*\/\/|^\s*\/\*/.test(line)) continue;
+    if (/^\s*\/\/|^\s*\/\*/.test(line)) {continue;}
 
     for (const pattern of HARDCODED_FLAG_PATTERNS) {
       const regex = new RegExp(pattern.source, pattern.flags);
@@ -434,9 +435,9 @@ export function analyzeFeatureFlags(
   const flagNames = [...new Set(patterns.filter((p) => p.flagName).map((p) => p.flagName!))];
 
   let confidence = 0.7;
-  if (hasFeatureFlags) confidence += 0.15;
-  if (usesService) confidence += 0.1;
-  if (violations.length === 0) confidence += 0.05;
+  if (hasFeatureFlags) {confidence += 0.15;}
+  if (usesService) {confidence += 0.1;}
+  if (violations.length === 0) {confidence += 0.05;}
   confidence = Math.min(confidence, 0.95);
 
   return {

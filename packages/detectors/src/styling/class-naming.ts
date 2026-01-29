@@ -16,8 +16,9 @@
  * @requirements 9.5 - THE Styling_Detector SHALL detect CSS class naming conventions (BEM, utility-first)
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -439,7 +440,7 @@ export function detectUtilityFirstPatterns(content: string, file: string): Class
 
     while ((match = regex.exec(content)) !== null) {
       const key = `${match.index}-${match[0]}`;
-      if (seenMatches.has(key)) continue;
+      if (seenMatches.has(key)) {continue;}
       seenMatches.add(key);
 
       // Skip if inside a comment
@@ -722,7 +723,7 @@ export function suggestBEMFix(className: string): string {
  * Determine the dominant naming convention
  */
 export function getDominantConvention(patterns: ClassNamingPatternInfo[]): ClassNamingPatternType | null {
-  if (patterns.length === 0) return null;
+  if (patterns.length === 0) {return null;}
 
   const typeCounts: Record<ClassNamingPatternType, number> = {
     'bem': 0,

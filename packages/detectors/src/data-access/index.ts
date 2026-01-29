@@ -194,13 +194,16 @@ export {
 } from './connection-pooling.js';
 
 // Import factory functions for createAllDataAccessDetectors
+import { createORMModelSemanticDetector } from './boundaries/orm-model-detector.js';
+import { createQueryAccessSemanticDetector } from './boundaries/query-access-detector.js';
+import { createSensitiveFieldSemanticDetector } from './boundaries/sensitive-field-detector.js';
+import { createConnectionPoolingDetector } from './connection-pooling.js';
+import { createDTOPatternsDetector } from './dto-patterns.js';
+import { createNPlusOneDetector } from './n-plus-one.js';
 import { createQueryPatternsDetector } from './query-patterns.js';
 import { createRepositoryPatternDetector } from './repository-pattern.js';
 import { createTransactionPatternsDetector } from './transaction-patterns.js';
 import { createValidationPatternsDetector } from './validation-patterns.js';
-import { createDTOPatternsDetector } from './dto-patterns.js';
-import { createNPlusOneDetector } from './n-plus-one.js';
-import { createConnectionPoolingDetector } from './connection-pooling.js';
 
 // Convenience factory for all data access detectors
 export function createAllDataAccessDetectors() {
@@ -366,9 +369,6 @@ export {
 } from './boundaries/sensitive-field-detector.js';
 
 // Import factory functions for createAllDataBoundarySemanticDetectors
-import { createORMModelSemanticDetector } from './boundaries/orm-model-detector.js';
-import { createQueryAccessSemanticDetector } from './boundaries/query-access-detector.js';
-import { createSensitiveFieldSemanticDetector } from './boundaries/sensitive-field-detector.js';
 
 /**
  * Create all data boundary semantic detectors

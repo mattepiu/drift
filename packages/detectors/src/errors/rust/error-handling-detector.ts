@@ -425,7 +425,7 @@ function extractEnumVariants(source: string, startIndex: number): string[] {
   
   // Find the opening brace
   const braceIndex = source.indexOf('{', startIndex);
-  if (braceIndex === -1) return variants;
+  if (braceIndex === -1) {return variants;}
   
   // Find matching closing brace
   let depth = 1;
@@ -433,9 +433,9 @@ function extractEnumVariants(source: string, startIndex: number): string[] {
   let enumBody = '';
   
   while (i < source.length && depth > 0) {
-    if (source[i] === '{') depth++;
-    else if (source[i] === '}') depth--;
-    if (depth > 0) enumBody += source[i];
+    if (source[i] === '{') {depth++;}
+    else if (source[i] === '}') {depth--;}
+    if (depth > 0) {enumBody += source[i];}
     i++;
   }
   
@@ -468,11 +468,11 @@ export function hasRustErrorHandling(source: string): boolean {
 export function detectErrorFramework(source: string): string[] {
   const frameworks: string[] = [];
   
-  if (source.includes('thiserror')) frameworks.push('thiserror');
-  if (source.includes('anyhow')) frameworks.push('anyhow');
-  if (source.includes('eyre')) frameworks.push('eyre');
-  if (source.includes('failure')) frameworks.push('failure');
-  if (source.includes('snafu')) frameworks.push('snafu');
+  if (source.includes('thiserror')) {frameworks.push('thiserror');}
+  if (source.includes('anyhow')) {frameworks.push('anyhow');}
+  if (source.includes('eyre')) {frameworks.push('eyre');}
+  if (source.includes('failure')) {frameworks.push('failure');}
+  if (source.includes('snafu')) {frameworks.push('snafu');}
   
   return frameworks;
 }

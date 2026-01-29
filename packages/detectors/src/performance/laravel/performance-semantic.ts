@@ -9,12 +9,13 @@
  * - N+1 prevention
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Context Validation Patterns
@@ -137,7 +138,7 @@ export class LaravelPerformanceSemanticDetector extends SemanticDetector {
       const hasContext = PERFORMANCE_CONTEXT_KEYWORDS.some(k => contextLower.includes(k));
       if (!hasContext) {
         const inPerformanceFile = PERFORMANCE_FILE_PATTERNS.some(p => p.test(file));
-        if (!inPerformanceFile) return false;
+        if (!inPerformanceFile) {return false;}
       }
     }
 

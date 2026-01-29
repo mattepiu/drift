@@ -6,13 +6,14 @@
  * @module data-access/laravel/extractors/query-builder-extractor
  */
 
+import { RAW_QUERY_METHODS } from '../types.js';
+
 import type {
   QueryBuilderUsage,
   QueryMethod,
   RawQueryUsage,
   QueryBuilderExtractionResult,
 } from '../types.js';
-import { RAW_QUERY_METHODS } from '../types.js';
 
 // ============================================================================
 // Regex Patterns
@@ -226,13 +227,13 @@ export class QueryBuilderExtractor {
       }
 
       if (!inString) {
-        if (char === '(') depth++;
-        else if (char === ')') depth--;
-        else if (char === ';' && depth === 0) break;
+        if (char === '(') {depth++;}
+        else if (char === ')') {depth--;}
+        else if (char === ';' && depth === 0) {break;}
         else if (char === '\n' && depth === 0 && i > startIndex + 10) {
           // Check if next line continues the chain
           const nextChars = content.substring(i + 1, i + 20).trim();
-          if (!nextChars.startsWith('->')) break;
+          if (!nextChars.startsWith('->')) {break;}
         }
       }
 
@@ -307,16 +308,16 @@ export class QueryBuilderExtractor {
     while (i < content.length && depth > 0) {
       const char = content[i];
 
-      if (char === '(') depth++;
+      if (char === '(') {depth++;}
       else if (char === ')') {
         depth--;
         if (depth === 0) {
           const arg = content.substring(argStart, i).trim();
-          if (arg) args.push(arg);
+          if (arg) {args.push(arg);}
         }
       } else if (char === ',' && depth === 1) {
         const arg = content.substring(argStart, i).trim();
-        if (arg) args.push(arg);
+        if (arg) {args.push(arg);}
         argStart = i + 1;
       }
 
@@ -339,8 +340,8 @@ export class QueryBuilderExtractor {
 
     let confidence = 0.5;
 
-    if (queries.length > 0) confidence += 0.3;
-    if (rawQueries.length > 0) confidence += 0.2;
+    if (queries.length > 0) {confidence += 0.3;}
+    if (rawQueries.length > 0) {confidence += 0.2;}
 
     return Math.min(confidence, 1.0);
   }

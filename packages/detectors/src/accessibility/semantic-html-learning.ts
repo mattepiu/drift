@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -110,9 +111,9 @@ export class SemanticHtmlLearningDetector extends LearningDetector<SemanticHtmlC
     const hasNative = patterns.some(p => p.isNative);
     const hasAria = patterns.some(p => !p.isNative);
     
-    if (hasNative && hasAria) landmarkDist.add('mixed', context.file);
-    else if (hasNative) landmarkDist.add('native', context.file);
-    else if (hasAria) landmarkDist.add('aria-role', context.file);
+    if (hasNative && hasAria) {landmarkDist.add('mixed', context.file);}
+    else if (hasNative) {landmarkDist.add('native', context.file);}
+    else if (hasAria) {landmarkDist.add('aria-role', context.file);}
     
     headerDist.add(patterns.some(p => p.element === 'header'), context.file);
     navDist.add(patterns.some(p => p.element === 'nav'), context.file);

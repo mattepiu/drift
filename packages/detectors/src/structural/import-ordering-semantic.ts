@@ -5,12 +5,13 @@
  * by looking for semantic concepts like import statements.
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 export class ImportOrderingSemanticDetector extends SemanticDetector {
   readonly id = 'structural/import-ordering';

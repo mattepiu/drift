@@ -7,13 +7,13 @@
  * @module contracts/django/viewset-extractor
  */
 
-import type { HttpMethod } from 'driftdetect-core';
 import type {
   DjangoViewSetInfo,
   DjangoAPIViewInfo,
   DjangoFunctionViewInfo,
   DjangoActionInfo,
 } from './types.js';
+import type { HttpMethod } from 'driftdetect-core';
 
 // ============================================
 // Regex Patterns
@@ -94,10 +94,10 @@ export class DjangoViewSetExtractor {
       const name = match[1];
       const bases = match[2];
 
-      if (!name || !bases) continue;
+      if (!name || !bases) {continue;}
 
       // Check if this is a ViewSet class
-      if (!this.isViewSetClass(bases)) continue;
+      if (!this.isViewSetClass(bases)) {continue;}
 
       const line = this.getLineNumber(content, match.index);
       const classBody = this.extractClassBody(content, match.index + match[0].length);
@@ -126,10 +126,10 @@ export class DjangoViewSetExtractor {
       const name = match[1];
       const bases = match[2];
 
-      if (!name || !bases) continue;
+      if (!name || !bases) {continue;}
 
       // Check if this is an APIView class (but not ViewSet)
-      if (!this.isAPIViewClass(bases) || this.isViewSetClass(bases)) continue;
+      if (!this.isAPIViewClass(bases) || this.isViewSetClass(bases)) {continue;}
 
       const line = this.getLineNumber(content, match.index);
       const classBody = this.extractClassBody(content, match.index + match[0].length);
@@ -162,7 +162,7 @@ export class DjangoViewSetExtractor {
       const afterDecorator = content.substring(match.index + match[0].length);
       const funcMatch = afterDecorator.match(/(?:@\w+[^\n]*\n)*\s*def\s+(\w+)\s*\(/);
 
-      if (!funcMatch?.[1]) continue;
+      if (!funcMatch?.[1]) {continue;}
 
       const funcName = funcMatch[1];
       const methods = this.parseMethodsList(methodsStr ?? '');
@@ -255,17 +255,17 @@ export class DjangoViewSetExtractor {
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      if (line === undefined) continue;
+      if (line === undefined) {continue;}
 
       // Stop at next class definition
-      if (i > 0 && /^class\s+\w+/.test(line)) break;
+      if (i > 0 && /^class\s+\w+/.test(line)) {break;}
 
       // Stop at unindented non-empty line
-      if (i > 0 && line.trim() && !line.startsWith(' ') && !line.startsWith('\t')) break;
+      if (i > 0 && line.trim() && !line.startsWith(' ') && !line.startsWith('\t')) {break;}
 
       bodyLines.push(line);
 
-      if (bodyLines.length > 300) break;
+      if (bodyLines.length > 300) {break;}
     }
 
     return bodyLines.join('\n');
@@ -376,7 +376,7 @@ export class DjangoViewSetExtractor {
    * Extract model class from queryset expression.
    */
   private extractModelFromQueryset(queryset: string | null): string | null {
-    if (!queryset) return null;
+    if (!queryset) {return null;}
 
     // Pattern: Model.objects.all() or Model.objects.filter(...)
     const match = queryset.match(/(\w+)\.objects/);
@@ -400,7 +400,7 @@ export class DjangoViewSetExtractor {
       const afterDecorator = classBody.substring(match.index + match[0].length);
       const methodMatch = afterDecorator.match(/\s*def\s+(\w+)\s*\(/);
 
-      if (!methodMatch?.[1]) continue;
+      if (!methodMatch?.[1]) {continue;}
 
       const action = this.parseActionDecorator(methodMatch[1], argsStr, line);
       actions.push(action);
@@ -497,7 +497,7 @@ export class DjangoViewSetExtractor {
   private extractDecoratorList(content: string, pattern: RegExp): string[] {
     pattern.lastIndex = 0;
     const match = pattern.exec(content);
-    if (!match?.[1]) return [];
+    if (!match?.[1]) {return [];}
     return this.parseClassList(match[1]);
   }
 

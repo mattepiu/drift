@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -36,9 +37,9 @@ export interface CircularDepsConventions {
 // ============================================================================
 
 function detectResolutionMethod(content: string): CircularResolution | null {
-  if (/import\s*\(\s*['"]|require\s*\(\s*['"].*\)\.then/.test(content)) return 'lazy-import';
-  if (/@Inject|@Injectable|container\.resolve/.test(content)) return 'dependency-injection';
-  if (/interface\s+I\w+|implements\s+I\w+/.test(content)) return 'interface-segregation';
+  if (/import\s*\(\s*['"]|require\s*\(\s*['"].*\)\.then/.test(content)) {return 'lazy-import';}
+  if (/@Inject|@Injectable|container\.resolve/.test(content)) {return 'dependency-injection';}
+  if (/interface\s+I\w+|implements\s+I\w+/.test(content)) {return 'interface-segregation';}
   return null;
 }
 
@@ -66,7 +67,7 @@ export class CircularDepsLearningDetector extends LearningDetector<CircularDepsC
     const methodDist = distributions.get('resolutionMethod')!;
     const barrelDist = distributions.get('usesBarrelFiles')!;
     
-    if (method) methodDist.add(method, context.file);
+    if (method) {methodDist.add(method, context.file);}
     
     const isBarrel = /index\.[tj]sx?$/.test(context.file) && /export\s*\*\s*from/.test(context.content);
     barrelDist.add(isBarrel, context.file);

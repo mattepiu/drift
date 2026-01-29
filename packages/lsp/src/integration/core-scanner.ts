@@ -8,7 +8,6 @@
  * @requirements 27.7 - THE LSP_Server SHALL respond to diagnostics within 200ms of file change
  */
 
-import { URI } from 'vscode-uri';
 import {
   PatternStore,
   Evaluator,
@@ -22,15 +21,17 @@ import {
   type PatternStoreConfig,
   type EvaluatorConfig,
 } from 'driftdetect-core';
+import { URI } from 'vscode-uri';
 
-import type { ViolationInfo, PatternInfo } from '../types/lsp-types.js';
+import { DEFAULT_CORE_INTEGRATION_CONFIG } from './types.js';
+
 import type {
   CoreIntegrationConfig,
   ScanResult,
   ScanOptions,
   ScanError,
 } from './types.js';
-import { DEFAULT_CORE_INTEGRATION_CONFIG } from './types.js';
+import type { ViolationInfo, PatternInfo } from '../types/lsp-types.js';
 
 /**
  * Logger interface for the core scanner
@@ -138,7 +139,7 @@ export class CoreScanner {
   async scan(uri: string, content: string, options: ScanOptions = {}): Promise<ScanResult> {
     const startTime = Date.now();
     const errors: ScanError[] = [];
-    let violations: ViolationInfo[] = [];
+    const violations: ViolationInfo[] = [];
     let patterns: PatternInfo[] = [];
 
     // Check cache unless force rescan

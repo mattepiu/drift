@@ -33,8 +33,6 @@ export class DecorationController implements vscode.Disposable {
    * Update decorations for the active editor
    */
   updateDecorations(editor: vscode.TextEditor): void {
-    if (!editor) {return;}
-
     const uri = editor.document.uri;
     const diagnostics = vscode.languages.getDiagnostics(uri);
 
@@ -187,7 +185,7 @@ export class DecorationController implements vscode.Disposable {
 
     for (const d of diagnostics) {
       const severity = this.diagnosticSeverityToString(d.severity);
-      const group = groups.get(severity) || [];
+      const group = groups.get(severity) ?? [];
       group.push(d);
       groups.set(severity, group);
     }
@@ -216,8 +214,9 @@ export class DecorationController implements vscode.Disposable {
     const icon = this.getSeverityIcon(diagnostic.severity);
     md.appendMarkdown(`${icon} **${diagnostic.message}**\n\n`);
 
-    if (diagnostic.code) {
-      md.appendMarkdown(`Pattern: \`${diagnostic.code}\`\n\n`);
+    if (diagnostic.code !== null) {
+      const codeStr = typeof diagnostic.code === 'object' ? String(diagnostic.code.value) : String(diagnostic.code);
+      md.appendMarkdown(`Pattern: \`${codeStr}\`\n\n`);
     }
 
     md.appendMarkdown(`---\n\n`);

@@ -8,9 +8,9 @@
  * @requirements 27.7 - THE LSP_Server SHALL respond to diagnostics within 200ms of file change
  */
 
+import type { DiagnosticsHandler } from './diagnostics.js';
 import type { Connection, TextDocuments, TextDocumentChangeEvent } from 'vscode-languageserver';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
-import type { DiagnosticsHandler } from './diagnostics.js';
 
 // ============================================================================
 // Types

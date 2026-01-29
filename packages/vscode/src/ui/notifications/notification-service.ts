@@ -97,7 +97,7 @@ export class NotificationService {
     const pickOptions: vscode.QuickPickOptions = {
       ...options,
     };
-    if (options.title) {
+    if (options.title !== null && options.title !== '') {
       pickOptions.title = `Drift: ${options.title}`;
     }
     return vscode.window.showQuickPick(items, pickOptions);
@@ -110,7 +110,7 @@ export class NotificationService {
     const inputOptions: vscode.InputBoxOptions = {
       ...options,
     };
-    if (options.title) {
+    if (options.title !== null && options.title !== '') {
       inputOptions.title = `Drift: ${options.title}`;
     }
     return vscode.window.showInputBox(inputOptions);
@@ -134,7 +134,7 @@ export class NotificationService {
     if (options.modal !== undefined) {
       messageOptions.modal = options.modal;
     }
-    if (options.detail !== undefined) {
+    if (options.detail !== null && options.detail !== '' && options.detail !== undefined) {
       messageOptions.detail = options.detail;
     }
 
@@ -144,13 +144,13 @@ export class NotificationService {
       ...actionTitles
     );
 
-    if (selected) {
+    if (selected !== null && selected !== '') {
       const action = actions.find(a => a.title === selected);
       if (action) {
         if (action.callback) {
           await action.callback();
         } else if (action.command) {
-          await vscode.commands.executeCommand(action.command, ...(action.args || []));
+          await vscode.commands.executeCommand(action.command, ...(action.args ?? []));
         }
       }
     }

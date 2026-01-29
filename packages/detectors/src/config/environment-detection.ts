@@ -10,9 +10,10 @@
  * @requirements 17.6 - Environment detection patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -354,8 +355,8 @@ export function detectEnvSpecificImport(
       let match;
       while ((match = regex.exec(line)) !== null) {
         let environment = 'unknown';
-        if (/\.dev\.|\.development\./i.test(match[0])) environment = 'development';
-        else if (/\.prod\.|\.production\./i.test(match[0])) environment = 'production';
+        if (/\.dev\.|\.development\./i.test(match[0])) {environment = 'development';}
+        else if (/\.prod\.|\.production\./i.test(match[0])) {environment = 'production';}
 
         results.push({
           type: 'env-specific-import',
@@ -411,7 +412,7 @@ export function detectHardcodedEnvViolations(
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     // Skip comments
-    if (/^\s*\/\/|^\s*\/\*/.test(line)) continue;
+    if (/^\s*\/\/|^\s*\/\*/.test(line)) {continue;}
 
     for (const pattern of HARDCODED_ENV_PATTERNS) {
       const regex = new RegExp(pattern.source, pattern.flags);
@@ -464,9 +465,9 @@ export function analyzeEnvironmentDetection(
   const environments = [...new Set(patterns.filter((p) => p.environment).map((p) => p.environment!))];
 
   let confidence = 0.7;
-  if (hasEnvChecks) confidence += 0.15;
-  if (environments.length > 1) confidence += 0.1;
-  if (violations.length === 0) confidence += 0.05;
+  if (hasEnvChecks) {confidence += 0.15;}
+  if (environments.length > 1) {confidence += 0.1;}
+  if (violations.length === 0) {confidence += 0.05;}
   confidence = Math.min(confidence, 0.95);
 
   return {

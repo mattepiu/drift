@@ -19,11 +19,11 @@ export { ExampleCodeDetector, createExampleCodeDetector, analyzeExampleCode, sho
 export type { ExampleCodePatternType, ExampleCodeViolationType, ExampleCodePatternInfo, ExampleCodeViolationInfo, ExampleCodeAnalysis } from './example-code.js';
 
 // Factory Function
+import { DeprecationDetector } from './deprecation.js';
+import { ExampleCodeDetector } from './example-code.js';
 import { JsdocPatternsDetector } from './jsdoc-patterns.js';
 import { ReadmeStructureDetector } from './readme-structure.js';
 import { TodoPatternsDetector } from './todo-patterns.js';
-import { DeprecationDetector } from './deprecation.js';
-import { ExampleCodeDetector } from './example-code.js';
 
 export type DocumentationDetector = JsdocPatternsDetector | ReadmeStructureDetector | TodoPatternsDetector | DeprecationDetector | ExampleCodeDetector;
 

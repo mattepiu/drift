@@ -5,12 +5,13 @@
  * by looking for semantic concepts, not syntax.
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 export class QueryPatternsSemanticDetector extends SemanticDetector {
   readonly id = 'data-access/query-patterns';

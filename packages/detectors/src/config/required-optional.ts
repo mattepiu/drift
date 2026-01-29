@@ -10,9 +10,10 @@
  * @requirements 17.2 - Required vs optional configuration patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -344,14 +345,14 @@ export function detectUnsafeAccessViolations(
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     // Skip if line has validation patterns
-    if (/\?\?|\|\||if\s*\(|!==?\s*undefined|typeof/.test(line)) continue;
+    if (/\?\?|\|\||if\s*\(|!==?\s*undefined|typeof/.test(line)) {continue;}
 
     for (const pattern of UNSAFE_ACCESS_PATTERNS) {
       const regex = new RegExp(pattern.source, pattern.flags);
       let match;
       while ((match = regex.exec(line)) !== null) {
         // Skip if it's part of a larger safe pattern
-        if (/\?\?|\|\|/.test(line.slice(match.index))) continue;
+        if (/\?\?|\|\|/.test(line.slice(match.index))) {continue;}
 
         results.push({
           type: 'unsafe-access',
@@ -398,9 +399,9 @@ export function analyzeRequiredOptional(
   const hasDefaults = patterns.some((p) => p.hasDefault);
 
   let confidence = 0.7;
-  if (hasRequiredChecks) confidence += 0.15;
-  if (hasDefaults) confidence += 0.1;
-  if (violations.length === 0) confidence += 0.05;
+  if (hasRequiredChecks) {confidence += 0.15;}
+  if (hasDefaults) {confidence += 0.1;}
+  if (violations.length === 0) {confidence += 0.05;}
   confidence = Math.min(confidence, 0.95);
 
   return {

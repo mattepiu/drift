@@ -5,10 +5,12 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { usePattern, useApprovePattern, useIgnorePattern, useBulkApprovePatterns } from '../../hooks';
-import type { Pattern } from '../../types';
+
 import { DISPLAY_LIMITS } from './constants';
 import { getReviewablePatterns, formatPercentage, getConfidenceColor, truncatePath } from './utils';
+import { usePattern, useApprovePattern, useIgnorePattern, useBulkApprovePatterns } from '../../hooks';
+
+import type { Pattern } from '../../types';
 
 // ============================================================================
 // Shared Components
@@ -112,7 +114,7 @@ export function QuickReviewPanel({ patterns, onClose }: QuickReviewProps) {
 
   const handleApproveAll = async () => {
     const idsToApprove = includedPatterns.map((p) => p.id);
-    if (idsToApprove.length === 0) return;
+    if (idsToApprove.length === 0) {return;}
     await bulkApproveMutation.mutateAsync(idsToApprove);
     onClose();
   };
@@ -386,7 +388,7 @@ export function NeedsReviewPanel({ patterns, onClose }: NeedsReviewProps) {
   const currentPattern = reviewablePatterns[currentIndex];
 
   const handleAction = async (action: 'approve' | 'ignore') => {
-    if (!currentPattern) return;
+    if (!currentPattern) {return;}
 
     const mutation = action === 'approve' ? approveMutation : ignoreMutation;
     await mutation.mutateAsync(currentPattern.id);

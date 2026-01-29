@@ -6,11 +6,14 @@
  * @module testing/laravel/testing-detector
  */
 
-import type { Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
-import { BaseDetector } from '../../base/base-detector.js';
-import type { LaravelTestingAnalysis } from './types.js';
 import { TestCaseExtractor } from './extractors/test-case-extractor.js';
+import { BaseDetector } from '../../base/base-detector.js';
+
+import type { LaravelTestingAnalysis } from './types.js';
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { Language } from 'driftdetect-core';
+
+
 
 export class LaravelTestingDetector extends BaseDetector {
   readonly id = 'testing/laravel-testing';

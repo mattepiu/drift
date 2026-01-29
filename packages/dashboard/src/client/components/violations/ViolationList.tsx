@@ -5,8 +5,7 @@
  */
 
 import { useState } from 'react';
-import type { Violation, Severity } from '../../types';
-import type { ViewMode, FileGroup, PatternGroup, CategoryGroup, SeverityGroup } from './types';
+
 import { SEVERITY_CONFIG, CATEGORY_CONFIG } from './constants';
 import { 
   formatFilePath, 
@@ -18,6 +17,9 @@ import {
   groupBySeverity,
   getCategoryConfig,
 } from './utils';
+
+import type { ViewMode, FileGroup, PatternGroup, CategoryGroup, SeverityGroup } from './types';
+import type { Violation, Severity } from '../../types';
 
 // ============================================================================
 // Violation Card (List View)
@@ -147,7 +149,7 @@ function FileGroupCard({
         {/* Severity breakdown */}
         <div className="flex items-center gap-3 mt-2 ml-10 text-xs">
           {Object.entries(group.metrics.bySeverity).map(([severity, count]) => {
-            if (count === 0) return null;
+            if (count === 0) {return null;}
             const config = SEVERITY_CONFIG[severity as keyof typeof SEVERITY_CONFIG];
             return (
               <span key={severity} className={config.color}>
@@ -220,7 +222,7 @@ function PatternGroupCard({
         {/* Severity breakdown */}
         <div className="flex items-center gap-3 mt-2 ml-10 text-xs">
           {Object.entries(group.metrics.bySeverity).map(([severity, count]) => {
-            if (count === 0) return null;
+            if (count === 0) {return null;}
             const config = SEVERITY_CONFIG[severity as keyof typeof SEVERITY_CONFIG];
             return (
               <span key={severity} className={config.color}>
@@ -299,7 +301,7 @@ function CategoryGroupCard({
         {/* Severity breakdown */}
         <div className="flex items-center gap-4 mt-3 ml-10 text-sm">
           {Object.entries(group.metrics.bySeverity).map(([severity, count]) => {
-            if (count === 0) return null;
+            if (count === 0) {return null;}
             const severityConfig = SEVERITY_CONFIG[severity as keyof typeof SEVERITY_CONFIG];
             return (
               <span key={severity} className={`flex items-center gap-1 ${severityConfig.color}`}>

@@ -5,9 +5,11 @@
  */
 
 import React from 'react';
+
 import { useStats, useViolations } from '../hooks';
 import { useDashboardStore } from '../store';
 import { TrendsPanel } from './trends';
+
 import type { Severity, PatternStatus } from '../types';
 
 function StatCard({
@@ -30,8 +32,8 @@ function StatCard({
 
 function HealthScore({ score }: { score: number }) {
   const getColor = () => {
-    if (score >= 80) return 'text-status-approved';
-    if (score >= 60) return 'text-severity-warning';
+    if (score >= 80) {return 'text-status-approved';}
+    if (score >= 60) {return 'text-severity-warning';}
     return 'text-severity-error';
   };
 

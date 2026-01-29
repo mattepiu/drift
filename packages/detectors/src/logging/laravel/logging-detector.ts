@@ -6,12 +6,15 @@
  * @module logging/laravel/logging-detector
  */
 
-import type { Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
-import { BaseDetector } from '../../base/base-detector.js';
-import type { LaravelLoggingAnalysis, LogContextPattern } from './types.js';
-import { LogFacadeExtractor } from './extractors/log-facade-extractor.js';
 import { ChannelExtractor } from './extractors/channel-extractor.js';
+import { LogFacadeExtractor } from './extractors/log-facade-extractor.js';
+import { BaseDetector } from '../../base/base-detector.js';
+
+import type { LaravelLoggingAnalysis, LogContextPattern } from './types.js';
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { Language } from 'driftdetect-core';
+
+
 
 export class LaravelLoggingDetector extends BaseDetector {
   readonly id = 'logging/laravel-logging';

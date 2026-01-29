@@ -10,8 +10,9 @@
  * @requirements Rust Language Support
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -369,7 +370,7 @@ export class AxumDetector extends RegexDetector {
   }
 
   private calculateConfidence(patterns: PatternMatch[]): number {
-    if (patterns.length === 0) return 1.0;
+    if (patterns.length === 0) {return 1.0;}
     const avgConfidence = patterns.reduce((sum, p) => sum + p.confidence, 0) / patterns.length;
     return avgConfidence;
   }

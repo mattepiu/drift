@@ -135,7 +135,7 @@ export function filterByLine(
 export function sortByPosition(diagnostics: DriftDiagnostic[]): DriftDiagnostic[] {
   return [...diagnostics].sort((a, b) => {
     const lineDiff = a.range.start.line - b.range.start.line;
-    if (lineDiff !== 0) return lineDiff;
+    if (lineDiff !== 0) {return lineDiff;}
     return a.range.start.character - b.range.start.character;
   });
 }
@@ -270,12 +270,12 @@ export function getDiagnosticStats(diagnostics: DriftDiagnostic[]): {
  */
 function rangesOverlap(a: Range, b: Range): boolean {
   // a ends before b starts
-  if (a.end.line < b.start.line) return false;
-  if (a.end.line === b.start.line && a.end.character < b.start.character) return false;
+  if (a.end.line < b.start.line) {return false;}
+  if (a.end.line === b.start.line && a.end.character < b.start.character) {return false;}
 
   // b ends before a starts
-  if (b.end.line < a.start.line) return false;
-  if (b.end.line === a.start.line && b.end.character < a.start.character) return false;
+  if (b.end.line < a.start.line) {return false;}
+  if (b.end.line === a.start.line && b.end.character < a.start.character) {return false;}
 
   return true;
 }
@@ -284,11 +284,11 @@ function rangesOverlap(a: Range, b: Range): boolean {
  * Merge overlapping diagnostics
  */
 export function mergeOverlapping(diagnostics: DriftDiagnostic[]): DriftDiagnostic[] {
-  if (diagnostics.length <= 1) return diagnostics;
+  if (diagnostics.length <= 1) {return diagnostics;}
 
   const sorted = sortByPosition(diagnostics);
   const first = sorted[0];
-  if (!first) return diagnostics;
+  if (!first) {return diagnostics;}
 
   const merged: DriftDiagnostic[] = [first];
 

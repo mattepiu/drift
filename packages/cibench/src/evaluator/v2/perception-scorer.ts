@@ -147,14 +147,14 @@ function matchPattern(
 ): string | null {
   // Exact ID match
   const exact = expected.find(p => p.id === toolPattern.id);
-  if (exact) return exact.id;
+  if (exact) {return exact.id;}
   
   // Category + name match
   const nameMatch = expected.find(
     p => p.category === toolPattern.category &&
          p.name.toLowerCase() === toolPattern.name.toLowerCase()
   );
-  if (nameMatch) return nameMatch.id;
+  if (nameMatch) {return nameMatch.id;}
   
   return null;
 }

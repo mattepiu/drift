@@ -29,10 +29,6 @@ export interface FileTreeItem extends BaseTreeItem {
  * Files tree provider
  */
 export class FilesTreeProvider extends BaseTreeProvider<FileTreeItem> {
-  constructor(client: LanguageClient | null) {
-    super(client);
-  }
-
   async getChildren(element?: FileTreeItem): Promise<FileTreeItem[]> {
     if (!this.client) {
       return [];

@@ -5,7 +5,7 @@
  */
 
 import * as THREE from 'three';
-import type { SensitivityLevel, SecurityTier, AuthLevel, DataOperation } from '../types/index.js';
+
 import {
   SENSITIVITY_COLORS,
   SENSITIVITY_EMISSIVE,
@@ -14,6 +14,8 @@ import {
   OPERATION_COLORS,
   CLUSTER_COLORS,
 } from '../constants/index.js';
+
+import type { SensitivityLevel, SecurityTier, AuthLevel, DataOperation } from '../types/index.js';
 
 // ============================================================================
 // Color Conversion
@@ -31,7 +33,7 @@ export function hexToThreeColor(hex: string): THREE.Color {
  */
 export function hexToRgb(hex: string): { r: number; g: number; b: number } {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  if (!result || !result[1] || !result[2] || !result[3]) {
+  if (!result?.[1] || !result[2] || !result[3]) {
     return { r: 0, g: 0, b: 0 };
   }
   return {
@@ -108,10 +110,10 @@ export function getSensitivityEmissive(level: SensitivityLevel): number {
  * Get sensitivity level from numeric score (0-100)
  */
 export function scoreToSensitivity(score: number): SensitivityLevel {
-  if (score >= 90) return 'critical';
-  if (score >= 70) return 'high';
-  if (score >= 50) return 'medium';
-  if (score >= 20) return 'low';
+  if (score >= 90) {return 'critical';}
+  if (score >= 70) {return 'high';}
+  if (score >= 50) {return 'medium';}
+  if (score >= 20) {return 'low';}
   return 'public';
 }
 
@@ -256,9 +258,9 @@ export function getPulseOpacity(
  * Get color for health score (0-100)
  */
 export function getHealthScoreColor(score: number): string {
-  if (score >= 80) return '#22c55e'; // Green
-  if (score >= 60) return '#eab308'; // Yellow
-  if (score >= 40) return '#f97316'; // Orange
+  if (score >= 80) {return '#22c55e';} // Green
+  if (score >= 60) {return '#eab308';} // Yellow
+  if (score >= 40) {return '#f97316';} // Orange
   return '#ef4444'; // Red
 }
 

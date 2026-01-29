@@ -7,13 +7,14 @@
  * @module auth/laravel/auth-detector
  */
 
-import type { Language, PatternMatch } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
-import { BaseDetector } from '../../base/base-detector.js';
-import type { LaravelAuthAnalysis, GuardInfo } from './types.js';
 import { GateExtractor } from './extractors/gate-extractor.js';
-import { PolicyExtractor } from './extractors/policy-extractor.js';
 import { MiddlewareExtractor } from './extractors/middleware-extractor.js';
+import { PolicyExtractor } from './extractors/policy-extractor.js';
+import { BaseDetector } from '../../base/base-detector.js';
+
+import type { LaravelAuthAnalysis, GuardInfo } from './types.js';
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { Language, PatternMatch } from 'driftdetect-core';
 
 // ============================================================================
 // Guard Extraction Patterns

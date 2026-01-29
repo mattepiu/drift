@@ -11,7 +11,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -19,6 +18,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -89,7 +90,7 @@ function extractFieldNames(objectContent: string): string[] {
   const fieldPattern = /([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g;
   let match;
   while ((match = fieldPattern.exec(objectContent)) !== null) {
-    if (match[1]) fields.push(match[1]);
+    if (match[1]) {fields.push(match[1]);}
   }
   return fields;
 }
@@ -141,7 +142,7 @@ function extractEnvelopePatterns(content: string): EnvelopePatternInfo[] {
       const objectContent = match[1] || '';
       const fields = extractFieldNames(objectContent);
 
-      if (fields.length === 0) continue;
+      if (fields.length === 0) {continue;}
 
       const format = detectEnvelopeFormat(fields);
       const lowerFields = fields.map(f => f.toLowerCase());
@@ -184,7 +185,7 @@ export class ResponseEnvelopeLearningDetector extends LearningDetector<EnvelopeC
     distributions: Map<keyof EnvelopeConventions, ValueDistribution>
   ): void {
     const patterns = extractEnvelopePatterns(context.content);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const formatDist = distributions.get('envelopeFormat')!;
     const envelopeDist = distributions.get('usesEnvelope')!;

@@ -11,6 +11,9 @@
  * @module php/method-extractor
  */
 
+import { AttributeExtractor } from './attribute-extractor.js';
+import { DocblockExtractor } from './docblock-extractor.js';
+
 import type {
   PhpMethodInfo,
   PhpMethodModifiers,
@@ -20,8 +23,6 @@ import type {
   DocblockInfo,
   ExtractionResult,
 } from './types.js';
-import { DocblockExtractor } from './docblock-extractor.js';
-import { AttributeExtractor } from './attribute-extractor.js';
 
 // ============================================================================
 // Regex Patterns
@@ -147,7 +148,7 @@ export class MethodExtractor {
     const paramsStr = match[6] || '';
     const returnTypeStr = match[7] || null;
 
-    if (!methodName) return null;
+    if (!methodName) {return null;}
 
     const line = baseLineOffset + this.getLineNumber(content, match.index) - 1;
     
@@ -217,7 +218,7 @@ export class MethodExtractor {
       const name = match[6];
       const defaultValue = match[7]?.trim() || null;
 
-      if (!name) continue;
+      if (!name) {continue;}
 
       parameters.push({
         name,
@@ -284,7 +285,7 @@ export class MethodExtractor {
     }
 
     // Find the opening brace
-    let braceIndex = content.indexOf('{', startIndex - 1);
+    const braceIndex = content.indexOf('{', startIndex - 1);
     if (braceIndex === -1) {
       return { body: null, endLine: startLine };
     }
@@ -302,23 +303,23 @@ export class MethodExtractor {
         const quote = char;
         i++;
         while (i < content.length && content[i] !== quote) {
-          if (content[i] === '\\') i++; // Skip escaped chars
+          if (content[i] === '\\') {i++;} // Skip escaped chars
           i++;
         }
       }
       
       // Skip comments
       if (char === '/' && content[i + 1] === '/') {
-        while (i < content.length && content[i] !== '\n') i++;
+        while (i < content.length && content[i] !== '\n') {i++;}
       }
       if (char === '/' && content[i + 1] === '*') {
         i += 2;
-        while (i < content.length && !(content[i] === '*' && content[i + 1] === '/')) i++;
+        while (i < content.length && !(content[i] === '*' && content[i + 1] === '/')) {i++;}
         i++;
       }
 
-      if (char === '{') depth++;
-      else if (char === '}') depth--;
+      if (char === '{') {depth++;}
+      else if (char === '}') {depth--;}
       
       i++;
     }

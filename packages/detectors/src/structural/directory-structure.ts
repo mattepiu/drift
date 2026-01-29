@@ -7,8 +7,9 @@
  * @requirements 7.2 - THE Structural_Detector SHALL detect directory structure patterns (feature-based vs layer-based)
  */
 
-import type { PatternMatch, Violation, QuickFix, Language, Range } from 'driftdetect-core';
 import { StructuralDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language, Range } from 'driftdetect-core';
 
 // ============================================================================
 // Types

@@ -5,20 +5,22 @@
  * Renders all nodes, connections, and effects.
  */
 
-import { Suspense, useMemo, useCallback } from 'react';
 import { Canvas } from '@react-three/fiber';
+import { Suspense, useMemo, useCallback } from 'react';
 import * as THREE from 'three';
-import { useGalaxyStore, useFilteredTables, useFilteredPaths, useFilteredEntryPoints } from '../../store/index.js';
-import { TablePlanet } from '../nodes/TablePlanet.js';
-import { FieldMoon } from '../nodes/FieldMoon.js';
-import { EntryPointStation } from '../nodes/EntryPointStation.js';
-import { DataPathLane } from '../connections/DataPathLane.js';
-import { TableRelationship } from '../connections/TableRelationship.js';
-import { StarField } from '../effects/StarField.js';
-import { GalaxyBloom } from '../effects/GalaxyBloom.js';
+
 import { GalaxyCamera } from './GalaxyCamera.js';
 import { GalaxyLighting } from './GalaxyLighting.js';
 import { CAMERA_CONFIG } from '../../constants/index.js';
+import { useGalaxyStore, useFilteredTables, useFilteredPaths, useFilteredEntryPoints } from '../../store/index.js';
+import { DataPathLane } from '../connections/DataPathLane.js';
+import { TableRelationship } from '../connections/TableRelationship.js';
+import { GalaxyBloom } from '../effects/GalaxyBloom.js';
+import { StarField } from '../effects/StarField.js';
+import { EntryPointStation } from '../nodes/EntryPointStation.js';
+import { FieldMoon } from '../nodes/FieldMoon.js';
+import { TablePlanet } from '../nodes/TablePlanet.js';
+
 import type { Vector3D } from '../../types/index.js';
 
 // ============================================================================
@@ -126,7 +128,7 @@ function GalaxyScene() {
         const sourcePos = positionMap.get(rel.sourceTableId);
         const targetPos = positionMap.get(rel.targetTableId);
         
-        if (!sourcePos || !targetPos) return null;
+        if (!sourcePos || !targetPos) {return null;}
         
         const isHighlighted = 
           selection.selectedTable === rel.sourceTableId ||
@@ -148,7 +150,7 @@ function GalaxyScene() {
         const sourcePos = positionMap.get(path.sourceId);
         const targetPos = positionMap.get(path.targetTableId);
         
-        if (!sourcePos || !targetPos) return null;
+        if (!sourcePos || !targetPos) {return null;}
         
         return (
           <DataPathLane
@@ -158,9 +160,9 @@ function GalaxyScene() {
             targetPosition={targetPos}
             isSelected={selection.selectedPath === path.id}
             isHovered={selection.hoveredNode === path.id}
-            onClick={() => handlePathClick(path.id)}
-            onPointerOver={() => handleHover(path.id, 'path')}
-            onPointerOut={() => handleHover(null, null)}
+            onClick={() => { handlePathClick(path.id); }}
+            onPointerOver={() => { handleHover(path.id, 'path'); }}
+            onPointerOut={() => { handleHover(null, null); }}
           />
         );
       })}
@@ -172,9 +174,9 @@ function GalaxyScene() {
             table={table}
             isSelected={selection.selectedTable === table.id}
             isHovered={selection.hoveredNode === table.id}
-            onClick={() => handleTableClick(table.id)}
-            onPointerOver={() => handleHover(table.id, 'table')}
-            onPointerOut={() => handleHover(null, null)}
+            onClick={() => { handleTableClick(table.id); }}
+            onPointerOver={() => { handleHover(table.id, 'table'); }}
+            onPointerOut={() => { handleHover(null, null); }}
           />
           
           {/* Field moons */}
@@ -188,9 +190,9 @@ function GalaxyScene() {
               totalFields={table.fields.length}
               isSelected={selection.selectedField === field.id}
               isHovered={selection.hoveredNode === field.id}
-              onClick={() => selectTable(table.id)}
-              onPointerOver={() => handleHover(field.id, 'field')}
-              onPointerOut={() => handleHover(null, null)}
+              onClick={() => { selectTable(table.id); }}
+              onPointerOver={() => { handleHover(field.id, 'field'); }}
+              onPointerOut={() => { handleHover(null, null); }}
             />
           ))}
         </group>
@@ -203,9 +205,9 @@ function GalaxyScene() {
           entryPoint={ep}
           isSelected={selection.selectedEntryPoint === ep.id}
           isHovered={selection.hoveredNode === ep.id}
-          onClick={() => handleEntryPointClick(ep.id)}
-          onPointerOver={() => handleHover(ep.id, 'entryPoint')}
-          onPointerOut={() => handleHover(null, null)}
+          onClick={() => { handleEntryPointClick(ep.id); }}
+          onPointerOver={() => { handleHover(ep.id, 'entryPoint'); }}
+          onPointerOut={() => { handleHover(null, null); }}
         />
       ))}
     </>

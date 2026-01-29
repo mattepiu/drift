@@ -9,9 +9,10 @@
  * - Custom policy evaluation
  */
 
-import type { PatternMatch, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { PatternMatch, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -111,7 +112,7 @@ export class PolicyHandlersDetector extends BaseDetector {
       // Detect IAuthorizationHandler implementation
       if (line.includes('IAuthorizationHandler')) {
         const classMatch = line.match(/class\s+(\w+)\s*:/);
-        if (classMatch && classMatch[1]) {
+        if (classMatch?.[1]) {
           handlers.push({
             type: 'handler',
             name: classMatch[1],
@@ -141,7 +142,7 @@ export class PolicyHandlersDetector extends BaseDetector {
       // Detect IAuthorizationRequirement implementation
       if (line.includes('IAuthorizationRequirement')) {
         const classMatch = line.match(/class\s+(\w+)\s*:/);
-        if (classMatch && classMatch[1]) {
+        if (classMatch?.[1]) {
           requirements.add(classMatch[1]);
           handlers.push({
             type: 'requirement',
@@ -167,7 +168,7 @@ export class PolicyHandlersDetector extends BaseDetector {
 
       // Detect policy.AddPolicy
       const policyMatch = line.match(/\.AddPolicy\s*\(\s*["'](\w+)["']/);
-      if (policyMatch && policyMatch[1]) {
+      if (policyMatch?.[1]) {
         policyNames.add(policyMatch[1]);
         handlers.push({
           type: 'policy-builder',

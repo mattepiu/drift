@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -36,10 +37,10 @@ export interface TypeFileLocationConventions {
 // ============================================================================
 
 function detectTypeFileLocation(filePath: string): TypeFileLocation | null {
-  if (/\.d\.ts$/.test(filePath)) return 'declaration-files';
-  if (/\/types\/|\/interfaces\//.test(filePath)) return 'types-folder';
-  if (/\.types\.[tj]s$/.test(filePath)) return 'colocated';
-  if (/^types\/|^src\/types\//.test(filePath)) return 'root-types';
+  if (/\.d\.ts$/.test(filePath)) {return 'declaration-files';}
+  if (/\/types\/|\/interfaces\//.test(filePath)) {return 'types-folder';}
+  if (/\.types\.[tj]s$/.test(filePath)) {return 'colocated';}
+  if (/^types\/|^src\/types\//.test(filePath)) {return 'root-types';}
   return null;
 }
 
@@ -67,7 +68,7 @@ export class TypeFileLocationLearningDetector extends LearningDetector<TypeFileL
     const locationDist = distributions.get('typeFileLocation')!;
     const declDist = distributions.get('usesDeclarationFiles')!;
     
-    if (location) locationDist.add(location, context.file);
+    if (location) {locationDist.add(location, context.file);}
     declDist.add(/\.d\.ts$/.test(context.file), context.file);
   }
 

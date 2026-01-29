@@ -18,7 +18,7 @@ export function createConstantsHandlers(
     /**
      * Show constants view by category
      */
-    'drift.showConstantsByCategory': async () => {
+    'drift.showConstantsByCategory': async (): Promise<void> => {
       constantsProvider.setViewMode('category');
       await vscode.commands.executeCommand('drift.constantsView.focus');
     },
@@ -26,7 +26,7 @@ export function createConstantsHandlers(
     /**
      * Show constants view by language
      */
-    'drift.showConstantsByLanguage': async () => {
+    'drift.showConstantsByLanguage': async (): Promise<void> => {
       constantsProvider.setViewMode('language');
       await vscode.commands.executeCommand('drift.constantsView.focus');
     },
@@ -34,7 +34,7 @@ export function createConstantsHandlers(
     /**
      * Show constant issues
      */
-    'drift.showConstantIssues': async () => {
+    'drift.showConstantIssues': async (): Promise<void> => {
       constantsProvider.setViewMode('issues');
       await vscode.commands.executeCommand('drift.constantsView.focus');
     },
@@ -42,7 +42,7 @@ export function createConstantsHandlers(
     /**
      * Go to constant definition
      */
-    'drift.goToConstant': async (file: unknown, line: unknown) => {
+    'drift.goToConstant': async (file: unknown, line: unknown): Promise<void> => {
       if (typeof file !== 'string' || typeof line !== 'number') {
         return;
       }
@@ -58,30 +58,31 @@ export function createConstantsHandlers(
           new vscode.Range(position, position),
           vscode.TextEditorRevealType.InCenter
         );
-      } catch (error) {
-        vscode.window.showErrorMessage(`Failed to open file: ${file}`);
+      } catch {
+        void vscode.window.showErrorMessage(`Failed to open file: ${file}`);
       }
     },
 
     /**
      * Find constant usages
      */
-    'drift.findConstantUsages': async (constantName: unknown) => {
-      if (typeof constantName !== 'string') {
+    'drift.findConstantUsages': async (constantName: unknown): Promise<void> => {
+      let searchName = constantName;
+      if (typeof searchName !== 'string' || searchName === '') {
         // If no constant name provided, prompt for one
         const input = await vscode.window.showInputBox({
           prompt: 'Enter constant name to search for',
           placeHolder: 'CONSTANT_NAME',
         });
-        if (!input) {
+        if (input === null || input === '') {
           return;
         }
-        constantName = input;
+        searchName = input;
       }
 
       // Use VSCode's built-in search
       await vscode.commands.executeCommand('workbench.action.findInFiles', {
-        query: constantName,
+        query: searchName,
         isRegex: false,
         isCaseSensitive: true,
         matchWholeWord: true,
@@ -91,7 +92,7 @@ export function createConstantsHandlers(
     /**
      * Show constants overview
      */
-    'drift.showConstants': async () => {
+    'drift.showConstants': async (): Promise<void> => {
       constantsProvider.setViewMode('category');
       await vscode.commands.executeCommand('drift.constantsView.focus');
     },

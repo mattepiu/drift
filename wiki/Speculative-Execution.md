@@ -395,7 +395,7 @@ Don't always pick #1. Sometimes a higher-friction approach is better long-term.
 ### "Missing security analysis"
 
 Security analysis requires:
-- Boundary data: `drift boundaries overview`
+- Boundary data: `drift boundaries tables`
 - Call graph: `drift callgraph build`
 
 ---

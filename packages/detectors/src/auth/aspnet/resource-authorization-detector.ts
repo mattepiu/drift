@@ -8,9 +8,10 @@
  * - Document/entity-level authorization
  */
 
-import type { PatternMatch, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { PatternMatch, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -124,8 +125,8 @@ export class ResourceAuthorizationDetector extends BaseDetector {
         const resourceVar = authorizeMatch[1];
         const policy = authorizeMatch[2];
         
-        if (resourceVar) resourceTypes.add(resourceVar);
-        if (policy) policies.add(policy);
+        if (resourceVar) {resourceTypes.add(resourceVar);}
+        if (policy) {policies.add(policy);}
         
         patterns.push({
           type: 'resource-check',

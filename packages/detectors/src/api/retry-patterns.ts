@@ -22,8 +22,9 @@
  * @requirements 10.8 - THE API_Detector SHALL detect timeout handling
  */
 
-import type { Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -194,11 +195,11 @@ function isInsideComment(content: string, index: number): boolean {
   if (currentLine.includes('//')) {
     const commentStart = currentLine.indexOf('//');
     const positionInLine = index - lastNewline - 1;
-    if (positionInLine > commentStart) return true;
+    if (positionInLine > commentStart) {return true;}
   }
   const lastBlockCommentStart = beforeIndex.lastIndexOf('/*');
   const lastBlockCommentEnd = beforeIndex.lastIndexOf('*/');
-  if (lastBlockCommentStart > lastBlockCommentEnd) return true;
+  if (lastBlockCommentStart > lastBlockCommentEnd) {return true;}
   return false;
 }
 
@@ -216,7 +217,7 @@ export function extractMaxRetries(content: string): number | undefined {
   for (const pattern of MAX_RETRY_PATTERNS) {
     const regex = new RegExp(pattern.source, pattern.flags);
     const match = regex.exec(content);
-    if (match && match[1]) {
+    if (match?.[1]) {
       return parseInt(match[1], 10);
     }
   }
@@ -226,7 +227,7 @@ export function extractMaxRetries(content: string): number | undefined {
 /** Extract timeout value from content */
 export function extractTimeout(content: string): number | undefined {
   const timeoutMatch = content.match(/timeout\s*:\s*(\d+)/i);
-  if (timeoutMatch && timeoutMatch[1]) {
+  if (timeoutMatch?.[1]) {
     return parseInt(timeoutMatch[1], 10);
   }
   return undefined;
@@ -245,7 +246,7 @@ export function detectExponentialBackoff(content: string, file: string): RetryPa
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       
       results.push({
@@ -272,7 +273,7 @@ export function detectLinearRetry(content: string, file: string): RetryPatternIn
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       
       results.push({
@@ -299,7 +300,7 @@ export function detectCircuitBreaker(content: string, file: string): RetryPatter
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       
       results.push({
@@ -324,7 +325,7 @@ export function detectRetryLibraries(content: string, file: string): RetryPatter
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       
       results.push({
@@ -350,7 +351,7 @@ export function detectTimeoutConfig(content: string, file: string): RetryPattern
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       
       results.push({
@@ -398,7 +399,7 @@ export function detectMissingRetryViolations(
       const regex = new RegExp(pattern.source, pattern.flags);
       let match;
       while ((match = regex.exec(content)) !== null) {
-        if (isInsideComment(content, match.index)) continue;
+        if (isInsideComment(content, match.index)) {continue;}
         const { line, column } = getPositionFromIndex(content, match.index);
         
         // Only flag if this looks like an API file
@@ -482,7 +483,7 @@ export function detectMissingTimeoutViolations(
       const regex = new RegExp(pattern.source, pattern.flags);
       let match;
       while ((match = regex.exec(content)) !== null) {
-        if (isInsideComment(content, match.index)) continue;
+        if (isInsideComment(content, match.index)) {continue;}
         const { line, column } = getPositionFromIndex(content, match.index);
         
         // Only flag if this looks like an API file

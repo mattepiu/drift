@@ -5,6 +5,7 @@
  */
 
 import React, { useState } from 'react';
+
 import { useTrends } from '../../hooks';
 
 type Period = '7d' | '30d' | '90d';

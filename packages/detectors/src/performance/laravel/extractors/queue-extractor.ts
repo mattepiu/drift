@@ -310,14 +310,14 @@ export class QueueExtractor {
    */
   private extractClassBody(content: string, startIndex: number): string {
     const openBrace = content.indexOf('{', startIndex);
-    if (openBrace === -1) return '';
+    if (openBrace === -1) {return '';}
 
     let depth = 1;
     let i = openBrace + 1;
 
     while (i < content.length && depth > 0) {
-      if (content[i] === '{') depth++;
-      else if (content[i] === '}') depth--;
+      if (content[i] === '{') {depth++;}
+      else if (content[i] === '}') {depth--;}
       i++;
     }
 

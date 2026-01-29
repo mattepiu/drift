@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -123,7 +124,7 @@ export class AltTextLearningDetector extends LearningDetector<AltTextConventions
     distributions: Map<keyof AltTextConventions, ValueDistribution>
   ): void {
     const patterns = extractAltTextPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const styleDist = distributions.get('style')!;
     const emptyAltDist = distributions.get('usesEmptyAltForDecorative')!;

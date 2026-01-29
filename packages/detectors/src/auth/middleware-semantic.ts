@@ -2,12 +2,13 @@
  * Auth Middleware Detector - SEMANTIC VERSION
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 export class AuthMiddlewareSemanticDetector extends SemanticDetector {
   readonly id = 'auth/middleware';

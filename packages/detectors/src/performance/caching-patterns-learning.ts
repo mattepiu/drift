@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -46,9 +47,9 @@ interface CachePatternInfo {
 // ============================================================================
 
 function detectKeyStyle(key: string): CacheKeyStyle | null {
-  if (key.includes(':')) return 'colon-separated';
-  if (key.includes('/')) return 'slash-separated';
-  if (key.includes('.')) return 'dot-separated';
+  if (key.includes(':')) {return 'colon-separated';}
+  if (key.includes('/')) {return 'slash-separated';}
+  if (key.includes('.')) {return 'dot-separated';}
   return null;
 }
 
@@ -135,7 +136,7 @@ export class CachingPatternsLearningDetector extends LearningDetector<CachingPat
     distributions: Map<keyof CachingPatternsConventions, ValueDistribution>
   ): void {
     const patterns = extractCachePatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const libraryDist = distributions.get('library')!;
     const keyStyleDist = distributions.get('keyStyle')!;

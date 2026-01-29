@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -114,8 +115,8 @@ export class FocusManagementLearningDetector extends LearningDetector<FocusManag
     const restoreDist = distributions.get('restoresFocus')!;
     
     for (const pattern of patterns) {
-      if (pattern.type === 'trap') trapDist.add(pattern.method, context.file);
-      else ringDist.add(pattern.method, context.file);
+      if (pattern.type === 'trap') {trapDist.add(pattern.method, context.file);}
+      else {ringDist.add(pattern.method, context.file);}
     }
     
     const usesFocusVisible = /focus-visible|:focus-visible/i.test(context.content);

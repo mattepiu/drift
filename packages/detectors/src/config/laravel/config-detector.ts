@@ -4,11 +4,14 @@
  * @module config/laravel/config-detector
  */
 
-import type { Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
-import { BaseDetector } from '../../base/base-detector.js';
-import type { LaravelConfigAnalysis } from './types.js';
 import { EnvExtractor } from './extractors/env-extractor.js';
+import { BaseDetector } from '../../base/base-detector.js';
+
+import type { LaravelConfigAnalysis } from './types.js';
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { Language } from 'driftdetect-core';
+
+
 
 export class LaravelConfigDetector extends BaseDetector {
   readonly id = 'config/laravel-config';

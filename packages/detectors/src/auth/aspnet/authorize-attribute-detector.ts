@@ -9,9 +9,10 @@
  * - Authorization at controller vs action level
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -143,7 +144,7 @@ export class AuthorizeAttributeDetector extends BaseDetector {
         
         // Add roles and policies to sets
         attrInfo.roles.forEach(r => roles.add(r));
-        if (attrInfo.policy) policies.add(attrInfo.policy);
+        if (attrInfo.policy) {policies.add(attrInfo.policy);}
 
         pendingAttributes.push({
           type: attrInfo.roles.length > 0 ? 'authorize-roles' : 
@@ -168,7 +169,7 @@ export class AuthorizeAttributeDetector extends BaseDetector {
 
       // Detect controller class
       const controllerMatch = line.match(/public\s+class\s+(\w+Controller)\s*:/);
-      if (controllerMatch && controllerMatch[1]) {
+      if (controllerMatch?.[1]) {
         currentController = controllerMatch[1];
         
         // Apply pending attributes to controller
@@ -193,7 +194,7 @@ export class AuthorizeAttributeDetector extends BaseDetector {
 
       // Detect action methods
       const actionMatch = line.match(/public\s+(?:async\s+)?(?:Task<)?(?:ActionResult|IActionResult|[\w<>]+)\s+(\w+)\s*\(/);
-      if (actionMatch && actionMatch[1] && currentController) {
+      if (actionMatch?.[1] && currentController) {
         const actionName = actionMatch[1];
         
         // Apply pending attributes to action
@@ -243,23 +244,23 @@ export class AuthorizeAttributeDetector extends BaseDetector {
     let policy: string | null = null;
     const schemes: string[] = [];
 
-    if (!args) return { roles, policy, schemes };
+    if (!args) {return { roles, policy, schemes };}
 
     // Extract Roles
     const rolesMatch = args.match(/Roles\s*=\s*["']([^"']+)["']/);
-    if (rolesMatch && rolesMatch[1]) {
+    if (rolesMatch?.[1]) {
       roles.push(...rolesMatch[1].split(',').map(r => r.trim()));
     }
 
     // Extract Policy
     const policyMatch = args.match(/Policy\s*=\s*["']([^"']+)["']/);
-    if (policyMatch && policyMatch[1]) {
+    if (policyMatch?.[1]) {
       policy = policyMatch[1];
     }
 
     // Extract AuthenticationSchemes
     const schemesMatch = args.match(/AuthenticationSchemes\s*=\s*["']([^"']+)["']/);
-    if (schemesMatch && schemesMatch[1]) {
+    if (schemesMatch?.[1]) {
       schemes.push(...schemesMatch[1].split(',').map(s => s.trim()));
     }
 
@@ -270,7 +271,7 @@ export class AuthorizeAttributeDetector extends BaseDetector {
    * Check if authorization patterns are consistent
    */
   private checkConsistency(attributes: AuthorizeAttributeInfo[]): boolean {
-    if (attributes.length < 2) return true;
+    if (attributes.length < 2) {return true;}
 
     // Check if mixing roles and policies inconsistently
     const hasRoles = attributes.some(a => a.roles.length > 0);

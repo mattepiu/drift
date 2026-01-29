@@ -4,6 +4,7 @@
  */
 
 import { URI } from 'vscode-uri';
+
 import type { WorkspaceFolder } from '../types/lsp-types.js';
 
 // ============================================================================
@@ -151,7 +152,7 @@ export function matchesAnyGlob(uri: string, patterns: string[]): boolean {
  * Convert glob pattern to regex
  */
 function globToRegex(glob: string): RegExp {
-  let regex = glob
+  const regex = glob
     // Escape special regex characters except * and ?
     .replace(/[.+^${}()|[\]\\]/g, '\\$&')
     // Convert ** to match any path

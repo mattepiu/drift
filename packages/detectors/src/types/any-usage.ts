@@ -14,9 +14,10 @@
  * @requirements 18.7 - any type usage patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -621,7 +622,7 @@ export function detectExplicitAnyViolations(
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     // Skip comments
-    if (/^\s*\/\//.test(line) || /^\s*\*/.test(line)) continue;
+    if (/^\s*\/\//.test(line) || /^\s*\*/.test(line)) {continue;}
     
     for (const pattern of EXPLICIT_ANY_ANNOTATION_PATTERNS) {
       const regex = new RegExp(pattern.source, pattern.flags);
@@ -782,9 +783,9 @@ export function analyzeAnyUsage(
   const usesNever = patterns.some((p) => p.type === 'never-usage');
 
   let confidence = 0.7;
-  if (patterns.length > 0) confidence += 0.15;
-  if (usesUnknown) confidence += 0.05;
-  if (violations.length === 0) confidence += 0.05;
+  if (patterns.length > 0) {confidence += 0.15;}
+  if (usesUnknown) {confidence += 0.05;}
+  if (violations.length === 0) {confidence += 0.05;}
   confidence = Math.min(confidence, 0.95);
 
   return {

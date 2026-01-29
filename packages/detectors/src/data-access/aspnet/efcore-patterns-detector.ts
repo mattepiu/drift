@@ -10,9 +10,10 @@
  * - Transaction patterns
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -136,7 +137,7 @@ export class EfCorePatternsDetector extends BaseDetector {
 
       // Detect DbContext inheritance
       const dbContextMatch = line.match(/class\s+(\w+)\s*:\s*DbContext/);
-      if (dbContextMatch && dbContextMatch[1]) {
+      if (dbContextMatch?.[1]) {
         dbContexts.push(dbContextMatch[1]);
         patterns.push({
           type: 'dbcontext',
@@ -149,7 +150,7 @@ export class EfCorePatternsDetector extends BaseDetector {
 
       // Detect DbSet<T> properties
       const dbSetMatch = line.match(/DbSet<(\w+)>/);
-      if (dbSetMatch && dbSetMatch[1]) {
+      if (dbSetMatch?.[1]) {
         entityTypes.add(dbSetMatch[1]);
         patterns.push({
           type: 'dbset',

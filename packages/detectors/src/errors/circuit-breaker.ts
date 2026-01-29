@@ -10,8 +10,9 @@
  * @requirements 12.6 - Circuit breaker patterns
  */
 
-import type { Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -121,7 +122,7 @@ function isInsideComment(content: string, index: number): boolean {
   const before = content.slice(0, index);
   const lastNewline = before.lastIndexOf('\n');
   const line = before.slice(lastNewline + 1);
-  if (line.includes('//') && index - lastNewline - 1 > line.indexOf('//')) return true;
+  if (line.includes('//') && index - lastNewline - 1 > line.indexOf('//')) {return true;}
   return before.lastIndexOf('/*') > before.lastIndexOf('*/');
 }
 
@@ -142,7 +143,7 @@ export function detectCircuitBreakerClasses(content: string, file: string): Circ
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'circuit-breaker-class',
@@ -163,7 +164,7 @@ export function detectCircuitBreakerLibs(content: string, file: string): Circuit
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'circuit-breaker-lib',
@@ -184,7 +185,7 @@ export function detectStateManagement(content: string, file: string): CircuitBre
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'state-management',
@@ -205,7 +206,7 @@ export function detectFailureThreshold(content: string, file: string): CircuitBr
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'failure-threshold',
@@ -226,7 +227,7 @@ export function detectResetTimeout(content: string, file: string): CircuitBreake
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'reset-timeout',
@@ -280,7 +281,7 @@ export class CircuitBreakerDetector extends RegexDetector {
   
   async detect(context: DetectionContext): Promise<DetectionResult> {
     const { content, file } = context;
-    if (shouldExcludeFile(file)) return this.createEmptyResult();
+    if (shouldExcludeFile(file)) {return this.createEmptyResult();}
     
     const analysis = analyzeCircuitBreaker(content, file);
     

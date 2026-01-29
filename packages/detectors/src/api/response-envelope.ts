@@ -20,8 +20,9 @@
  * @requirements 10.3 - THE API_Detector SHALL detect response envelope patterns ({ data, error, meta })
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -380,10 +381,10 @@ export function detectPaginationFormat(fields: string[]): PaginationFormat | nul
       hasCommonPageField = true;
     }
     // Check specific format fields
-    if (PAGINATION_FIELDS.offset.some(f => f.toLowerCase() === field)) offsetMatches++;
-    if (PAGINATION_FIELDS.cursor.some(f => f.toLowerCase() === field)) cursorMatches++;
-    if (PAGINATION_FIELDS.pageBased.some(f => f.toLowerCase() === field)) pageBasedMatches++;
-    if (PAGINATION_FIELDS.linkBased.some(f => f.toLowerCase() === field)) linkBasedMatches++;
+    if (PAGINATION_FIELDS.offset.some(f => f.toLowerCase() === field)) {offsetMatches++;}
+    if (PAGINATION_FIELDS.cursor.some(f => f.toLowerCase() === field)) {cursorMatches++;}
+    if (PAGINATION_FIELDS.pageBased.some(f => f.toLowerCase() === field)) {pageBasedMatches++;}
+    if (PAGINATION_FIELDS.linkBased.some(f => f.toLowerCase() === field)) {linkBasedMatches++;}
   }
   
   // Add common field to the most likely format
@@ -426,11 +427,11 @@ export function detectPaginationFormat(fields: string[]): PaginationFormat | nul
     return 'mixed';
   }
   
-  if (cursorMatches === maxMatches) return 'cursor';
-  if (linkBasedMatches === maxMatches) return 'link-based';
-  if (pageBasedMatches === maxMatches && pageBasedMatches > offsetMatches) return 'page-based';
-  if (offsetMatches > 0) return 'offset';
-  if (pageBasedMatches > 0) return 'page-based';
+  if (cursorMatches === maxMatches) {return 'cursor';}
+  if (linkBasedMatches === maxMatches) {return 'link-based';}
+  if (pageBasedMatches === maxMatches && pageBasedMatches > offsetMatches) {return 'page-based';}
+  if (offsetMatches > 0) {return 'offset';}
+  if (pageBasedMatches > 0) {return 'page-based';}
   
   return null;
 }
@@ -671,7 +672,7 @@ export function detectPaginationPatterns(
     let endIndex = startIndex;
     
     for (let i = startIndex; i < content.length; i++) {
-      if (content[i] === '{') braceCount++;
+      if (content[i] === '{') {braceCount++;}
       if (content[i] === '}') {
         braceCount--;
         if (braceCount === 0) {

@@ -86,7 +86,7 @@ export class DjangoURLExtractor {
       const routerName = match[1];
       const routerClass = match[2];
 
-      if (!routerName || !routerClass) continue;
+      if (!routerName || !routerClass) {continue;}
 
       const line = this.getLineNumber(content, match.index);
 
@@ -108,7 +108,7 @@ export class DjangoURLExtractor {
       const viewsetClass = match[3];
       const basename = match[4] ?? null;
 
-      if (!routerName || !prefix || !viewsetClass) continue;
+      if (!routerName || !prefix || !viewsetClass) {continue;}
 
       const line = this.getLineNumber(content, match.index);
 
@@ -210,7 +210,7 @@ export class DjangoURLExtractor {
       const view = match[2]?.trim();
       const urlName = match[3] ?? null;
 
-      if (!path || !view) continue;
+      if (!path || !view) {continue;}
 
       const line = this.getLineNumber(content, match.index);
 
@@ -243,7 +243,7 @@ export class DjangoURLExtractor {
       const view = match[2]?.trim();
       const urlName = match[3] ?? null;
 
-      if (!path || !view) continue;
+      if (!path || !view) {continue;}
 
       const line = this.getLineNumber(content, match.index);
 

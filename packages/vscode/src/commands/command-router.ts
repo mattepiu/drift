@@ -156,8 +156,10 @@ export class CommandRouter implements vscode.Disposable {
 
     const next = async (): Promise<void> => {
       if (index < this.middleware.length) {
-        const mw = this.middleware[index++]!;
-        await mw(ctx, next);
+        const mw = this.middleware[index++];
+        if (mw) {
+          await mw(ctx, next);
+        }
       } else {
         await handler(ctx);
       }
@@ -170,13 +172,13 @@ export class CommandRouter implements vscode.Disposable {
     const message = error instanceof Error ? error.message : String(error);
     this.logger.error(`Command ${command} failed:`, message);
 
-    vscode.window
+    void vscode.window
       .showErrorMessage(`Drift: ${message}`, 'Retry', 'Show Logs')
       .then((action) => {
         if (action === 'Retry') {
-          vscode.commands.executeCommand(command);
+          void vscode.commands.executeCommand(command);
         } else if (action === 'Show Logs') {
-          vscode.commands.executeCommand('drift.showLogs');
+          void vscode.commands.executeCommand('drift.showLogs');
         }
       });
   }

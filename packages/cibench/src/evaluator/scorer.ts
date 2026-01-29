@@ -10,9 +10,9 @@ import type {
   PatternEvaluationDetail,
   CallGraphEvaluationDetail,
 } from './types.js';
-import type { PatternGroundTruth, ExpectedPattern } from '../schema/patterns.js';
 import type { CallGraphGroundTruth } from '../schema/callgraph.js';
 import type { BenchmarkCategory } from '../schema/manifest.js';
+import type { PatternGroundTruth, ExpectedPattern } from '../schema/patterns.js';
 
 // ============================================================================
 // Category Weights
@@ -51,7 +51,7 @@ export function recall(truePositives: number, falseNegatives: number): number {
  * Calculate F1 score
  */
 export function f1Score(p: number, r: number): number {
-  if (p + r === 0) return 0;
+  if (p + r === 0) {return 0;}
   return (2 * p * r) / (p + r);
 }
 
@@ -153,14 +153,14 @@ function findMatchingPatternId(
 ): string | null {
   // Try exact ID match
   const exactMatch = expectedPatterns.find(p => p.id === toolPattern.id);
-  if (exactMatch) return exactMatch.id;
+  if (exactMatch) {return exactMatch.id;}
   
   // Try category + name match
   const nameMatch = expectedPatterns.find(
     p => p.category === toolPattern.category && 
          p.name.toLowerCase() === toolPattern.name.toLowerCase()
   );
-  if (nameMatch) return nameMatch.id;
+  if (nameMatch) {return nameMatch.id;}
   
   // Try fuzzy name match
   const fuzzyMatch = expectedPatterns.find(
@@ -168,7 +168,7 @@ function findMatchingPatternId(
          (p.name.toLowerCase().includes(toolPattern.name.toLowerCase()) ||
           toolPattern.name.toLowerCase().includes(p.name.toLowerCase()))
   );
-  if (fuzzyMatch) return fuzzyMatch.id;
+  if (fuzzyMatch) {return fuzzyMatch.id;}
   
   return null;
 }

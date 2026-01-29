@@ -133,13 +133,13 @@ export {
 } from './health-checks.js';
 
 // Import factory functions for createAllLoggingDetectors
-import { createStructuredFormatDetector } from './structured-format.js';
-import { createLogLevelsDetector } from './log-levels.js';
 import { createContextFieldsDetector } from './context-fields.js';
 import { createCorrelationIdsDetector } from './correlation-ids.js';
-import { createPIIRedactionDetector } from './pii-redaction.js';
-import { createMetricNamingDetector } from './metric-naming.js';
 import { createHealthChecksDetector } from './health-checks.js';
+import { createLogLevelsDetector } from './log-levels.js';
+import { createMetricNamingDetector } from './metric-naming.js';
+import { createPIIRedactionDetector } from './pii-redaction.js';
+import { createStructuredFormatDetector } from './structured-format.js';
 
 // Convenience factory for all logging detectors
 export function createAllLoggingDetectors() {

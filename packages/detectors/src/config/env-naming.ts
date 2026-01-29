@@ -10,9 +10,10 @@
  * @requirements 17.1 - Environment variable naming patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -240,8 +241,8 @@ export function detectAppPrefix(
       while ((match = regex.exec(line)) !== null) {
         const envName = match[1] || match[0];
         let prefix = 'APP_';
-        if (/VITE_/.test(envName)) prefix = 'VITE_';
-        else if (/NEXT_PUBLIC_/.test(envName)) prefix = 'NEXT_PUBLIC_';
+        if (/VITE_/.test(envName)) {prefix = 'VITE_';}
+        else if (/NEXT_PUBLIC_/.test(envName)) {prefix = 'NEXT_PUBLIC_';}
 
         results.push({
           type: 'app-prefix',
@@ -275,11 +276,11 @@ export function detectDbPrefix(
       while ((match = regex.exec(line)) !== null) {
         const envName = match[1] || match[0];
         let prefix = 'DB_';
-        if (/DATABASE_/.test(envName)) prefix = 'DATABASE_';
-        else if (/POSTGRES_/.test(envName)) prefix = 'POSTGRES_';
-        else if (/MYSQL_/.test(envName)) prefix = 'MYSQL_';
-        else if (/MONGO_/.test(envName)) prefix = 'MONGO_';
-        else if (/REDIS_/.test(envName)) prefix = 'REDIS_';
+        if (/DATABASE_/.test(envName)) {prefix = 'DATABASE_';}
+        else if (/POSTGRES_/.test(envName)) {prefix = 'POSTGRES_';}
+        else if (/MYSQL_/.test(envName)) {prefix = 'MYSQL_';}
+        else if (/MONGO_/.test(envName)) {prefix = 'MONGO_';}
+        else if (/REDIS_/.test(envName)) {prefix = 'REDIS_';}
 
         results.push({
           type: 'db-prefix',
@@ -344,9 +345,9 @@ export function detectFeaturePrefix(
       while ((match = regex.exec(line)) !== null) {
         const envName = match[1] || match[0];
         let prefix = 'FEATURE_';
-        if (/FF_/.test(envName)) prefix = 'FF_';
-        else if (/ENABLE_/.test(envName)) prefix = 'ENABLE_';
-        else if (/DISABLE_/.test(envName)) prefix = 'DISABLE_';
+        if (/FF_/.test(envName)) {prefix = 'FF_';}
+        else if (/ENABLE_/.test(envName)) {prefix = 'ENABLE_';}
+        else if (/DISABLE_/.test(envName)) {prefix = 'DISABLE_';}
 
         results.push({
           type: 'feature-prefix',
@@ -489,9 +490,9 @@ export function analyzeEnvNaming(
   const prefixes = [...new Set(patterns.filter((p) => p.prefix).map((p) => p.prefix!))];
 
   let confidence = 0.7;
-  if (usesScreamingSnakeCase) confidence += 0.15;
-  if (prefixes.length > 0) confidence += 0.1;
-  if (violations.length === 0) confidence += 0.05;
+  if (usesScreamingSnakeCase) {confidence += 0.15;}
+  if (prefixes.length > 0) {confidence += 0.1;}
+  if (violations.length === 0) {confidence += 0.05;}
   confidence = Math.min(confidence, 0.95);
 
   return {

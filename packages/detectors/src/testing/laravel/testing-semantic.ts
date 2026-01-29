@@ -9,12 +9,13 @@
  * - Factory usage patterns
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Context Validation Patterns
@@ -124,7 +125,7 @@ export class LaravelTestingSemanticDetector extends SemanticDetector {
     const ambiguousKeywords = ['get', 'post', 'put', 'delete', 'create', 'make', 'mock', 'fake'];
     if (ambiguousKeywords.includes(keyword.toLowerCase())) {
       const hasContext = TESTING_CONTEXT_KEYWORDS.some(k => contextLower.includes(k));
-      if (!hasContext) return false;
+      if (!hasContext) {return false;}
     }
 
     return true;

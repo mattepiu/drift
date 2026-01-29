@@ -4,9 +4,11 @@
  * Manages WebSocket connection for real-time updates.
  */
 
-import { useEffect, useRef, useCallback } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
+import { useEffect, useRef, useCallback } from 'react';
+
 import { useDashboardStore } from '../store';
+
 import type { WebSocketMessage, Violation } from '../types';
 
 const WS_RECONNECT_DELAY = 3000;

@@ -161,12 +161,12 @@ export {
 } from './audit-logging.js';
 
 // Import factory functions for use in createAllAuthDetectors
+import { createAuditLoggingDetector } from './audit-logging.js';
 import { createAuthMiddlewareDetector } from './middleware-usage.js';
-import { createTokenHandlingDetector } from './token-handling.js';
 import { createPermissionChecksDetector } from './permission-checks.js';
 import { createRbacPatternsDetector } from './rbac-patterns.js';
 import { createResourceOwnershipDetector } from './resource-ownership.js';
-import { createAuditLoggingDetector } from './audit-logging.js';
+import { createTokenHandlingDetector } from './token-handling.js';
 
 // Convenience factory for all auth detectors
 export function createAllAuthDetectors() {

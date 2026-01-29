@@ -8,9 +8,10 @@
  * - Specification pattern
  */
 
-import type { PatternMatch, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { PatternMatch, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -130,7 +131,7 @@ export class RepositoryPatternDetector extends BaseDetector {
 
       // Detect generic repository interface (e.g., IRepository<T>)
       const genericInterfaceMatch = line.match(/interface\s+(I\w*Repository\w*)<(\w+)>/);
-      if (genericInterfaceMatch && genericInterfaceMatch[1]) {
+      if (genericInterfaceMatch?.[1]) {
         interfaces.push(genericInterfaceMatch[1]);
         patterns.push({
           type: 'repository-interface',
@@ -144,7 +145,7 @@ export class RepositoryPatternDetector extends BaseDetector {
 
       // Detect repository interface that extends another (e.g., IUserRepository : IRepository<User>)
       const extendingInterfaceMatch = line.match(/interface\s+(I\w*Repository\w*)\s*:\s*I\w*Repository(?:<(\w+)>)?/);
-      if (extendingInterfaceMatch && extendingInterfaceMatch[1] && !genericInterfaceMatch) {
+      if (extendingInterfaceMatch?.[1] && !genericInterfaceMatch) {
         interfaces.push(extendingInterfaceMatch[1]);
         patterns.push({
           type: 'repository-interface',
@@ -158,7 +159,7 @@ export class RepositoryPatternDetector extends BaseDetector {
 
       // Detect non-generic repository interface (e.g., IRepository without generics)
       const simpleInterfaceMatch = line.match(/interface\s+(I\w*Repository)\s*[:{]/);
-      if (simpleInterfaceMatch && simpleInterfaceMatch[1] && !line.includes('<') && !extendingInterfaceMatch) {
+      if (simpleInterfaceMatch?.[1] && !line.includes('<') && !extendingInterfaceMatch) {
         interfaces.push(simpleInterfaceMatch[1]);
         patterns.push({
           type: 'repository-interface',
@@ -172,7 +173,7 @@ export class RepositoryPatternDetector extends BaseDetector {
 
       // Detect repository implementation
       const implMatch = line.match(/class\s+(\w*Repository\w*)\s*(?:<(\w+)>)?\s*:/);
-      if (implMatch && implMatch[1]) {
+      if (implMatch?.[1]) {
         implementations.push(implMatch[1]);
         const isGeneric = line.includes('IRepository<') || line.includes('Repository<');
         patterns.push({
@@ -189,7 +190,7 @@ export class RepositoryPatternDetector extends BaseDetector {
       if (line.includes('IUnitOfWork') || line.match(/class\s+\w*UnitOfWork/)) {
         usesUnitOfWork = true;
         const uowMatch = line.match(/(?:interface|class)\s+(\w*UnitOfWork\w*)/);
-        if (uowMatch && uowMatch[1]) {
+        if (uowMatch?.[1]) {
           patterns.push({
             type: 'unit-of-work',
             name: uowMatch[1],
@@ -205,7 +206,7 @@ export class RepositoryPatternDetector extends BaseDetector {
       if (line.includes('ISpecification') || line.match(/class\s+\w+Specification/)) {
         usesSpecification = true;
         const specMatch = line.match(/(?:interface|class)\s+(\w*Specification\w*)/);
-        if (specMatch && specMatch[1]) {
+        if (specMatch?.[1]) {
           patterns.push({
             type: 'specification',
             name: specMatch[1],
@@ -243,7 +244,7 @@ export class RepositoryPatternDetector extends BaseDetector {
       }
       if (line.includes('}')) {
         braceCount--;
-        if (started && braceCount === 0) break;
+        if (started && braceCount === 0) {break;}
       }
 
       // Look for method signatures

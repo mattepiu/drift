@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -46,8 +47,8 @@ interface GenericPatternInfo {
 // ============================================================================
 
 function detectNamingStyle(name: string): GenericNamingStyle {
-  if (name.length === 1) return 'single-letter';
-  if (name.startsWith('T') && name.length > 1 && /^T[A-Z]/.test(name)) return 'prefixed-T';
+  if (name.length === 1) {return 'single-letter';}
+  if (name.startsWith('T') && name.length > 1 && /^T[A-Z]/.test(name)) {return 'prefixed-T';}
   return 'descriptive';
 }
 
@@ -100,7 +101,7 @@ export class GenericPatternsLearningDetector extends LearningDetector<GenericPat
     distributions: Map<keyof GenericPatternsConventions, ValueDistribution>
   ): void {
     const patterns = extractGenericPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const namingDist = distributions.get('namingStyle')!;
     const constraintDist = distributions.get('usesConstraints')!;

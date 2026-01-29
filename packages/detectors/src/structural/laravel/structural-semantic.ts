@@ -9,12 +9,13 @@
  * - Namespace patterns
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Context Validation Patterns
@@ -117,7 +118,7 @@ export class LaravelStructuralSemanticDetector extends SemanticDetector {
       const hasContext = STRUCTURAL_CONTEXT_KEYWORDS.some(k => contextLower.includes(k));
       if (!hasContext) {
         const inStructuralFile = STRUCTURAL_FILE_PATTERNS.some(p => p.test(file));
-        if (!inStructuralFile) return false;
+        if (!inStructuralFile) {return false;}
       }
     }
 

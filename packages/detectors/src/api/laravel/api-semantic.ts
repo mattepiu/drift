@@ -8,12 +8,13 @@
  * - Request handling patterns
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 const API_FILE_PATTERNS = [
   /controllers\//i, /routes\//i, /resources\//i,
@@ -108,7 +109,7 @@ export class LaravelAPISemanticDetector extends SemanticDetector {
       const hasContext = API_CONTEXT_KEYWORDS.some(k => contextLower.includes(k));
       if (!hasContext) {
         const inApiFile = API_FILE_PATTERNS.some(p => p.test(file));
-        if (!inApiFile) return false;
+        if (!inApiFile) {return false;}
       }
     }
 

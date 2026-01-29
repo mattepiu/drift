@@ -17,8 +17,9 @@
  * @requirements 9.7 - THE Styling_Detector SHALL detect z-index scale adherence
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -267,7 +268,7 @@ export function isHighMagicNumber(value: number): boolean {
  */
 export function findNearestZIndexValue(value: number): number {
   const absValue = Math.abs(value);
-  let nearest: number = Z_INDEX_SCALE[0]!;
+  let nearest: number = Z_INDEX_SCALE[0];
   let minDiff = Math.abs(absValue - nearest);
 
   for (const scaleValue of Z_INDEX_SCALE) {
@@ -884,7 +885,7 @@ export class ZIndexScaleDetector extends RegexDetector {
 
     // Extract the value from the message
     const valueMatch = violation.message.match(/['"]([^'"]+)['"]/);
-    if (!valueMatch || !valueMatch[1]) {
+    if (!valueMatch?.[1]) {
       return null;
     }
 

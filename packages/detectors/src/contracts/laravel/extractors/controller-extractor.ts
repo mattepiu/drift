@@ -7,6 +7,9 @@
  * @module contracts/laravel/extractors/controller-extractor
  */
 
+import { ClassExtractor } from '../../../php/class-extractor.js';
+
+import type { PhpClassInfo, PhpMethodInfo, PhpParameterInfo } from '../../../php/types.js';
 import type {
   LaravelControllerInfo,
   ControllerAction,
@@ -15,8 +18,6 @@ import type {
   ModelBinding,
   LaravelHttpMethod,
 } from '../types.js';
-import { ClassExtractor } from '../../../php/class-extractor.js';
-import type { PhpClassInfo, PhpMethodInfo, PhpParameterInfo } from '../../../php/types.js';
 
 // ============================================================================
 // Constants
@@ -114,8 +115,8 @@ export class ControllerExtractor {
    */
   private isController(classInfo: PhpClassInfo): boolean {
     // Check if extends Controller or has Controller in name
-    if (classInfo.extends?.includes('Controller')) return true;
-    if (classInfo.name.endsWith('Controller')) return true;
+    if (classInfo.extends?.includes('Controller')) {return true;}
+    if (classInfo.name.endsWith('Controller')) {return true;}
     return false;
   }
 
@@ -205,8 +206,8 @@ export class ControllerExtractor {
 
     for (const method of classInfo.methods) {
       // Skip non-public methods and magic methods
-      if (method.visibility !== 'public') continue;
-      if (method.name.startsWith('__')) continue;
+      if (method.visibility !== 'public') {continue;}
+      if (method.name.startsWith('__')) {continue;}
 
       const action = this.parseAction(method);
       actions.push(action);
@@ -298,7 +299,7 @@ export class ControllerExtractor {
    * Check if parameter is a request object
    */
   private isRequestParameter(param: PhpParameterInfo): boolean {
-    if (!param.type) return false;
+    if (!param.type) {return false;}
     const typeName = param.type.types[0] || '';
     return REQUEST_CLASSES.some(rc => typeName.includes(rc)) || typeName.endsWith('Request');
   }
@@ -307,7 +308,7 @@ export class ControllerExtractor {
    * Check if parameter is a model binding
    */
   private isModelBindingParameter(param: PhpParameterInfo): boolean {
-    if (!param.type) return false;
+    if (!param.type) {return false;}
     const typeName = param.type.types[0] || '';
     // Model bindings are typically Eloquent models (not Request, not primitive)
     return (

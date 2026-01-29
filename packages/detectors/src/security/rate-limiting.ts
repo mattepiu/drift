@@ -11,9 +11,10 @@
  * @requirements 16.7 - Rate limiting patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -237,10 +238,10 @@ export function detectRateLimiters(
       let match;
       while ((match = regex.exec(line)) !== null) {
         let library = 'unknown';
-        if (/express-rate-limit/i.test(line)) library = 'express-rate-limit';
-        else if (/koa-ratelimit/i.test(line)) library = 'koa-ratelimit';
-        else if (/fastify-rate-limit/i.test(line)) library = 'fastify-rate-limit';
-        else if (/slowDown|express-slow-down/i.test(line)) library = 'express-slow-down';
+        if (/express-rate-limit/i.test(line)) {library = 'express-rate-limit';}
+        else if (/koa-ratelimit/i.test(line)) {library = 'koa-ratelimit';}
+        else if (/fastify-rate-limit/i.test(line)) {library = 'fastify-rate-limit';}
+        else if (/slowDown|express-slow-down/i.test(line)) {library = 'express-slow-down';}
 
         results.push({
           type: 'rate-limiter',
@@ -272,8 +273,8 @@ export function detectThrottling(
       let match;
       while ((match = regex.exec(line)) !== null) {
         let library = 'unknown';
-        if (/ThrottlerModule|ThrottlerGuard|@Throttle/i.test(line)) library = '@nestjs/throttler';
-        else if (/throttleTime|debounceTime/i.test(line)) library = 'rxjs';
+        if (/ThrottlerModule|ThrottlerGuard|@Throttle/i.test(line)) {library = '@nestjs/throttler';}
+        else if (/throttleTime|debounceTime/i.test(line)) {library = 'rxjs';}
 
         results.push({
           type: 'throttle',
@@ -512,12 +513,12 @@ export function detectHardcodedLimits(
     new RegExp(p.source, p.flags).test(content)
   );
 
-  if (!hasRateLimiting) return results;
+  if (!hasRateLimiting) {return results;}
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     // Skip if using environment variables
-    if (/process\.env|import\.meta\.env/.test(line)) continue;
+    if (/process\.env|import\.meta\.env/.test(line)) {continue;}
 
     for (const pattern of HARDCODED_LIMIT_PATTERNS) {
       const regex = new RegExp(pattern.source, pattern.flags);
@@ -551,7 +552,7 @@ export function detectMissingRateLimits(
     /route|controller|handler|endpoint/i.test(filePath) ||
     API_ENDPOINT_PATTERNS.some((p) => new RegExp(p.source, p.flags).test(content));
 
-  if (!isRouteFile) return results;
+  if (!isRouteFile) {return results;}
 
   // Check if rate limiting is present
   const hasRateLimiting =
@@ -633,9 +634,9 @@ export function analyzeRateLimiting(
   }
 
   let confidence = 0.7;
-  if (hasRateLimiting) confidence += 0.15;
-  if (usesRedis) confidence += 0.1;
-  if (violations.length === 0) confidence += 0.05;
+  if (hasRateLimiting) {confidence += 0.15;}
+  if (usesRedis) {confidence += 0.1;}
+  if (violations.length === 0) {confidence += 0.05;}
   confidence = Math.min(confidence, 0.95);
 
   return {

@@ -8,7 +8,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -16,6 +15,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -76,10 +77,10 @@ function extractTypeDefinitions(content: string, file: string): TypeDefinitionIn
     const definition = match[2] || '';
 
     let context: TypeUsageContext = 'object';
-    if (definition.includes('|')) context = 'union';
-    else if (definition.includes('&')) context = 'intersection';
-    else if (definition.includes('=>')) context = 'function';
-    else if (definition.trim().startsWith('{')) context = 'object';
+    if (definition.includes('|')) {context = 'union';}
+    else if (definition.includes('&')) {context = 'intersection';}
+    else if (definition.includes('=>')) {context = 'function';}
+    else if (definition.trim().startsWith('{')) {context = 'object';}
 
     results.push({
       style: 'type',
@@ -115,7 +116,7 @@ export class InterfaceVsTypeLearningDetector extends LearningDetector<InterfaceV
     distributions: Map<keyof InterfaceVsTypeConventions, ValueDistribution>
   ): void {
     const definitions = extractTypeDefinitions(context.content, context.file);
-    if (definitions.length === 0) return;
+    if (definitions.length === 0) {return;}
 
     const styleDist = distributions.get('preferredStyle')!;
     const interfaceObjDist = distributions.get('usesInterfaceForObjects')!;

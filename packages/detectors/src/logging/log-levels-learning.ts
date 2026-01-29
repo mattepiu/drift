@@ -11,7 +11,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -19,6 +18,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -63,11 +64,11 @@ interface LogLevelPatternInfo {
  * Detect logger library from name and content
  */
 function detectLibrary(loggerName: string, content: string): LoggerLibrary {
-  if (loggerName === 'console') return 'console';
-  if (/winston/.test(content)) return 'winston';
-  if (/pino/.test(content)) return 'pino';
-  if (/bunyan/.test(content)) return 'bunyan';
-  if (/log4js/.test(content)) return 'log4js';
+  if (loggerName === 'console') {return 'console';}
+  if (/winston/.test(content)) {return 'winston';}
+  if (/pino/.test(content)) {return 'pino';}
+  if (/bunyan/.test(content)) {return 'bunyan';}
+  if (/log4js/.test(content)) {return 'log4js';}
   return 'custom';
 }
 
@@ -128,7 +129,7 @@ export class LogLevelsLearningDetector extends LearningDetector<LogLevelConventi
     distributions: Map<keyof LogLevelConventions, ValueDistribution>
   ): void {
     const patterns = extractLogLevelPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const libraryDist = distributions.get('library')!;
     const loggerNameDist = distributions.get('loggerName')!;

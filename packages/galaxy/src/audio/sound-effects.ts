@@ -575,8 +575,8 @@ export class GalaxySoundEngine {
    * Initialize the sound engine (lazy load jsfxr)
    */
   async initialize(): Promise<void> {
-    if (this.initialized) return;
-    if (this.initPromise) return this.initPromise;
+    if (this.initialized) {return;}
+    if (this.initPromise) {return this.initPromise;}
 
     this.initPromise = this.doInitialize();
     return this.initPromise;
@@ -594,8 +594,8 @@ export class GalaxySoundEngine {
       }
 
       this.initialized = true;
-    } catch (error) {
-      console.warn('Failed to initialize Galaxy sound engine:', error);
+    } catch (_error: unknown) {
+      // Failed to initialize - disable sounds
       this.config.enabled = false;
     }
   }
@@ -604,7 +604,9 @@ export class GalaxySoundEngine {
    * Play a sound effect
    */
   async play(type: SoundType): Promise<void> {
-    if (!this.config.enabled || this.config.muted) return;
+    if (!this.config.enabled || this.config.muted) {
+      return;
+    }
 
     // Initialize on first play (handles user gesture requirement)
     if (!this.initialized) {
@@ -612,14 +614,16 @@ export class GalaxySoundEngine {
     }
 
     const audio = this.audioCache.get(type);
-    if (!audio) return;
+    if (!audio) {
+      return;
+    }
 
     try {
       // Clone the audio to allow overlapping sounds
       const clone = audio.cloneNode() as HTMLAudioElement;
       clone.volume = this.config.volume;
       await clone.play();
-    } catch (error) {
+    } catch (_error: unknown) {
       // Silently fail - likely blocked by browser autoplay policy
     }
   }
@@ -628,7 +632,9 @@ export class GalaxySoundEngine {
    * Play a sound with pitch variation (for variety)
    */
   async playWithVariation(type: SoundType, pitchVariation = 0.1): Promise<void> {
-    if (!this.config.enabled || this.config.muted || !this.sfxr) return;
+    if (!this.config.enabled || this.config.muted || !this.sfxr) {
+      return;
+    }
 
     if (!this.initialized) {
       await this.initialize();
@@ -641,10 +647,10 @@ export class GalaxySoundEngine {
     definition['p_base_freq'] = baseFreq * (1 + (Math.random() - 0.5) * pitchVariation * 2);
 
     try {
-      const audio = this.sfxr!.sfxr.toAudio(definition);
+      const audio = this.sfxr.sfxr.toAudio(definition);
       audio.volume = this.config.volume;
       await audio.play();
-    } catch (error) {
+    } catch (_error: unknown) {
       // Silently fail
     }
   }
@@ -709,9 +715,7 @@ let soundEngineInstance: GalaxySoundEngine | null = null;
  * Get the global sound engine instance
  */
 export function getGalaxySoundEngine(): GalaxySoundEngine {
-  if (!soundEngineInstance) {
-    soundEngineInstance = new GalaxySoundEngine();
-  }
+  soundEngineInstance ??= new GalaxySoundEngine();
   return soundEngineInstance;
 }
 

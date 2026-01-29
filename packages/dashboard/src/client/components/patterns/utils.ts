@@ -4,7 +4,8 @@
  * Data transformation, aggregation, and helper functions.
  */
 
-import type { Pattern, PatternCategory, PatternStatus } from '../../types';
+import { CATEGORY_ORDER, CATEGORY_CONFIG, CONFIDENCE_THRESHOLDS } from './constants';
+
 import type { 
   CategoryGroup, 
   DetectorGroup, 
@@ -13,7 +14,7 @@ import type {
   SortConfig,
   ReviewablePattern,
 } from './types';
-import { CATEGORY_ORDER, CATEGORY_CONFIG, CONFIDENCE_THRESHOLDS } from './constants';
+import type { Pattern, PatternCategory, PatternStatus } from '../../types';
 
 // ============================================================================
 // Metrics Calculation
@@ -109,8 +110,8 @@ function extractDetectorName(patternName: string): string {
 }
 
 function getDominantStatus(statuses: Set<PatternStatus>): PatternStatus {
-  if (statuses.has('approved')) return 'approved';
-  if (statuses.has('ignored')) return 'ignored';
+  if (statuses.has('approved')) {return 'approved';}
+  if (statuses.has('ignored')) {return 'ignored';}
   return 'discovered';
 }
 
@@ -138,7 +139,7 @@ export function groupPatternsByCategory(patterns: Pattern[]): CategoryGroup[] {
 
   for (const category of CATEGORY_ORDER) {
     const detectorMap = categoryMap.get(category);
-    if (!detectorMap || detectorMap.size === 0) continue;
+    if (!detectorMap || detectorMap.size === 0) {continue;}
 
     const config = CATEGORY_CONFIG[category];
     const detectors: DetectorGroup[] = [];
@@ -220,7 +221,7 @@ export function getReviewablePatterns(
   const threshold = CONFIDENCE_THRESHOLDS.HIGH;
 
   const filtered = patterns.filter(p => {
-    if (p.status !== 'discovered') return false;
+    if (p.status !== 'discovered') {return false;}
     return type === 'quick' 
       ? p.confidence.score >= threshold
       : p.confidence.score < threshold;
@@ -262,9 +263,9 @@ function getReviewReason(pattern: Pattern, type: 'quick' | 'needs-review'): stri
 // ============================================================================
 
 export function getConfidenceLevel(score: number): 'high' | 'medium' | 'low' | 'uncertain' {
-  if (score >= CONFIDENCE_THRESHOLDS.HIGH) return 'high';
-  if (score >= CONFIDENCE_THRESHOLDS.MEDIUM) return 'medium';
-  if (score >= CONFIDENCE_THRESHOLDS.LOW) return 'low';
+  if (score >= CONFIDENCE_THRESHOLDS.HIGH) {return 'high';}
+  if (score >= CONFIDENCE_THRESHOLDS.MEDIUM) {return 'medium';}
+  if (score >= CONFIDENCE_THRESHOLDS.LOW) {return 'low';}
   return 'uncertain';
 }
 
@@ -287,13 +288,13 @@ export function formatPercentage(value: number): string {
 }
 
 export function formatCompactNumber(value: number): string {
-  if (value >= 1000000) return `${(value / 1000000).toFixed(1)}M`;
-  if (value >= 1000) return `${(value / 1000).toFixed(1)}K`;
+  if (value >= 1000000) {return `${(value / 1000000).toFixed(1)}M`;}
+  if (value >= 1000) {return `${(value / 1000).toFixed(1)}K`;}
   return value.toString();
 }
 
 export function truncatePath(path: string, maxLength = 50): string {
-  if (path.length <= maxLength) return path;
+  if (path.length <= maxLength) {return path;}
   const parts = path.split('/');
   const filename = parts.pop() || '';
   if (filename.length >= maxLength - 3) {

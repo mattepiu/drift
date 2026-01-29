@@ -5,11 +5,13 @@
  * Frontier-quality codebase intelligence benchmark.
  */
 
-import { Command } from 'commander';
-import chalk from 'chalk';
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
+import chalk from 'chalk';
+import { Command } from 'commander';
+
 import type { ToolOutput } from './evaluator/types.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -333,7 +335,7 @@ async function evaluatePerception(cibenchDir: string, toolOutput: ToolOutput, _v
     const patternsGT = JSON.parse(await fs.readFile(patternsPath, 'utf-8'));
     const patternScore = evaluatePatternDetection(toolOutput.patterns, patternsGT);
     categories['patternRecognition'] = patternScore;
-    if (_verbose) console.log(chalk.gray(`  Pattern Recognition: ${patternScore.toFixed(1)}%`));
+    if (_verbose) {console.log(chalk.gray(`  Pattern Recognition: ${patternScore.toFixed(1)}%`));}
   } catch {
     categories['patternRecognition'] = 0;
   }
@@ -343,7 +345,7 @@ async function evaluatePerception(cibenchDir: string, toolOutput: ToolOutput, _v
     const callgraphGT = JSON.parse(await fs.readFile(callgraphPath, 'utf-8'));
     const callgraphScore = evaluateCallGraph(toolOutput.callGraph, callgraphGT);
     categories['callGraphAccuracy'] = callgraphScore;
-    if (_verbose) console.log(chalk.gray(`  Call Graph Accuracy: ${callgraphScore.toFixed(1)}%`));
+    if (_verbose) {console.log(chalk.gray(`  Call Graph Accuracy: ${callgraphScore.toFixed(1)}%`));}
   } catch {
     categories['callGraphAccuracy'] = 0;
   }
@@ -368,7 +370,7 @@ async function evaluateUnderstanding(cibenchDir: string, _toolOutput: ToolOutput
     await fs.access(explanationPath);
     // Placeholder score - real implementation would evaluate probe responses
     categories['architecturalIntent'] = 70; // Simulated
-    if (_verbose) console.log(chalk.gray(`  Architectural Intent: ${categories['architecturalIntent']!.toFixed(1)}%`));
+    if (_verbose) {console.log(chalk.gray(`  Architectural Intent: ${categories['architecturalIntent'].toFixed(1)}%`));}
   } catch {
     categories['architecturalIntent'] = 0;
   }
@@ -376,14 +378,14 @@ async function evaluateUnderstanding(cibenchDir: string, _toolOutput: ToolOutput
   try {
     await fs.access(predictionPath);
     categories['causalReasoning'] = 65; // Simulated
-    if (_verbose) console.log(chalk.gray(`  Causal Reasoning: ${categories['causalReasoning']!.toFixed(1)}%`));
+    if (_verbose) {console.log(chalk.gray(`  Causal Reasoning: ${categories['causalReasoning'].toFixed(1)}%`));}
   } catch {
     categories['causalReasoning'] = 0;
   }
   
   // Uncertainty quantification based on confidence calibration
   categories['uncertaintyQuantification'] = 60; // Simulated
-  if (_verbose) console.log(chalk.gray(`  Uncertainty Quantification: ${categories['uncertaintyQuantification']!.toFixed(1)}%`));
+  if (_verbose) {console.log(chalk.gray(`  Uncertainty Quantification: ${categories['uncertaintyQuantification'].toFixed(1)}%`));}
   
   const score = Object.values(categories).reduce((a, b) => a + b, 0) / Object.keys(categories).length;
   
@@ -400,7 +402,7 @@ async function evaluateApplication(cibenchDir: string, _toolOutput: ToolOutput, 
   try {
     await fs.access(efficiencyPath);
     categories['tokenEfficiency'] = 75; // Simulated
-    if (_verbose) console.log(chalk.gray(`  Token Efficiency: ${categories['tokenEfficiency']!.toFixed(1)}%`));
+    if (_verbose) {console.log(chalk.gray(`  Token Efficiency: ${categories['tokenEfficiency'].toFixed(1)}%`));}
   } catch {
     categories['tokenEfficiency'] = 0;
   }
@@ -408,13 +410,13 @@ async function evaluateApplication(cibenchDir: string, _toolOutput: ToolOutput, 
   try {
     await fs.access(negativePath);
     categories['negativeKnowledge'] = 80; // Simulated
-    if (_verbose) console.log(chalk.gray(`  Negative Knowledge: ${categories['negativeKnowledge']!.toFixed(1)}%`));
+    if (_verbose) {console.log(chalk.gray(`  Negative Knowledge: ${categories['negativeKnowledge'].toFixed(1)}%`));}
   } catch {
     categories['negativeKnowledge'] = 0;
   }
   
   categories['compositionalReasoning'] = 70; // Simulated
-  if (_verbose) console.log(chalk.gray(`  Compositional Reasoning: ${categories['compositionalReasoning']!.toFixed(1)}%`));
+  if (_verbose) {console.log(chalk.gray(`  Compositional Reasoning: ${categories['compositionalReasoning'].toFixed(1)}%`));}
   
   const score = Object.values(categories).reduce((a, b) => a + b, 0) / Object.keys(categories).length;
   
@@ -485,7 +487,7 @@ function evaluatePatternDetection(toolPatterns: any, groundTruth: any): number {
 }
 
 function evaluateCallGraph(toolCallGraph: any, groundTruth: any): number {
-  if (!toolCallGraph || !groundTruth) return 0;
+  if (!toolCallGraph || !groundTruth) {return 0;}
   
   // Evaluate function detection
   const expectedFunctions = new Set((groundTruth.functions || []).map((f: any) => f.id));

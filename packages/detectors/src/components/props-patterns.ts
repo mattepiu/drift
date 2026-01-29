@@ -8,8 +8,9 @@
  *   (destructuring, defaults, required vs optional)
  */
 
-import type { PatternMatch, Violation, QuickFix, Language, Range, ASTNode } from 'driftdetect-core';
 import { ASTDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language, Range, ASTNode } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -184,7 +185,7 @@ export function getComponentName(node: ASTNode, content: string): string | undef
   if (line) {
     // Match patterns like: const ComponentName = or export const ComponentName =
     const match = line.match(/(?:const|let|var|export\s+(?:const|let|var)?)\s+([A-Z][a-zA-Z0-9]*)\s*[=:]/);
-    if (match && match[1]) {
+    if (match?.[1]) {
       return match[1];
     }
   }
@@ -374,13 +375,13 @@ export function extractPropNames(node: ASTNode, _content: string): string[] {
   
   // Extract from signature destructuring: ({ prop1, prop2, prop3 = 'default' })
   const signatureMatch = nodeText.match(/\(\s*\{\s*([^}]+)\s*\}/);
-  if (signatureMatch && signatureMatch[1]) {
+  if (signatureMatch?.[1]) {
     const propsStr = signatureMatch[1];
     // Split by comma and extract prop names
     const props = propsStr.split(',').map(p => {
       // Handle: prop, prop = default, prop: alias, ...rest
       const trimmed = p.trim();
-      if (trimmed.startsWith('...')) return null; // Skip rest spread
+      if (trimmed.startsWith('...')) {return null;} // Skip rest spread
       const nameMatch = trimmed.match(/^([a-zA-Z_$][a-zA-Z0-9_$]*)/);
       return nameMatch ? nameMatch[1] : null;
     }).filter((p): p is string => p !== null);
@@ -389,11 +390,11 @@ export function extractPropNames(node: ASTNode, _content: string): string[] {
   
   // Extract from body destructuring: const { prop1, prop2 } = props
   const bodyMatch = nodeText.match(/(?:const|let|var)\s+\{\s*([^}]+)\s*\}\s*=\s*props/);
-  if (bodyMatch && bodyMatch[1]) {
+  if (bodyMatch?.[1]) {
     const propsStr = bodyMatch[1];
     const props = propsStr.split(',').map(p => {
       const trimmed = p.trim();
-      if (trimmed.startsWith('...')) return null;
+      if (trimmed.startsWith('...')) {return null;}
       const nameMatch = trimmed.match(/^([a-zA-Z_$][a-zA-Z0-9_$]*)/);
       return nameMatch ? nameMatch[1] : null;
     }).filter((p): p is string => p !== null);
@@ -420,7 +421,7 @@ export function extractPropsWithDefaults(node: ASTNode, _content: string): strin
   
   // Extract from signature defaults: ({ prop1 = 'default', prop2 = 42 })
   const signatureMatch = nodeText.match(/\(\s*\{\s*([^}]+)\s*\}/);
-  if (signatureMatch && signatureMatch[1]) {
+  if (signatureMatch?.[1]) {
     const propsStr = signatureMatch[1];
     const props = propsStr.split(',').map(p => {
       const trimmed = p.trim();
@@ -433,7 +434,7 @@ export function extractPropsWithDefaults(node: ASTNode, _content: string): strin
   
   // Extract from body destructuring defaults
   const bodyMatch = nodeText.match(/(?:const|let|var)\s+\{\s*([^}]+)\s*\}\s*=\s*props/);
-  if (bodyMatch && bodyMatch[1]) {
+  if (bodyMatch?.[1]) {
     const propsStr = bodyMatch[1];
     const props = propsStr.split(',').map(p => {
       const trimmed = p.trim();
@@ -458,20 +459,20 @@ export function getPropsTypeName(node: ASTNode, content: string): string | undef
   for (const fcPattern of FC_TYPE_PATTERNS) {
     const regex = new RegExp(`${fcPattern.replace('.', '\\.')}\\s*<\\s*([A-Z][a-zA-Z0-9]*)\\s*>`);
     const match = line.match(regex) || nodeText.match(regex);
-    if (match && match[1]) {
+    if (match?.[1]) {
       return match[1];
     }
   }
   
   // Check for type annotation: (props: PropsType) or ({ ... }: PropsType)
   const typeAnnotationMatch = nodeText.match(/\)\s*:\s*([A-Z][a-zA-Z0-9]*(?:Props)?)\s*(?:=>|\{)/);
-  if (typeAnnotationMatch && typeAnnotationMatch[1]) {
+  if (typeAnnotationMatch?.[1]) {
     return typeAnnotationMatch[1];
   }
   
   // Check for parameter type: (props: PropsType)
   const paramTypeMatch = nodeText.match(/\(\s*(?:\{[^}]*\}|props)\s*:\s*([A-Z][a-zA-Z0-9]*(?:Props)?)\s*\)/);
-  if (paramTypeMatch && paramTypeMatch[1]) {
+  if (paramTypeMatch?.[1]) {
     return paramTypeMatch[1];
   }
   
@@ -845,7 +846,7 @@ export class PropsPatternDetector extends ASTDetector {
       let match;
       while ((match = pattern.exec(content)) !== null) {
         const componentName = match[1];
-        if (!componentName || seenComponents.has(componentName)) continue;
+        if (!componentName || seenComponents.has(componentName)) {continue;}
         
         // Find the line number
         const beforeMatch = content.slice(0, match.index);
@@ -870,7 +871,7 @@ export class PropsPatternDetector extends ASTDetector {
             foundArrow = true;
             // Check if next non-whitespace char is { (block body) or something else (expression body)
             let j = i + 2;
-            while (j < content.length && /\s/.test(content[j] || '')) j++;
+            while (j < content.length && /\s/.test(content[j] || '')) {j++;}
             if (content[j] === '{') {
               inFunctionBody = true;
             }
@@ -1057,9 +1058,9 @@ export class PropsPatternDetector extends ASTDetector {
     }
 
     const suggestions: string[] = [];
-    if (destructuringMatch) suggestions.push(destructuringMatch[1]!);
-    if (defaultsMatch) suggestions.push(defaultsMatch[1]!);
-    if (typesMatch) suggestions.push(typesMatch[1]!);
+    if (destructuringMatch) {suggestions.push(destructuringMatch[1]!);}
+    if (defaultsMatch) {suggestions.push(defaultsMatch[1]!);}
+    if (typesMatch) {suggestions.push(typesMatch[1]!);}
 
     return {
       title: `Refactor to use ${suggestions.join(', ')}`,

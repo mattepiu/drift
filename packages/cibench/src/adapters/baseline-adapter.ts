@@ -61,7 +61,10 @@ export async function runBaselineAnalysis(
     actualCodebasePath = path.resolve(__dirname, '../../../../demo/backend');
   }
   
-  if (verbose) console.log(`Baseline analysis on: ${actualCodebasePath}`);
+  if (verbose) {
+    // eslint-disable-next-line no-console
+    console.log(`Baseline analysis on: ${actualCodebasePath}`);
+  }
   
   const patterns: BaselinePattern[] = [];
   const outliers: BaselineOutlier[] = [];

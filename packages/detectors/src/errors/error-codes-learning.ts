@@ -11,7 +11,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -19,6 +18,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -70,10 +71,10 @@ interface ErrorCodePatternInfo {
  * Detect naming convention of a code
  */
 function detectNaming(code: string): ErrorCodeNaming {
-  if (/^[A-Z][A-Z0-9_]*$/.test(code)) return 'SCREAMING_SNAKE';
-  if (/^[A-Z][a-zA-Z0-9]*$/.test(code)) return 'PascalCase';
-  if (/^[a-z][a-zA-Z0-9]*$/.test(code)) return 'camelCase';
-  if (/^[a-z][a-z0-9-]*$/.test(code)) return 'kebab-case';
+  if (/^[A-Z][A-Z0-9_]*$/.test(code)) {return 'SCREAMING_SNAKE';}
+  if (/^[A-Z][a-zA-Z0-9]*$/.test(code)) {return 'PascalCase';}
+  if (/^[a-z][a-zA-Z0-9]*$/.test(code)) {return 'camelCase';}
+  if (/^[a-z][a-z0-9-]*$/.test(code)) {return 'kebab-case';}
   return 'SCREAMING_SNAKE';
 }
 
@@ -193,7 +194,7 @@ export class ErrorCodesLearningDetector extends LearningDetector<ErrorCodeConven
   ): void {
     const patterns = extractErrorCodePatterns(context.content, context.file);
 
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const styleDist = distributions.get('codeStyle')!;
     const namingDist = distributions.get('naming')!;

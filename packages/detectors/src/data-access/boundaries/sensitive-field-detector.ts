@@ -5,12 +5,13 @@
  * fields/columns in data models and schemas.
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 const SENSITIVE_KEYWORDS = [
   // PII

@@ -10,8 +10,9 @@
  * @requirements 11.7 - Unprotected route detection
  */
 
-import type { Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { Language } from 'driftdetect-core';
 
 export type AuthMiddlewareType = 'express-middleware' | 'nextjs-middleware' | 'route-guard' | 'session-check' | 'api-key-check' | 'jwt-verify';
 export type AuthMiddlewareViolationType = 'unprotected-route' | 'inconsistent-middleware' | 'missing-auth-check';
@@ -109,7 +110,7 @@ function isInsideComment(content: string, index: number): boolean {
   const before = content.slice(0, index);
   const lastNewline = before.lastIndexOf('\n');
   const line = before.slice(lastNewline + 1);
-  if (line.includes('//') && index - lastNewline - 1 > line.indexOf('//')) return true;
+  if (line.includes('//') && index - lastNewline - 1 > line.indexOf('//')) {return true;}
   return before.lastIndexOf('/*') > before.lastIndexOf('*/');
 }
 
@@ -126,7 +127,7 @@ export function detectAuthMiddleware(content: string, file: string): AuthMiddlew
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'express-middleware',
@@ -141,7 +142,7 @@ export function detectAuthMiddleware(content: string, file: string): AuthMiddlew
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'nextjs-middleware',
@@ -156,7 +157,7 @@ export function detectAuthMiddleware(content: string, file: string): AuthMiddlew
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({
         type: 'jwt-verify',
@@ -174,13 +175,13 @@ export function detectUnprotectedRoutes(content: string, file: string, hasAuth: 
   const violations: AuthMiddlewareViolationInfo[] = [];
   const lines = content.split('\n');
   
-  if (hasAuth) return violations;
+  if (hasAuth) {return violations;}
   
   for (const routePattern of ROUTE_PATTERNS) {
     const regex = new RegExp(routePattern.source, routePattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       
       const isSensitive = SENSITIVE_ROUTE_PATTERNS.some(p => p.test(match![0]));
       if (isSensitive) {
@@ -230,7 +231,7 @@ export class AuthMiddlewareDetector extends RegexDetector {
   
   async detect(context: DetectionContext): Promise<DetectionResult> {
     const { content, file } = context;
-    if (shouldExcludeFile(file)) return this.createEmptyResult();
+    if (shouldExcludeFile(file)) {return this.createEmptyResult();}
     
     const analysis = analyzeAuthMiddleware(content, file);
     const confidence = analysis.hasAuthMiddleware ? 0.9 : 0.7;

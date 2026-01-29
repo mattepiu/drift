@@ -18,8 +18,9 @@
  * @requirements 10.5 - THE API_Detector SHALL detect pagination patterns (cursor vs offset)
  */
 
-import type { Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -181,11 +182,11 @@ function isInsideComment(content: string, index: number): boolean {
   if (currentLine.includes('//')) {
     const commentStart = currentLine.indexOf('//');
     const positionInLine = index - lastNewline - 1;
-    if (positionInLine > commentStart) return true;
+    if (positionInLine > commentStart) {return true;}
   }
   const lastBlockCommentStart = beforeIndex.lastIndexOf('/*');
   const lastBlockCommentEnd = beforeIndex.lastIndexOf('*/');
-  if (lastBlockCommentStart > lastBlockCommentEnd) return true;
+  if (lastBlockCommentStart > lastBlockCommentEnd) {return true;}
   return false;
 }
 
@@ -204,7 +205,7 @@ export function extractFieldNames(objectContent: string): string[] {
   const fieldPattern = /([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g;
   let match;
   while ((match = fieldPattern.exec(objectContent)) !== null) {
-    if (match[1]) fields.push(match[1]);
+    if (match[1]) {fields.push(match[1]);}
   }
   return fields;
 }
@@ -226,25 +227,25 @@ export function detectPaginationType(fields: string[]): PaginationType {
   const cursorResponseFields = CURSOR_PAGINATION_FIELDS.response;
   const hasCursorFields = [...cursorRequestFields, ...cursorResponseFields]
     .some(f => lowerFields.includes(f.toLowerCase()));
-  if (hasCursorFields) return 'cursor';
+  if (hasCursorFields) {return 'cursor';}
   
   // Check for link-based pagination
   const linkFields = LINK_BASED_FIELDS.filter(f => lowerFields.includes(f.toLowerCase()));
-  if (linkFields.length >= 2) return 'link-based';
+  if (linkFields.length >= 2) {return 'link-based';}
   
   // Check for page-based pagination
   const pageBasedRequest = PAGE_BASED_FIELDS.request;
   const pageBasedResponse = PAGE_BASED_FIELDS.response;
   const hasPageBasedFields = [...pageBasedRequest, ...pageBasedResponse]
     .some(f => lowerFields.includes(f.toLowerCase()));
-  if (hasPageBasedFields) return 'page-based';
+  if (hasPageBasedFields) {return 'page-based';}
   
   // Check for offset pagination
   const offsetRequest = OFFSET_PAGINATION_FIELDS.request;
   const offsetResponse = OFFSET_PAGINATION_FIELDS.response;
   const hasOffsetFields = [...offsetRequest, ...offsetResponse]
     .some(f => lowerFields.includes(f.toLowerCase()));
-  if (hasOffsetFields) return 'offset';
+  if (hasOffsetFields) {return 'offset';}
   
   return 'none';
 }
@@ -268,7 +269,7 @@ export function detectRequestPagination(content: string, file: string): Paginati
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       const fields = extractFieldNames(match[0]);
       const format = detectPaginationType(fields.length > 0 ? fields : [match[0]]);
@@ -300,7 +301,7 @@ export function detectResponsePagination(content: string, file: string): Paginat
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       
       // Find the full object
@@ -356,7 +357,7 @@ export function detectGraphQLConnections(content: string, file: string): Paginat
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       const objectContent = match[1] || match[0];
       const fields = extractFieldNames(objectContent);
@@ -385,7 +386,7 @@ export function detectListEndpoints(content: string, file: string): PaginationPa
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       
       results.push({

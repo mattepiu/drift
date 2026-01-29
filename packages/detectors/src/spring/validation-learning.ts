@@ -10,7 +10,7 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
+import { SPRING_KEYWORD_GROUPS } from './keywords.js';
 import {
   LearningDetector,
   ValueDistribution,
@@ -18,7 +18,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
-import { SPRING_KEYWORD_GROUPS } from './keywords.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -67,7 +68,7 @@ function extractValidationPatterns(content: string, file: string): ValidationPat
       // Skip imports
       const lineStart = content.lastIndexOf('\n', match.index) + 1;
       const lineContent = content.slice(lineStart, content.indexOf('\n', match.index));
-      if (lineContent.trim().startsWith('import ')) continue;
+      if (lineContent.trim().startsWith('import ')) {continue;}
 
       const beforeMatch = content.slice(0, match.index);
       const line = beforeMatch.split('\n').length;
@@ -76,7 +77,7 @@ function extractValidationPatterns(content: string, file: string): ValidationPat
 
       // Categorize the pattern
       let patternType: ValidationPatternInfo['patternType'] = 'constraint';
-      let value = keyword;
+      const value = keyword;
 
       if (keyword === 'Valid' || keyword === 'Validated') {
         patternType = 'trigger';
@@ -120,10 +121,10 @@ export class SpringValidationLearningDetector extends LearningDetector<SpringVal
     context: DetectionContext,
     distributions: Map<keyof SpringValidationConventions, ValueDistribution>
   ): void {
-    if (context.language !== 'java') return;
+    if (context.language !== 'java') {return;}
 
     const patterns = extractValidationPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const triggerDist = distributions.get('validationTrigger')!;
     const nullCheckDist = distributions.get('nullCheckStyle')!;

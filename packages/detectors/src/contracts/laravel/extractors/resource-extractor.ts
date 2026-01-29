@@ -7,13 +7,14 @@
  * @module contracts/laravel/extractors/resource-extractor
  */
 
+import { ClassExtractor } from '../../../php/class-extractor.js';
+
+import type { PhpClassInfo, PhpMethodInfo } from '../../../php/types.js';
 import type {
   LaravelResourceInfo,
   ResourceField,
   ConditionalField,
 } from '../types.js';
-import { ClassExtractor } from '../../../php/class-extractor.js';
-import type { PhpClassInfo, PhpMethodInfo } from '../../../php/types.js';
 
 // ============================================================================
 // Regex Patterns
@@ -112,10 +113,10 @@ export class ResourceExtractor {
    * Check if a class is a resource
    */
   private isResource(classInfo: PhpClassInfo): boolean {
-    if (classInfo.extends?.includes('JsonResource')) return true;
-    if (classInfo.extends?.includes('ResourceCollection')) return true;
-    if (classInfo.name.endsWith('Resource')) return true;
-    if (classInfo.name.endsWith('Collection')) return true;
+    if (classInfo.extends?.includes('JsonResource')) {return true;}
+    if (classInfo.extends?.includes('ResourceCollection')) {return true;}
+    if (classInfo.name.endsWith('Resource')) {return true;}
+    if (classInfo.name.endsWith('Collection')) {return true;}
     return false;
   }
 
@@ -162,7 +163,7 @@ export class ResourceExtractor {
   private extractFields(method: PhpMethodInfo): ResourceField[] {
     const fields: ResourceField[] = [];
     
-    if (!method.body) return fields;
+    if (!method.body) {return fields;}
 
     FIELD_PATTERN.lastIndex = 0;
 
@@ -194,7 +195,7 @@ export class ResourceExtractor {
   private extractConditionalFields(method: PhpMethodInfo): ConditionalField[] {
     const conditionalFields: ConditionalField[] = [];
     
-    if (!method.body) return conditionalFields;
+    if (!method.body) {return conditionalFields;}
 
     // Extract whenLoaded fields
     WHEN_LOADED_PATTERN.lastIndex = 0;
@@ -242,7 +243,7 @@ export class ResourceExtractor {
   private extractAdditionalData(method: PhpMethodInfo): string[] {
     const additional: string[] = [];
     
-    if (!method.body) return additional;
+    if (!method.body) {return additional;}
 
     ADDITIONAL_PATTERN.lastIndex = 0;
 
@@ -266,14 +267,14 @@ export class ResourceExtractor {
    */
   private inferFieldType(source: string, _body: string): string | null {
     // Common type patterns
-    if (source === 'id') return 'number';
-    if (source.endsWith('_id')) return 'number';
-    if (source.endsWith('_at') || source.includes('date') || source.includes('time')) return 'string';
-    if (source.startsWith('is_') || source.startsWith('has_') || source.startsWith('can_')) return 'boolean';
-    if (source === 'email') return 'string';
-    if (source === 'name' || source === 'title' || source === 'description') return 'string';
-    if (source === 'price' || source === 'amount' || source === 'total') return 'number';
-    if (source === 'count' || source === 'quantity') return 'number';
+    if (source === 'id') {return 'number';}
+    if (source.endsWith('_id')) {return 'number';}
+    if (source.endsWith('_at') || source.includes('date') || source.includes('time')) {return 'string';}
+    if (source.startsWith('is_') || source.startsWith('has_') || source.startsWith('can_')) {return 'boolean';}
+    if (source === 'email') {return 'string';}
+    if (source === 'name' || source === 'title' || source === 'description') {return 'string';}
+    if (source === 'price' || source === 'amount' || source === 'total') {return 'number';}
+    if (source === 'count' || source === 'quantity') {return 'number';}
 
     // Check for casts in the body (if available)
     // This is a simplified heuristic

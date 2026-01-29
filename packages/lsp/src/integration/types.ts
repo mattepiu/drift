@@ -4,8 +4,8 @@
  * Types for the integration between @drift/lsp and driftdetect-core.
  */
 
-import type { Pattern, PatternCategory } from 'driftdetect-core';
 import type { ViolationInfo, PatternInfo } from '../types/lsp-types.js';
+import type { Pattern, PatternCategory } from 'driftdetect-core';
 
 /**
  * Configuration for the core integration

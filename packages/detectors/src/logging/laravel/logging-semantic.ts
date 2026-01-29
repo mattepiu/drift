@@ -8,12 +8,13 @@
  * - Channel configuration
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Context Validation Patterns
@@ -105,7 +106,7 @@ export class LaravelLoggingSemanticDetector extends SemanticDetector {
       const hasContext = LOGGING_CONTEXT_KEYWORDS.some(k => contextLower.includes(k));
       if (!hasContext) {
         const inLoggingFile = LOGGING_FILE_PATTERNS.some(p => p.test(file));
-        if (!inLoggingFile) return false;
+        if (!inLoggingFile) {return false;}
       }
     }
 

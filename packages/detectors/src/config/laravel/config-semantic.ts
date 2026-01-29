@@ -9,12 +9,13 @@
  * - Cache configuration
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Context Validation Patterns
@@ -123,7 +124,7 @@ export class LaravelConfigSemanticDetector extends SemanticDetector {
       const hasContext = CONFIG_CONTEXT_KEYWORDS.some(k => contextLower.includes(k));
       if (!hasContext) {
         const inConfigFile = CONFIG_FILE_PATTERNS.some(p => p.test(file));
-        if (!inConfigFile) return false;
+        if (!inConfigFile) {return false;}
       }
     }
 

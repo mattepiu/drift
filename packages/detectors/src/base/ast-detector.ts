@@ -7,9 +7,10 @@
  * @requirements 6.4 - THE Detector_System SHALL support detection methods: ast, regex, semantic, structural, and custom
  */
 
+import { BaseDetector } from './base-detector.js';
+
 import type { AST, ASTNode } from 'driftdetect-core';
 
-import { BaseDetector } from './base-detector.js';
 
 // ============================================================================
 // AST Pattern Types
@@ -278,7 +279,7 @@ export abstract class ASTDetector extends BaseDetector {
     // Search from immediate parent up to root
     for (let i = parentChain.length - 1; i >= 0; i--) {
       const parent = parentChain[i];
-      if (parent && parent.type === nodeType) {
+      if (parent?.type === nodeType) {
         return parent;
       }
     }
@@ -377,7 +378,7 @@ export abstract class ASTDetector extends BaseDetector {
         const result: string[] = [];
         for (let i = startLine; i <= endLine; i++) {
           const line = lines[i];
-          if (!line) continue;
+          if (!line) {continue;}
 
           if (i === startLine) {
             result.push(line.slice(startCol));

@@ -6,8 +6,9 @@
  */
 
 import { useMemo } from 'react';
-import { useGalaxyStore } from '../../store/index.js';
+
 import { SENSITIVITY_COLORS, SECURITY_TIER_COLORS } from '../../constants/index.js';
+import { useGalaxyStore } from '../../store/index.js';
 
 // ============================================================================
 // Component
@@ -18,7 +19,7 @@ export function SecurityPanel() {
   
   // Calculate security metrics
   const metrics = useMemo(() => {
-    if (!galaxyData) return null;
+    if (!galaxyData) {return null;}
     
     const publicEndpoints = galaxyData.entryPoints.filter(e => e.authLevel === 'public');
     const criticalTables = galaxyData.tables.filter(t => t.sensitivity === 'critical' || t.sensitivity === 'high');
@@ -42,8 +43,8 @@ export function SecurityPanel() {
     };
   }, [galaxyData]);
   
-  if (!isPanelOpen || activePanel !== 'security') return null;
-  if (!metrics) return null;
+  if (!isPanelOpen || activePanel !== 'security') {return null;}
+  if (!metrics) {return null;}
   
   const hasIssues = metrics.publicToSensitive.length > 0 || metrics.untestedPaths.length > 0;
   
@@ -102,7 +103,7 @@ export function SecurityPanel() {
             label="Public Endpoints"
             value={metrics.publicEndpoints.length}
             color={metrics.publicEndpoints.length > 0 ? '#ef4444' : '#22c55e'}
-            onClick={() => setFilters({ publicOnly: true })}
+            onClick={() => { setFilters({ publicOnly: true }); }}
           />
           <SecurityStat
             label="P0 Endpoints"
@@ -113,13 +114,13 @@ export function SecurityPanel() {
             label="Sensitive Tables"
             value={metrics.criticalTables.length}
             color={SENSITIVITY_COLORS.high}
-            onClick={() => setFilters({ minSensitivity: 'high' })}
+            onClick={() => { setFilters({ minSensitivity: 'high' }); }}
           />
           <SecurityStat
             label="Untested Paths"
             value={metrics.untestedPaths.length}
             color={metrics.untestedPaths.length > 0 ? '#f59e0b' : '#22c55e'}
-            onClick={() => setFilters({ untestedOnly: true })}
+            onClick={() => { setFilters({ untestedOnly: true }); }}
           />
         </div>
         
@@ -160,19 +161,19 @@ export function SecurityPanel() {
           <h4 className="text-sm font-medium text-slate-300 mb-2">Quick Actions</h4>
           <div className="space-y-2">
             <button
-              onClick={() => setViewMode('security')}
+              onClick={() => { setViewMode('security'); }}
               className="w-full p-2 rounded bg-slate-800 hover:bg-slate-700 text-left text-sm text-slate-300 transition-colors"
             >
               🔒 Enable Security Mode
             </button>
             <button
-              onClick={() => setViewMode('coverage')}
+              onClick={() => { setViewMode('coverage'); }}
               className="w-full p-2 rounded bg-slate-800 hover:bg-slate-700 text-left text-sm text-slate-300 transition-colors"
             >
               📊 View Test Coverage
             </button>
             <button
-              onClick={() => setFilters({ untestedOnly: true })}
+              onClick={() => { setFilters({ untestedOnly: true }); }}
               className="w-full p-2 rounded bg-slate-800 hover:bg-slate-700 text-left text-sm text-slate-300 transition-colors"
             >
               ⚠️ Show Untested Paths
@@ -210,8 +211,8 @@ function SecurityStat({ label, value, color, onClick }: SecurityStatProps) {
 }
 
 function getHealthColor(score: number): string {
-  if (score >= 80) return '#22c55e';
-  if (score >= 60) return '#eab308';
-  if (score >= 40) return '#f97316';
+  if (score >= 80) {return '#22c55e';}
+  if (score >= 60) {return '#eab308';}
+  if (score >= 40) {return '#f97316';}
   return '#ef4444';
 }

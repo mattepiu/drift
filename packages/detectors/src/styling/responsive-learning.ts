@@ -12,7 +12,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -20,6 +19,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -198,7 +199,7 @@ export class ResponsiveLearningDetector extends LearningDetector<ResponsiveConve
     const mediaQueryPatterns = extractMediaQueries(context.content, context.file);
     const allPatterns = [...tailwindPatterns, ...mediaQueryPatterns];
 
-    if (allPatterns.length === 0) return;
+    if (allPatterns.length === 0) {return;}
 
     const approachDist = distributions.get('approach')!;
     const methodDist = distributions.get('method')!;

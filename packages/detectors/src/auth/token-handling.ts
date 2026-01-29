@@ -9,8 +9,9 @@
  * @requirements 11.2 - Token handling patterns
  */
 
-import type { Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { Language } from 'driftdetect-core';
 
 export type TokenPatternType = 'jwt-storage' | 'refresh-token' | 'token-validation' | 'token-extraction' | 'secure-cookie';
 export type TokenViolationType = 'insecure-storage' | 'missing-refresh' | 'token-in-url' | 'token-logged';
@@ -109,7 +110,7 @@ function isInsideComment(content: string, index: number): boolean {
   const before = content.slice(0, index);
   const lastNewline = before.lastIndexOf('\n');
   const line = before.slice(lastNewline + 1);
-  if (line.includes('//') && index - lastNewline - 1 > line.indexOf('//')) return true;
+  if (line.includes('//') && index - lastNewline - 1 > line.indexOf('//')) {return true;}
   return before.lastIndexOf('/*') > before.lastIndexOf('*/');
 }
 
@@ -126,7 +127,7 @@ function detectPatterns(content: string, file: string, patterns: readonly RegExp
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       results.push({ type, file, line, column, matchedText: match[0], context: lines[line - 1] || '' });
     }
@@ -142,7 +143,7 @@ function detectViolations(content: string, file: string, patterns: readonly RegE
     const regex = new RegExp(pattern.source, pattern.flags);
     let match: RegExpExecArray | null;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPosition(content, match.index);
       violations.push({
         type, file, line, column,
@@ -193,7 +194,7 @@ export class TokenHandlingDetector extends RegexDetector {
   
   async detect(context: DetectionContext): Promise<DetectionResult> {
     const { content, file } = context;
-    if (shouldExcludeFile(file)) return this.createEmptyResult();
+    if (shouldExcludeFile(file)) {return this.createEmptyResult();}
     
     const analysis = analyzeTokenHandling(content, file);
     const confidence = analysis.usesSecureStorage ? 0.9 : 0.75;

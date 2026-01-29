@@ -8,8 +8,9 @@
  * @requirements 7.6 - THE Structural_Detector SHALL detect module boundary violations
  */
 
-import type { PatternMatch, Violation, QuickFix, Language, Range } from 'driftdetect-core';
 import { StructuralDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language, Range } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -429,7 +430,7 @@ function detectGenericLayers(files: string[]): LayerDefinition[] {
 
   if (hasPresentationLayer) {
     const allowedDeps: string[] = [];
-    if (hasBusinessLayer) allowedDeps.push('business');
+    if (hasBusinessLayer) {allowedDeps.push('business');}
     
     const presentationLayer: LayerDefinition = {
       name: 'presentation',
@@ -509,7 +510,7 @@ export function resolveImportLayer(
       }
     }
 
-    if (matchedFile) break;
+    if (matchedFile) {break;}
   }
 
   if (matchedFile) {
@@ -709,7 +710,7 @@ export class ModuleBoundariesDetector extends StructuralDetector {
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i]!;
       const match = importRegex.exec(line);
-      if (match && match[1]) {
+      if (match?.[1]) {
         imports.push({
           source: match[1],
           line: i + 1,

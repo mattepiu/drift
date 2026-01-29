@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -40,9 +41,9 @@ function detectVariationStyle(content: string): VariationStyle | null {
   const hasStyleVariation = /className.*\?|style.*\?|styled\(/.test(content);
   const hasLogicVariation = /if\s*\(|switch\s*\(|&&\s*</.test(content);
   
-  if (hasPropsVariation) return 'props-variation';
-  if (hasStyleVariation) return 'style-variation';
-  if (hasLogicVariation) return 'logic-variation';
+  if (hasPropsVariation) {return 'props-variation';}
+  if (hasStyleVariation) {return 'style-variation';}
+  if (hasLogicVariation) {return 'logic-variation';}
   return null;
 }
 
@@ -70,7 +71,7 @@ export class NearDuplicateLearningDetector extends LearningDetector<NearDuplicat
     const variationDist = distributions.get('acceptableVariation')!;
     const compositionDist = distributions.get('prefersComposition')!;
     
-    if (variation) variationDist.add(variation, context.file);
+    if (variation) {variationDist.add(variation, context.file);}
     
     const prefersComposition = /children|render=\{|slots/.test(context.content);
     compositionDist.add(prefersComposition, context.file);

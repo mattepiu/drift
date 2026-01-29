@@ -11,9 +11,10 @@
  * @requirements 19.2 - Lazy loading patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -274,9 +275,9 @@ export function analyzeLazyLoading(
   const usesVirtualScroll = patterns.some((p) => p.type === 'virtual-scroll');
 
   let confidence = 0.7;
-  if (patterns.length > 0) confidence += 0.15;
-  if (usesIntersectionObserver) confidence += 0.05;
-  if (violations.length === 0) confidence += 0.05;
+  if (patterns.length > 0) {confidence += 0.15;}
+  if (usesIntersectionObserver) {confidence += 0.05;}
+  if (violations.length === 0) {confidence += 0.05;}
   confidence = Math.min(confidence, 0.95);
 
   return {

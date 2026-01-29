@@ -8,13 +8,14 @@
  * Does NOT judge which injection style is "better" - just finds them.
  */
 
-import type { Violation, Language } from 'driftdetect-core';
+import { SPRING_KEYWORD_GROUPS } from './keywords.js';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../base/semantic-detector.js';
-import { SPRING_KEYWORD_GROUPS } from './keywords.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 export class SpringDISemanticDetector extends SemanticDetector {
   readonly id = 'spring/di-patterns';

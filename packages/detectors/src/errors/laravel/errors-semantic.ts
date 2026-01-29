@@ -14,12 +14,13 @@
  * - Semantic disambiguation (exceptions vs generic errors)
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Context Validation Patterns
@@ -134,7 +135,7 @@ export class LaravelErrorsSemanticDetector extends SemanticDetector {
     for (const pattern of NON_ERROR_FILE_PATTERNS) {
       if (pattern.test(file)) {
         const hasContext = ERROR_CONTEXT_KEYWORDS.some(k => contextLower.includes(k));
-        if (!hasContext) return false;
+        if (!hasContext) {return false;}
       }
     }
 
@@ -156,7 +157,7 @@ export class LaravelErrorsSemanticDetector extends SemanticDetector {
       const hasContext = ERROR_CONTEXT_KEYWORDS.some(k => contextLower.includes(k));
       if (!hasContext) {
         const inErrorFile = ERROR_FILE_PATTERNS.some(p => p.test(file));
-        if (!inErrorFile) return false;
+        if (!inErrorFile) {return false;}
       }
     }
 

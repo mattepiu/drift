@@ -8,8 +8,9 @@
  * @requirements 8.6 - THE Component_Detector SHALL detect component composition patterns
  */
 
-import type { PatternMatch, Violation, QuickFix, Language, Range, ASTNode } from 'driftdetect-core';
 import { ASTDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language, Range, ASTNode } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -265,7 +266,7 @@ export function getComponentName(node: ASTNode, content: string): string | undef
   const line = lines[node.startPosition.row];
   if (line) {
     const match = line.match(/(?:const|let|var|export\s+(?:const|let|var)?)\s+([A-Z][a-zA-Z0-9]*)\s*[=:]/);
-    if (match && match[1]) {
+    if (match?.[1]) {
       return match[1];
     }
   }
@@ -360,7 +361,7 @@ export function detectRenderProps(nodeText: string): CompositionUsageInfo | null
   if (renderPropCalls) {
     for (const call of renderPropCalls) {
       const match = call.match(/\b(render\w*)\s*\(/);
-      if (match && match[1] && !renderPropNames.includes(match[1])) {
+      if (match?.[1] && !renderPropNames.includes(match[1])) {
         renderPropNames.push(match[1]);
       }
     }
@@ -402,7 +403,7 @@ export function detectHOC(content: string): CompositionUsageInfo[] {
   
   while ((match = exportHOCPattern.exec(content)) !== null) {
     const hocChain = match[1];
-    if (!hocChain) continue;
+    if (!hocChain) {continue;}
     
     const hocNames = extractHOCNames(hocChain);
     
@@ -573,7 +574,7 @@ export function detectSlotBasedComposition(nodeText: string): CompositionUsageIn
   
   // Pattern 1: Named slot props in destructuring ({ header, footer, sidebar })
   const destructuringMatch = nodeText.match(/\(\s*\{\s*([^}]+)\s*\}/);
-  if (destructuringMatch && destructuringMatch[1]) {
+  if (destructuringMatch?.[1]) {
     const propsStr = destructuringMatch[1];
     const props = propsStr.split(',').map(p => p.trim().split(/[=:]/)[0]?.trim() || '');
     
@@ -606,7 +607,7 @@ export function detectSlotBasedComposition(nodeText: string): CompositionUsageIn
   }
   
   // Pattern 4: Render slot props in destructuring ({ renderHeader, renderFooter })
-  if (destructuringMatch && destructuringMatch[1]) {
+  if (destructuringMatch?.[1]) {
     const propsStr = destructuringMatch[1];
     const renderPropMatches = propsStr.matchAll(/\b(render[A-Z][a-zA-Z]*)\b/g);
     for (const renderMatch of renderPropMatches) {
@@ -659,7 +660,7 @@ export function detectProviderConsumer(content: string): CompositionUsageInfo[] 
   
   while ((match = providerPattern.exec(content)) !== null) {
     const contextName = match[1];
-    if (!contextName) continue;
+    if (!contextName) {continue;}
     
     const beforeMatch = content.slice(0, match.index);
     const line = beforeMatch.split('\n').length;
@@ -680,7 +681,7 @@ export function detectProviderConsumer(content: string): CompositionUsageInfo[] 
   
   while ((match = consumerPattern.exec(content)) !== null) {
     const contextName = match[1];
-    if (!contextName) continue;
+    if (!contextName) {continue;}
     
     const beforeMatch = content.slice(0, match.index);
     const line = beforeMatch.split('\n').length;
@@ -705,7 +706,7 @@ export function detectProviderConsumer(content: string): CompositionUsageInfo[] 
   
   while ((match = createContextPattern.exec(content)) !== null) {
     const contextName = match[1];
-    if (!contextName) continue;
+    if (!contextName) {continue;}
     
     const beforeMatch = content.slice(0, match.index);
     const line = beforeMatch.split('\n').length;
@@ -845,7 +846,7 @@ export function detectAntiPatterns(
   
   // Check for overuse of render props
   const renderProps = detectRenderProps(nodeText);
-  if (renderProps && renderProps.details.renderPropNames) {
+  if (renderProps?.details.renderPropNames) {
     const count = renderProps.details.renderPropNames.length;
     if (count > config.maxRenderProps) {
       antiPatterns.push({
@@ -1431,7 +1432,7 @@ export class CompositionDetector extends ASTDetector {
     // ID format: composition-ComponentName-antiPatternType-filePath
     // antiPatternType can contain hyphens (e.g., missing-children, mixed-controlled)
     const antiPatternMatch = violation.id.match(/composition-[A-Za-z0-9]+-([a-z]+-[a-z]+|[a-z]+)-/);
-    if (!antiPatternMatch || !antiPatternMatch[1]) {
+    if (!antiPatternMatch?.[1]) {
       return null;
     }
 

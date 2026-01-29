@@ -139,11 +139,20 @@ export class ConfigManager implements vscode.Disposable {
     try {
       if (fs.existsSync(configPath)) {
         const content = fs.readFileSync(configPath, 'utf-8');
-        const parsed = JSON.parse(content);
+        interface ParsedTeamConfig {
+          enforceApproved?: boolean;
+          requiredCategories?: string[];
+          customRules?: Array<string | { id: string; severity: string }>;
+        }
+        const parsed: ParsedTeamConfig = JSON.parse(content) as ParsedTeamConfig;
+        // Map customRules objects to just their IDs if they're objects
+        const customRules = parsed.customRules
+          ? parsed.customRules.map((rule) => (typeof rule === 'string' ? rule : rule.id))
+          : DEFAULT_CONFIG.team.customRules;
         return {
           enforceApproved: parsed.enforceApproved ?? DEFAULT_CONFIG.team.enforceApproved,
           requiredCategories: parsed.requiredCategories ?? DEFAULT_CONFIG.team.requiredCategories,
-          customRules: parsed.customRules ?? DEFAULT_CONFIG.team.customRules,
+          customRules,
         };
       }
     } catch (error) {

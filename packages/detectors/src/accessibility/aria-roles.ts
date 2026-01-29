@@ -3,9 +3,10 @@
  * @requirements 20.2 - ARIA role patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 export type AriaRolesPatternType = 'aria-role' | 'aria-label' | 'aria-describedby' | 'aria-hidden' | 'aria-live' | 'aria-expanded' | 'aria-controls';
 export type AriaRolesViolationType = 'redundant-role' | 'missing-aria-label' | 'invalid-role';
@@ -68,12 +69,12 @@ export function detectRedundantRoleViolations(content: string, filePath: string)
 }
 
 export function analyzeAriaRoles(content: string, filePath: string): AriaRolesAnalysis {
-  if (shouldExcludeFile(filePath)) return { patterns: [], violations: [], ariaRoleCount: 0, ariaLabelCount: 0, confidence: 1.0 };
+  if (shouldExcludeFile(filePath)) {return { patterns: [], violations: [], ariaRoleCount: 0, ariaLabelCount: 0, confidence: 1.0 };}
   const patterns: AriaRolesPatternInfo[] = [...detectAriaRole(content, filePath), ...detectAriaLabel(content, filePath), ...detectAriaDescribedby(content, filePath), ...detectAriaHidden(content, filePath), ...detectAriaLive(content, filePath), ...detectAriaExpanded(content, filePath), ...detectAriaControls(content, filePath)];
   const violations: AriaRolesViolationInfo[] = [...detectRedundantRoleViolations(content, filePath)];
   const ariaRoleCount = patterns.filter((p) => p.type === 'aria-role').length;
   const ariaLabelCount = patterns.filter((p) => p.type === 'aria-label').length;
-  let confidence = 0.7; if (patterns.length > 0) confidence += 0.15; if (violations.length === 0) confidence += 0.1; confidence = Math.min(confidence, 0.95);
+  let confidence = 0.7; if (patterns.length > 0) {confidence += 0.15;} if (violations.length === 0) {confidence += 0.1;} confidence = Math.min(confidence, 0.95);
   return { patterns, violations, ariaRoleCount, ariaLabelCount, confidence };
 }
 
@@ -86,9 +87,9 @@ export class AriaRolesDetector extends RegexDetector {
   readonly supportedLanguages: Language[] = ['typescript', 'javascript'];
 
   async detect(context: DetectionContext): Promise<DetectionResult> {
-    if (!this.supportsLanguage(context.language)) return this.createEmptyResult();
+    if (!this.supportsLanguage(context.language)) {return this.createEmptyResult();}
     const analysis = analyzeAriaRoles(context.content, context.file);
-    if (analysis.patterns.length === 0 && analysis.violations.length === 0) return this.createEmptyResult();
+    if (analysis.patterns.length === 0 && analysis.violations.length === 0) {return this.createEmptyResult();}
     
     // Convert internal violations to standard Violation format
     const violations = analysis.violations.map(v => this.convertViolationInfo({

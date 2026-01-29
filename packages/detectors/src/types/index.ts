@@ -274,13 +274,13 @@ export type {
 // Factory Function
 // ============================================================================
 
-import { FileLocationDetector } from './file-location.js';
-import { NamingConventionsDetector } from './naming-conventions.js';
-import { InterfaceVsTypeDetector } from './interface-vs-type.js';
-import { GenericPatternsDetector } from './generic-patterns.js';
-import { UtilityTypesDetector } from './utility-types.js';
-import { TypeAssertionsDetector } from './type-assertions.js';
 import { AnyUsageDetector } from './any-usage.js';
+import { FileLocationDetector } from './file-location.js';
+import { GenericPatternsDetector } from './generic-patterns.js';
+import { InterfaceVsTypeDetector } from './interface-vs-type.js';
+import { NamingConventionsDetector } from './naming-conventions.js';
+import { TypeAssertionsDetector } from './type-assertions.js';
+import { UtilityTypesDetector } from './utility-types.js';
 
 export type TypesDetector =
   | FileLocationDetector

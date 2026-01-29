@@ -738,14 +738,14 @@ function getLineNumber(source: string, index: number): number {
 
 function findClassEnd(source: string, startIndex: number): number {
   const braceIndex = source.indexOf('{', startIndex);
-  if (braceIndex === -1) return startIndex + 100;
+  if (braceIndex === -1) {return startIndex + 100;}
 
   let depth = 1;
   let i = braceIndex + 1;
 
   while (i < source.length && depth > 0) {
-    if (source[i] === '{') depth++;
-    else if (source[i] === '}') depth--;
+    if (source[i] === '{') {depth++;}
+    else if (source[i] === '}') {depth--;}
     i++;
   }
 
@@ -768,11 +768,11 @@ export function hasCppErrorHandling(source: string): boolean {
 export function detectErrorStyle(source: string): string[] {
   const styles: string[] = [];
 
-  if (TRY_BLOCK_PATTERN.test(source)) styles.push('exceptions');
-  if (EXPECTED_PATTERN.test(source)) styles.push('expected');
-  if (OPTIONAL_PATTERN.test(source)) styles.push('optional');
-  if (ERROR_CODE_PATTERN.test(source)) styles.push('error-codes');
-  if (ERRNO_PATTERN.test(source)) styles.push('errno');
+  if (TRY_BLOCK_PATTERN.test(source)) {styles.push('exceptions');}
+  if (EXPECTED_PATTERN.test(source)) {styles.push('expected');}
+  if (OPTIONAL_PATTERN.test(source)) {styles.push('optional');}
+  if (ERROR_CODE_PATTERN.test(source)) {styles.push('error-codes');}
+  if (ERRNO_PATTERN.test(source)) {styles.push('errno');}
 
   return styles;
 }

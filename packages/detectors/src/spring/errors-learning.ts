@@ -10,7 +10,7 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
+import { SPRING_KEYWORD_GROUPS } from './keywords.js';
 import {
   LearningDetector,
   ValueDistribution,
@@ -18,7 +18,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
-import { SPRING_KEYWORD_GROUPS } from './keywords.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -67,7 +68,7 @@ function extractErrorPatterns(content: string, file: string): ErrorPatternInfo[]
       // Skip imports
       const lineStart = content.lastIndexOf('\n', match.index) + 1;
       const lineContent = content.slice(lineStart, content.indexOf('\n', match.index));
-      if (lineContent.trim().startsWith('import ')) continue;
+      if (lineContent.trim().startsWith('import ')) {continue;}
 
       const beforeMatch = content.slice(0, match.index);
       const line = beforeMatch.split('\n').length;
@@ -76,7 +77,7 @@ function extractErrorPatterns(content: string, file: string): ErrorPatternInfo[]
 
       // Categorize the pattern
       let patternType: ErrorPatternInfo['patternType'] = 'exception';
-      let value = keyword;
+      const value = keyword;
 
       if (keyword === 'ExceptionHandler') {
         patternType = 'handler';
@@ -145,10 +146,10 @@ export class SpringErrorsLearningDetector extends LearningDetector<SpringErrorsC
     context: DetectionContext,
     distributions: Map<keyof SpringErrorsConventions, ValueDistribution>
   ): void {
-    if (context.language !== 'java') return;
+    if (context.language !== 'java') {return;}
 
     const patterns = extractErrorPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const handlerStyleDist = distributions.get('handlerStyle')!;
     const responseStyleDist = distributions.get('responseStyle')!;

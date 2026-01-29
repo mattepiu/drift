@@ -80,7 +80,7 @@ export class ServiceProviderExtractor {
 
   private extractProvides(classBody: string): string[] {
     const match = classBody.match(PROVIDES_PATTERN);
-    if (!match || !match[1]) return [];
+    if (!match?.[1]) {return [];}
     return match[1].split(',').map(p => p.trim().replace(/['"]/g, '')).filter(Boolean);
   }
 
@@ -96,8 +96,8 @@ export class ServiceProviderExtractor {
   private extractClassBody(content: string, startIndex: number): string {
     let depth = 1, i = startIndex;
     while (i < content.length && depth > 0) {
-      if (content[i] === '{') depth++;
-      else if (content[i] === '}') depth--;
+      if (content[i] === '{') {depth++;}
+      else if (content[i] === '}') {depth--;}
       i++;
     }
     return content.substring(startIndex, i - 1);

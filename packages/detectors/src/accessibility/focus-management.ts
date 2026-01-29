@@ -3,9 +3,10 @@
  * @requirements 20.4 - Focus management patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 export type FocusManagementPatternType = 'focus-visible' | 'focus-within' | 'use-focus' | 'auto-focus' | 'focus-ref' | 'focus-ring';
 export type FocusManagementViolationType = 'outline-none' | 'missing-focus-indicator';
@@ -55,7 +56,7 @@ export function detectOutlineNoneViolations(content: string, filePath: string): 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     // Skip if line has focus-visible replacement
-    if (/focus-visible|focus:ring/.test(line)) continue;
+    if (/focus-visible|focus:ring/.test(line)) {continue;}
     for (const pattern of OUTLINE_NONE_PATTERNS) {
       const regex = new RegExp(pattern.source, pattern.flags);
       let match;
@@ -68,12 +69,12 @@ export function detectOutlineNoneViolations(content: string, filePath: string): 
 }
 
 export function analyzeFocusManagement(content: string, filePath: string): FocusManagementAnalysis {
-  if (shouldExcludeFile(filePath)) return { patterns: [], violations: [], focusPatternCount: 0, hasFocusVisible: false, confidence: 1.0 };
+  if (shouldExcludeFile(filePath)) {return { patterns: [], violations: [], focusPatternCount: 0, hasFocusVisible: false, confidence: 1.0 };}
   const patterns: FocusManagementPatternInfo[] = [...detectFocusVisible(content, filePath), ...detectFocusWithin(content, filePath), ...detectUseFocus(content, filePath), ...detectAutoFocus(content, filePath), ...detectFocusRef(content, filePath), ...detectFocusRing(content, filePath)];
   const violations: FocusManagementViolationInfo[] = [...detectOutlineNoneViolations(content, filePath)];
   const focusPatternCount = patterns.length;
   const hasFocusVisible = patterns.some((p) => p.type === 'focus-visible');
-  let confidence = 0.7; if (patterns.length > 0) confidence += 0.15; if (violations.length === 0) confidence += 0.1; confidence = Math.min(confidence, 0.95);
+  let confidence = 0.7; if (patterns.length > 0) {confidence += 0.15;} if (violations.length === 0) {confidence += 0.1;} confidence = Math.min(confidence, 0.95);
   return { patterns, violations, focusPatternCount, hasFocusVisible, confidence };
 }
 
@@ -86,9 +87,9 @@ export class FocusManagementDetector extends RegexDetector {
   readonly supportedLanguages: Language[] = ['typescript', 'javascript'];
 
   async detect(context: DetectionContext): Promise<DetectionResult> {
-    if (!this.supportsLanguage(context.language)) return this.createEmptyResult();
+    if (!this.supportsLanguage(context.language)) {return this.createEmptyResult();}
     const analysis = analyzeFocusManagement(context.content, context.file);
-    if (analysis.patterns.length === 0 && analysis.violations.length === 0) return this.createEmptyResult();
+    if (analysis.patterns.length === 0 && analysis.violations.length === 0) {return this.createEmptyResult();}
     
     // Convert internal violations to standard Violation format
     const violations = this.convertViolationInfos(analysis.violations.map(v => ({

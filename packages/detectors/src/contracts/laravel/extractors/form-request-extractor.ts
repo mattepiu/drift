@@ -7,13 +7,14 @@
  * @module contracts/laravel/extractors/form-request-extractor
  */
 
+import { ClassExtractor } from '../../../php/class-extractor.js';
+import { inferTypeFromRules } from '../types.js';
+
+import type { PhpClassInfo, PhpMethodInfo } from '../../../php/types.js';
 import type {
   LaravelFormRequestInfo,
   ValidationRule,
 } from '../types.js';
-import { inferTypeFromRules } from '../types.js';
-import { ClassExtractor } from '../../../php/class-extractor.js';
-import type { PhpClassInfo, PhpMethodInfo } from '../../../php/types.js';
 
 // ============================================================================
 // Regex Patterns
@@ -91,8 +92,8 @@ export class FormRequestExtractor {
    * Check if a class is a form request
    */
   private isFormRequest(classInfo: PhpClassInfo): boolean {
-    if (classInfo.extends?.includes('FormRequest')) return true;
-    if (classInfo.name.endsWith('Request') && classInfo.methods.some(m => m.name === 'rules')) return true;
+    if (classInfo.extends?.includes('FormRequest')) {return true;}
+    if (classInfo.name.endsWith('Request') && classInfo.methods.some(m => m.name === 'rules')) {return true;}
     return false;
   }
 
@@ -135,7 +136,7 @@ export class FormRequestExtractor {
   private extractRules(method: PhpMethodInfo): ValidationRule[] {
     const rules: ValidationRule[] = [];
     
-    if (!method.body) return rules;
+    if (!method.body) {return rules;}
 
     // Extract array-style rules
     RULE_ARRAY_PATTERN.lastIndex = 0;
@@ -156,7 +157,7 @@ export class FormRequestExtractor {
       const rulesStr = match[2] || '';
       
       // Skip if already processed as array
-      if (rules.some(r => r.field === field)) continue;
+      if (rules.some(r => r.field === field)) {continue;}
       
       const ruleList = rulesStr.split('|').map(r => r.trim()).filter(Boolean);
       const rule = this.createValidationRule(field, ruleList, method.line);
@@ -191,7 +192,7 @@ export class FormRequestExtractor {
 
       if (char === ',' && !inString) {
         const trimmed = current.trim().replace(/^['"]|['"]$/g, '');
-        if (trimmed) rules.push(trimmed);
+        if (trimmed) {rules.push(trimmed);}
         current = '';
       } else {
         current += char;
@@ -199,7 +200,7 @@ export class FormRequestExtractor {
     }
 
     const trimmed = current.trim().replace(/^['"]|['"]$/g, '');
-    if (trimmed) rules.push(trimmed);
+    if (trimmed) {rules.push(trimmed);}
 
     return rules;
   }

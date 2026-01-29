@@ -12,7 +12,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -20,6 +19,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -94,19 +95,19 @@ function inferOperationType(context: string, routePath?: string): OperationType 
 
   // Check in order of specificity
   for (const kw of SEARCH_KEYWORDS) {
-    if (lower.includes(kw)) return 'search';
+    if (lower.includes(kw)) {return 'search';}
   }
   for (const kw of DELETE_KEYWORDS) {
-    if (lower.includes(kw)) return 'delete';
+    if (lower.includes(kw)) {return 'delete';}
   }
   for (const kw of CREATE_KEYWORDS) {
-    if (lower.includes(kw)) return 'create';
+    if (lower.includes(kw)) {return 'create';}
   }
   for (const kw of UPDATE_KEYWORDS) {
-    if (lower.includes(kw)) return 'update';
+    if (lower.includes(kw)) {return 'update';}
   }
   for (const kw of READ_KEYWORDS) {
-    if (lower.includes(kw)) return 'read';
+    if (lower.includes(kw)) {return 'read';}
   }
 
   return 'unknown';
@@ -218,7 +219,7 @@ export class HttpMethodsLearningDetector extends LearningDetector<HttpMethodConv
     distributions: Map<keyof HttpMethodConventions, ValueDistribution>
   ): void {
     const usages = extractMethodUsages(context.content, context.file);
-    if (usages.length === 0) return;
+    if (usages.length === 0) {return;}
 
     const readDist = distributions.get('readMethod')!;
     const createDist = distributions.get('createMethod')!;
@@ -321,7 +322,7 @@ export class HttpMethodsLearningDetector extends LearningDetector<HttpMethodConv
   }
 
   override generateQuickFix(violation: Violation): QuickFix | null {
-    if (!violation.expected) return null;
+    if (!violation.expected) {return null;}
 
     return {
       title: `Change to ${violation.expected}`,

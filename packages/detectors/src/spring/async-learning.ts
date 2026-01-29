@@ -10,7 +10,7 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
+import { SPRING_KEYWORD_GROUPS } from './keywords.js';
 import {
   LearningDetector,
   ValueDistribution,
@@ -18,7 +18,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
-import { SPRING_KEYWORD_GROUPS } from './keywords.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -68,7 +69,7 @@ function extractAsyncPatterns(content: string, file: string): AsyncPatternInfo[]
       // Skip imports
       const lineStart = content.lastIndexOf('\n', match.index) + 1;
       const lineContent = content.slice(lineStart, content.indexOf('\n', match.index));
-      if (lineContent.trim().startsWith('import ')) continue;
+      if (lineContent.trim().startsWith('import ')) {continue;}
 
       const beforeMatch = content.slice(0, match.index);
       const line = beforeMatch.split('\n').length;
@@ -89,9 +90,9 @@ function extractAsyncPatterns(content: string, file: string): AsyncPatternInfo[]
         patternType = 'scheduled';
         // Determine schedule type
         const afterMatch = content.slice(match.index, match.index + 100);
-        if (/fixedRate\s*=/.test(afterMatch)) value = 'fixed-rate';
-        else if (/fixedDelay\s*=/.test(afterMatch)) value = 'fixed-delay';
-        else if (/cron\s*=/.test(afterMatch)) value = 'cron';
+        if (/fixedRate\s*=/.test(afterMatch)) {value = 'fixed-rate';}
+        else if (/fixedDelay\s*=/.test(afterMatch)) {value = 'fixed-delay';}
+        else if (/cron\s*=/.test(afterMatch)) {value = 'cron';}
       } else if (['fixedRate', 'fixedDelay', 'cron'].includes(keyword)) {
         patternType = 'scheduled';
         value = keyword === 'fixedRate' ? 'fixed-rate' : 
@@ -140,10 +141,10 @@ export class SpringAsyncLearningDetector extends LearningDetector<SpringAsyncCon
     context: DetectionContext,
     distributions: Map<keyof SpringAsyncConventions, ValueDistribution>
   ): void {
-    if (context.language !== 'java') return;
+    if (context.language !== 'java') {return;}
 
     const patterns = extractAsyncPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const returnStyleDist = distributions.get('asyncReturnStyle')!;
     const scheduleStyleDist = distributions.get('scheduleStyle')!;

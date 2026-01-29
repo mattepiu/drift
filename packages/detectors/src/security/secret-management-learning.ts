@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -76,7 +77,7 @@ function detectNamingConvention(content: string): SecretNaming | null {
   const envMatches = content.match(/process\.env\.([A-Z_]+)/g);
   if (envMatches && envMatches.length > 0) {
     const hasScreamingSnake = envMatches.some(m => /[A-Z]+_[A-Z]+/.test(m));
-    if (hasScreamingSnake) return 'screaming-snake';
+    if (hasScreamingSnake) {return 'screaming-snake';}
   }
   return null;
 }
@@ -111,7 +112,7 @@ export class SecretManagementLearningDetector extends LearningDetector<SecretMan
       storageDist.add(secret.storage, context.file);
     }
     
-    if (naming) namingDist.add(naming, context.file);
+    if (naming) {namingDist.add(naming, context.file);}
   }
 
   protected async detectWithConventions(

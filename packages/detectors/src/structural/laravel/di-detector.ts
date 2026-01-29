@@ -4,11 +4,14 @@
  * @module structural/laravel/di-detector
  */
 
-import type { Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
-import { BaseDetector } from '../../base/base-detector.js';
-import type { LaravelStructuralAnalysis } from './types.js';
 import { ServiceProviderExtractor } from './extractors/service-provider-extractor.js';
+import { BaseDetector } from '../../base/base-detector.js';
+
+import type { LaravelStructuralAnalysis } from './types.js';
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { Language } from 'driftdetect-core';
+
+
 
 export class LaravelDIDetector extends BaseDetector {
   readonly id = 'structural/laravel-di';

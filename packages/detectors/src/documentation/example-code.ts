@@ -3,9 +3,10 @@
  * @requirements 21.5 - Example code patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 export type ExampleCodePatternType = 'code-block' | 'inline-code' | 'example-tag' | 'usage-example' | 'snippet' | 'demo-code';
 export type ExampleCodeViolationType = 'missing-example' | 'outdated-example';
@@ -60,7 +61,7 @@ export function detectSnippet(content: string, filePath: string): ExampleCodePat
 export function detectDemoCode(content: string, filePath: string): ExampleCodePatternInfo[] { return detectPatterns(content, filePath, DEMO_CODE_PATTERNS, 'demo-code'); }
 
 export function analyzeExampleCode(content: string, filePath: string): ExampleCodeAnalysis {
-  if (shouldExcludeFile(filePath)) return { patterns: [], violations: [], codeBlockCount: 0, hasExamples: false, confidence: 1.0 };
+  if (shouldExcludeFile(filePath)) {return { patterns: [], violations: [], codeBlockCount: 0, hasExamples: false, confidence: 1.0 };}
   const isPython = filePath.endsWith('.py');
   const patterns: ExampleCodePatternInfo[] = isPython
     ? [...detectCodeBlock(content, filePath), ...detectInlineCode(content, filePath), ...detectPythonDoctest(content, filePath), ...detectPythonExampleSection(content, filePath), ...detectPythonUsageComment(content, filePath), ...detectSnippet(content, filePath), ...detectDemoCode(content, filePath)]
@@ -68,7 +69,7 @@ export function analyzeExampleCode(content: string, filePath: string): ExampleCo
   const violations: ExampleCodeViolationInfo[] = [];
   const codeBlockCount = patterns.filter((p) => p.type === 'code-block').length;
   const hasExamples = patterns.some((p) => p.type === 'example-tag' || p.type === 'usage-example');
-  let confidence = 0.7; if (patterns.length > 0) confidence += 0.2; confidence = Math.min(confidence, 0.95);
+  let confidence = 0.7; if (patterns.length > 0) {confidence += 0.2;} confidence = Math.min(confidence, 0.95);
   return { patterns, violations, codeBlockCount, hasExamples, confidence };
 }
 
@@ -81,9 +82,9 @@ export class ExampleCodeDetector extends RegexDetector {
   readonly supportedLanguages: Language[] = ['typescript', 'javascript', 'markdown', 'python'];
 
   async detect(context: DetectionContext): Promise<DetectionResult> {
-    if (!this.supportsLanguage(context.language)) return this.createEmptyResult();
+    if (!this.supportsLanguage(context.language)) {return this.createEmptyResult();}
     const analysis = analyzeExampleCode(context.content, context.file);
-    if (analysis.patterns.length === 0 && analysis.violations.length === 0) return this.createEmptyResult();
+    if (analysis.patterns.length === 0 && analysis.violations.length === 0) {return this.createEmptyResult();}
     
     // Convert internal violations to standard Violation format
     const violations = this.convertViolationInfos(

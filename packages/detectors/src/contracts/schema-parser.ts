@@ -5,8 +5,8 @@
  * This provides more accurate type information than code analysis.
  */
 
-import type { ContractField, HttpMethod } from 'driftdetect-core';
 import type { ExtractedEndpoint } from './types.js';
+import type { ContractField, HttpMethod } from 'driftdetect-core';
 
 // ============================================================================
 // OpenAPI Parser
@@ -83,7 +83,7 @@ export function parseOpenAPISchema(content: string, file: string): ExtractedEndp
     }
   }
   
-  if (!schema.paths) return endpoints;
+  if (!schema.paths) {return endpoints;}
   
   const isSwagger2 = !!schema.swagger;
   const definitions = schema.components?.schemas || schema.definitions || {};
@@ -98,7 +98,7 @@ export function parseOpenAPISchema(content: string, file: string): ExtractedEndp
     ];
     
     for (const [method, operation] of methods) {
-      if (!operation) continue;
+      if (!operation) {continue;}
       
       const responseFields = extractOpenAPIResponseFields(operation, definitions, isSwagger2);
       const requestFields = extractOpenAPIRequestFields(operation, definitions, isSwagger2);
@@ -125,11 +125,11 @@ function extractOpenAPIResponseFields(
   isSwagger2: boolean
 ): ContractField[] {
   const responses = operation.responses;
-  if (!responses) return [];
+  if (!responses) {return [];}
   
   // Look for 200, 201, or default response
   const successResponse = responses['200'] || responses['201'] || responses['default'];
-  if (!successResponse) return [];
+  if (!successResponse) {return [];}
   
   let schema: OpenAPISchemaObject | undefined;
   
@@ -143,7 +143,7 @@ function extractOpenAPIResponseFields(
     }
   }
   
-  if (!schema) return [];
+  if (!schema) {return [];}
   
   return resolveSchemaToFields(schema, definitions, new Set());
 }
@@ -181,7 +181,7 @@ function resolveSchemaToFields(
   // Handle $ref
   if (schema.$ref) {
     const refName = schema.$ref.split('/').pop() || '';
-    if (visited.has(refName)) return []; // Prevent circular refs
+    if (visited.has(refName)) {return [];} // Prevent circular refs
     visited.add(refName);
     
     const refSchema = definitions[refName];
@@ -277,7 +277,7 @@ export function parseGraphQLSchema(content: string, file: string): ExtractedEndp
   while ((match = typePattern.exec(content)) !== null) {
     const typeName = match[1];
     const body = match[2];
-    if (!typeName || !body) continue;
+    if (!typeName || !body) {continue;}
     
     const fields = parseGraphQLFields(body);
     types.set(typeName, { name: typeName, fields });
@@ -336,14 +336,14 @@ function parseGraphQLFields(body: string): GraphQLField[] {
   
   for (const line of lines) {
     const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('#')) continue;
+    if (!trimmed || trimmed.startsWith('#')) {continue;}
     
     // Match: fieldName(args): Type or fieldName: Type
     const fieldMatch = trimmed.match(/^(\w+)(?:\(([^)]*)\))?\s*:\s*(.+?)(?:\s*#.*)?$/);
-    if (!fieldMatch) continue;
+    if (!fieldMatch) {continue;}
     
     const [, name, argsStr, typeStr] = fieldMatch;
-    if (!name || !typeStr) continue;
+    if (!name || !typeStr) {continue;}
     
     const { type, nullable, isList } = parseGraphQLType(typeStr);
     const args = argsStr ? parseGraphQLArgs(argsStr) : undefined;
@@ -360,10 +360,10 @@ function parseGraphQLArgs(argsStr: string): GraphQLField[] {
   
   for (const part of argParts) {
     const argMatch = part.trim().match(/^(\w+)\s*:\s*(.+)$/);
-    if (!argMatch) continue;
+    if (!argMatch) {continue;}
     
     const [, name, typeStr] = argMatch;
-    if (!name || !typeStr) continue;
+    if (!name || !typeStr) {continue;}
     
     const { type, nullable, isList } = parseGraphQLType(typeStr);
     args.push({ name, type, nullable, isList });
@@ -434,7 +434,7 @@ function parseBasicYAML(content: string): unknown {
   const stack: Array<{ obj: Record<string, unknown>; indent: number }> = [{ obj: result, indent: -1 }];
   
   for (const line of lines) {
-    if (!line.trim() || line.trim().startsWith('#')) continue;
+    if (!line.trim() || line.trim().startsWith('#')) {continue;}
     
     const indent = line.search(/\S/);
     const trimmed = line.trim();
@@ -448,7 +448,7 @@ function parseBasicYAML(content: string): unknown {
     
     // Parse key: value
     const colonIndex = trimmed.indexOf(':');
-    if (colonIndex === -1) continue;
+    if (colonIndex === -1) {continue;}
     
     const key = trimmed.slice(0, colonIndex).trim();
     let value: unknown = trimmed.slice(colonIndex + 1).trim();

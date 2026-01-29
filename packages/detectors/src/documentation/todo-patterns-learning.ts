@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -65,9 +66,9 @@ function extractTodoPatterns(content: string, file: string): TodoPatternInfo[] {
     const hasIssue = /#\d+|[A-Z]+-\d+/.test(attribution);
 
     let format: TodoFormat = 'plain';
-    if (hasAuthor) format = 'with-author';
-    else if (hasDate) format = 'with-date';
-    else if (hasIssue) format = 'with-issue';
+    if (hasAuthor) {format = 'with-author';}
+    else if (hasDate) {format = 'with-date';}
+    else if (hasIssue) {format = 'with-issue';}
 
     results.push({
       tag,
@@ -105,7 +106,7 @@ export class TodoPatternsLearningDetector extends LearningDetector<TodoPatternsC
     distributions: Map<keyof TodoPatternsConventions, ValueDistribution>
   ): void {
     const patterns = extractTodoPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const tagDist = distributions.get('preferredTag')!;
     const formatDist = distributions.get('format')!;

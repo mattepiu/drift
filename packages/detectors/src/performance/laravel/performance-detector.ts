@@ -4,11 +4,14 @@
  * @module performance/laravel/performance-detector
  */
 
-import type { Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
-import { BaseDetector } from '../../base/base-detector.js';
-import type { LaravelPerformanceAnalysis } from './types.js';
 import { CacheExtractor } from './extractors/cache-extractor.js';
+import { BaseDetector } from '../../base/base-detector.js';
+
+import type { LaravelPerformanceAnalysis } from './types.js';
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { Language } from 'driftdetect-core';
+
+
 
 export class LaravelPerformanceDetector extends BaseDetector {
   readonly id = 'performance/laravel-performance';

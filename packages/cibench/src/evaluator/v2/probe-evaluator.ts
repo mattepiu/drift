@@ -376,13 +376,13 @@ function aggregateProbeResults(results: IndividualProbeResult[]): ProbeResults {
     const typeData = byType[result.type];
     if (typeData) {
       typeData.scores.push(result.score);
-      if (result.passed) typeData.passed++;
+      if (result.passed) {typeData.passed++;}
     }
     
     const diffData = byDifficulty[result.difficulty];
     if (diffData) {
       diffData.scores.push(result.score);
-      if (result.passed) diffData.passed++;
+      if (result.passed) {diffData.passed++;}
     }
   }
   

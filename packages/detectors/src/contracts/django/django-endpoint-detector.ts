@@ -7,9 +7,13 @@
  * @module contracts/django/django-endpoint-detector
  */
 
-import type { ContractField, HttpMethod, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import { DjangoSerializerExtractor } from './serializer-extractor.js';
+import { VIEWSET_ACTION_METHODS, toContractFields } from './types.js';
+import { DjangoURLExtractor } from './url-extractor.js';
+import { DjangoViewSetExtractor } from './viewset-extractor.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import type { ExtractedEndpoint, BackendExtractionResult } from '../types.js';
 import type {
   DjangoViewSetInfo,
@@ -18,10 +22,7 @@ import type {
   DjangoSerializerInfo,
   DjangoExtractionResult,
 } from './types.js';
-import { VIEWSET_ACTION_METHODS, toContractFields } from './types.js';
-import { DjangoViewSetExtractor } from './viewset-extractor.js';
-import { DjangoSerializerExtractor } from './serializer-extractor.js';
-import { DjangoURLExtractor } from './url-extractor.js';
+import type { ContractField, HttpMethod, Language } from 'driftdetect-core';
 
 // ============================================
 // Django Endpoint Detector
@@ -138,9 +139,9 @@ export class DjangoEndpointDetector extends BaseDetector {
     const hasUrls = urlPatterns.length > 0 || routers.length > 0;
 
     let confidence = 0;
-    if (hasEndpoints) confidence += 0.4;
-    if (hasSerializers) confidence += 0.3;
-    if (hasUrls) confidence += 0.3;
+    if (hasEndpoints) {confidence += 0.4;}
+    if (hasSerializers) {confidence += 0.3;}
+    if (hasUrls) {confidence += 0.3;}
 
     return {
       viewsets,
@@ -210,7 +211,7 @@ export class DjangoEndpointDetector extends BaseDetector {
       const path = isDetail ? `/${viewset.name.toLowerCase()}/:id` : `/${viewset.name.toLowerCase()}`;
 
       const endpoint: ExtractedEndpoint = {
-        method: method as HttpMethod,
+        method: method,
         path,
         normalizedPath: path,
         file,
@@ -327,7 +328,7 @@ export class DjangoEndpointDetector extends BaseDetector {
     serializerMap: Map<string, DjangoSerializerInfo>
   ): ContractField[] {
     const serializer = serializerMap.get(serializerName);
-    if (!serializer) return [];
+    if (!serializer) {return [];}
 
     return toContractFields(serializer.fields);
   }

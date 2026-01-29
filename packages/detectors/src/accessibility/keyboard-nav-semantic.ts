@@ -5,12 +5,13 @@
  * by looking for semantic concepts.
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 export class KeyboardNavSemanticDetector extends SemanticDetector {
   readonly id = 'accessibility/keyboard-nav';

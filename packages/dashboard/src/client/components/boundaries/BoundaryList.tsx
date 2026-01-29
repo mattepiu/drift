@@ -5,9 +5,11 @@
  */
 
 import { useState } from 'react';
-import type { TableInfo, SensitiveField, ViewMode } from './types';
+
 import { OPERATION_CONFIG, SENSITIVITY_CONFIG } from './constants';
 import { calculateTableMetrics, truncatePath, type FileGroup } from './utils';
+
+import type { TableInfo, SensitiveField, ViewMode } from './types';
 
 // ============================================================================
 // Table Card

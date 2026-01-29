@@ -16,8 +16,9 @@
  * @requirements 9.4 - THE Styling_Detector SHALL detect typography scale adherence
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -312,7 +313,7 @@ export function isOnFontWeightScale(value: number): boolean {
  */
 export function findNearestFontSize(value: number, unit: 'px' | 'rem' | 'em'): number {
   const scale = unit === 'px' ? TYPOGRAPHY_SCALE_PX : TYPOGRAPHY_SCALE_REM;
-  let nearest: number = scale[0]!;
+  let nearest: number = scale[0];
   let minDiff = Math.abs(value - nearest);
 
   for (const scaleValue of scale) {
@@ -330,7 +331,7 @@ export function findNearestFontSize(value: number, unit: 'px' | 'rem' | 'em'): n
  * Find the nearest line height on the scale
  */
 export function findNearestLineHeight(value: number): number {
-  let nearest: number = LINE_HEIGHT_SCALE[0]!;
+  let nearest: number = LINE_HEIGHT_SCALE[0];
   let minDiff = Math.abs(value - nearest);
 
   for (const scaleValue of LINE_HEIGHT_SCALE) {
@@ -348,7 +349,7 @@ export function findNearestLineHeight(value: number): number {
  * Find the nearest font weight on the scale
  */
 export function findNearestFontWeight(value: number): number {
-  let nearest: number = FONT_WEIGHT_SCALE[0]!;
+  let nearest: number = FONT_WEIGHT_SCALE[0];
   let minDiff = Math.abs(value - nearest);
 
   for (const scaleValue of FONT_WEIGHT_SCALE) {
@@ -395,13 +396,13 @@ function isInsideComment(content: string, index: number): boolean {
 function extractCSSProperty(line: string): string | undefined {
   // Match CSS property: property-name: value
   const cssMatch = line.match(/([a-zA-Z-]+)\s*:/);
-  if (cssMatch && cssMatch[1]) {
+  if (cssMatch?.[1]) {
     return cssMatch[1];
   }
 
   // Match JS object property: propertyName: value
   const jsMatch = line.match(/([a-zA-Z]+)\s*:/);
-  if (jsMatch && jsMatch[1]) {
+  if (jsMatch?.[1]) {
     // Convert camelCase to kebab-case
     return jsMatch[1].replace(/([A-Z])/g, '-$1').toLowerCase();
   }
@@ -588,7 +589,7 @@ const NON_TYPOGRAPHY_TAILWIND_PREFIXES = [
 function isNonTypographyTailwindValue(lineContent: string, _matchIndex: number, value: string): boolean {
   // Find the position of the value in the line
   const valueInLine = lineContent.indexOf(value);
-  if (valueInLine === -1) return false;
+  if (valueInLine === -1) {return false;}
   
   // Look backwards from the value to find if it's inside a Tailwind class
   const beforeValue = lineContent.slice(0, valueInLine);
@@ -1293,7 +1294,7 @@ export class TypographyDetector extends RegexDetector {
 
     // Extract the value from the message
     const valueMatch = violation.message.match(/['"]([^'"]+)['"]/);
-    if (!valueMatch || !valueMatch[1]) {
+    if (!valueMatch?.[1]) {
       return null;
     }
 

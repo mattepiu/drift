@@ -5,12 +5,14 @@
  * gravitational link line.
  */
 
-import { useMemo } from 'react';
 import { Line } from '@react-three/drei';
+import { useMemo } from 'react';
 import * as THREE from 'three';
-import type { TableRelationship as TableRelationshipType, Vector3D } from '../../types/index.js';
+
 import { useGalaxyStore } from '../../store/index.js';
 import { toThreeVector, midpoint } from '../../utils/geometry-utils.js';
+
+import type { TableRelationship as TableRelationshipType, Vector3D } from '../../types/index.js';
 
 // ============================================================================
 // Types
@@ -69,7 +71,7 @@ export function TableRelationship({
   }, [relationship.type]);
   
   // Don't render if relationships are hidden
-  if (!display.showRelationships) return null;
+  if (!display.showRelationships) {return null;}
   
   return (
     <group>

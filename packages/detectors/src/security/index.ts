@@ -13,13 +13,13 @@
  * @requirements 16 - Security pattern detection
  */
 
+import { createCSPHeadersDetector } from './csp-headers.js';
+import { createCSRFProtectionDetector } from './csrf-protection.js';
 import { createInputSanitizationDetector } from './input-sanitization.js';
+import { createRateLimitingDetector } from './rate-limiting.js';
+import { createSecretManagementDetector } from './secret-management.js';
 import { createSQLInjectionDetector } from './sql-injection.js';
 import { createXSSPreventionDetector } from './xss-prevention.js';
-import { createCSRFProtectionDetector } from './csrf-protection.js';
-import { createCSPHeadersDetector } from './csp-headers.js';
-import { createSecretManagementDetector } from './secret-management.js';
-import { createRateLimitingDetector } from './rate-limiting.js';
 
 // Input Sanitization
 export {

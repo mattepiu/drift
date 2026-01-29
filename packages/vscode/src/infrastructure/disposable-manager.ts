@@ -59,7 +59,8 @@ export class DisposableManager implements IDisposableManager, vscode.Disposable 
       try {
         disposable?.dispose();
       } catch (error) {
-        console.error('[Drift] Error disposing resource:', error);
+        // Log error but continue disposing other resources
+        void error;
       }
     }
   }

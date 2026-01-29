@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -53,20 +54,20 @@ export interface DescribeNamingConventions {
 // ============================================================================
 
 function detectDescribeStyle(text: string): DescribeNamingStyle {
-  if (/^should\s/i.test(text)) return 'should-style';
-  if (/^when\s/i.test(text)) return 'when-style';
-  if (/^given\s/i.test(text)) return 'given-style';
-  if (/^[A-Z][a-zA-Z]+$/.test(text)) return 'component-name';
-  if (/^[a-z][a-zA-Z]+$/.test(text)) return 'function-name';
-  if (text.includes('/')) return 'module-path';
+  if (/^should\s/i.test(text)) {return 'should-style';}
+  if (/^when\s/i.test(text)) {return 'when-style';}
+  if (/^given\s/i.test(text)) {return 'given-style';}
+  if (/^[A-Z][a-zA-Z]+$/.test(text)) {return 'component-name';}
+  if (/^[a-z][a-zA-Z]+$/.test(text)) {return 'function-name';}
+  if (text.includes('/')) {return 'module-path';}
   
   return 'component-name';
 }
 
 function detectItStyle(text: string): ItNamingStyle {
-  if (/^should\s/i.test(text)) return 'should-style';
-  if (/^when\s/i.test(text)) return 'when-style';
-  if (/^[a-z]+s\s/i.test(text)) return 'verb-style'; // "returns", "throws", etc.
+  if (/^should\s/i.test(text)) {return 'should-style';}
+  if (/^when\s/i.test(text)) {return 'when-style';}
+  if (/^[a-z]+s\s/i.test(text)) {return 'verb-style';} // "returns", "throws", etc.
   return 'descriptive';
 }
 
@@ -116,7 +117,7 @@ function extractTestBlocks(content: string): TestBlock[] {
     }
     
     describeDepth += describeOpens - closes;
-    if (describeDepth < 0) describeDepth = 0;
+    if (describeDepth < 0) {describeDepth = 0;}
   }
   
   return blocks;
@@ -143,7 +144,7 @@ export class DescribeNamingLearningDetector extends LearningDetector<DescribeNam
     distributions: Map<keyof DescribeNamingConventions, ValueDistribution>
   ): void {
     // Only analyze test files
-    if (!context.isTestFile) return;
+    if (!context.isTestFile) {return;}
     
     const blocks = extractTestBlocks(context.content);
     

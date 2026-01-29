@@ -12,7 +12,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -20,6 +19,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -173,7 +174,7 @@ export class ClientPatternsLearningDetector extends LearningDetector<ClientConve
     distributions: Map<keyof ClientConventions, ValueDistribution>
   ): void {
     const patterns = extractAllPatterns(context.content);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const clientDist = distributions.get('primaryClient')!;
     const wrapperDist = distributions.get('usesWrapper')!;

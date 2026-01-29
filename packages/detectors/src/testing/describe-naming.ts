@@ -9,9 +9,10 @@
  * @requirements 14.6 - Describe naming patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -128,7 +129,7 @@ export function extractDescribeBlocks(content: string): DescribeNamingPatternInf
     }
 
     currentDepth += openBraces - closeBraces;
-    if (currentDepth < 0) currentDepth = 0;
+    if (currentDepth < 0) {currentDepth = 0;}
   }
 
   return results;

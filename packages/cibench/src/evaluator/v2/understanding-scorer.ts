@@ -7,6 +7,8 @@
  * - Uncertainty quantification (calibration)
  */
 
+import { calculateCalibration, type CalibrationSample } from './calibration.js';
+
 import type { IntentScore, CausalScore, UncertaintyScore } from './types.js';
 import type {
   ArchitecturalIntentGroundTruth,
@@ -14,7 +16,6 @@ import type {
   UncertaintyGroundTruth,
   IntentProbe,
 } from '../../schema/v2/understanding.js';
-import { calculateCalibration, type CalibrationSample } from './calibration.js';
 
 // ============================================================================
 // Architectural Intent Scoring
@@ -141,7 +142,7 @@ function evaluateIntentProbes(
   
   for (const probe of probes) {
     const response = responses.find(r => r.probeId === probe.id);
-    if (!response) continue;
+    if (!response) {continue;}
     
     const score = scoreProbeResponse(response.response, probe);
     totalScore += score;
@@ -257,7 +258,7 @@ function evaluateCounterfactuals(
   
   for (const exp of expected) {
     const match = found.find(f => f.scenarioId === exp.id);
-    if (!match) continue;
+    if (!match) {continue;}
     count++;
     
     // Score effect predictions
@@ -295,7 +296,7 @@ function evaluateCausalChains(
   
   for (const exp of expected) {
     const match = found.find(f => f.id === exp.id);
-    if (!match) continue;
+    if (!match) {continue;}
     count++;
     
     // Check chain accuracy (order matters)
@@ -304,7 +305,7 @@ function evaluateCausalChains(
     
     let correctOrder = 0;
     for (let i = 0; i < Math.min(expectedSteps.length, foundSteps.length); i++) {
-      if (expectedSteps[i] === foundSteps[i]) correctOrder++;
+      if (expectedSteps[i] === foundSteps[i]) {correctOrder++;}
     }
     
     accuracy += expectedSteps.length > 0 ? correctOrder / expectedSteps.length : 1;
@@ -340,7 +341,7 @@ export function evaluateUncertainty(
   
   for (const test of groundTruth.calibrationTests) {
     const prediction = toolOutput.predictions.find(p => p.taskId === test.id);
-    if (!prediction) continue;
+    if (!prediction) {continue;}
     
     const correct = prediction.prediction.toLowerCase().includes(test.correctAnswer.toLowerCase());
     samples.push({ confidence: prediction.confidence, correct });
@@ -375,7 +376,7 @@ function evaluateAmbiguityRecognition(
   
   for (const scenario of groundTruth.ambiguousScenarios) {
     const prediction = toolOutput.predictions.find(p => p.taskId === scenario.id);
-    if (!prediction) continue;
+    if (!prediction) {continue;}
     total++;
     
     // Check if confidence is appropriately low

@@ -5,9 +5,10 @@
  */
 
 
-import type { PatternFilters as PatternFiltersType } from '../../types';
-import type { ViewMode, SortConfig, SortField } from './types';
 import { CATEGORY_CONFIG, CATEGORY_ORDER, STATUS_CONFIG } from './constants';
+
+import type { ViewMode, SortConfig, SortField } from './types';
+import type { PatternFilters as PatternFiltersType } from '../../types';
 
 interface PatternFiltersProps {
   filters: PatternFiltersType;

@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -85,7 +86,7 @@ function extractRedactionPatterns(content: string, file: string): RedactionInfo[
 
 function detectLibrary(content: string): string | null {
   for (const { pattern, name } of LIBRARY_PATTERNS) {
-    if (pattern.test(content)) return name;
+    if (pattern.test(content)) {return name;}
   }
   return null;
 }

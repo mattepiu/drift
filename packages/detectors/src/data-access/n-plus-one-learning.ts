@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -43,10 +44,10 @@ const PREVENTION_PATTERNS = {
 };
 
 function detectPreventionMethod(content: string): NPlusOnePreventionMethod | null {
-  if (PREVENTION_PATTERNS.dataloader.test(content)) return 'dataloader';
-  if (PREVENTION_PATTERNS.eagerLoading.test(content)) return 'eager-loading';
-  if (PREVENTION_PATTERNS.joins.test(content)) return 'joins';
-  if (PREVENTION_PATTERNS.batchQueries.test(content)) return 'batch-queries';
+  if (PREVENTION_PATTERNS.dataloader.test(content)) {return 'dataloader';}
+  if (PREVENTION_PATTERNS.eagerLoading.test(content)) {return 'eager-loading';}
+  if (PREVENTION_PATTERNS.joins.test(content)) {return 'joins';}
+  if (PREVENTION_PATTERNS.batchQueries.test(content)) {return 'batch-queries';}
   return null;
 }
 
@@ -75,7 +76,7 @@ export class NPlusOneLearningDetector extends LearningDetector<NPlusOneConventio
     const dataloaderDist = distributions.get('usesDataLoader')!;
     const includeDist = distributions.get('usesInclude')!;
     
-    if (method) methodDist.add(method, context.file);
+    if (method) {methodDist.add(method, context.file);}
     dataloaderDist.add(/DataLoader/.test(context.content), context.file);
     includeDist.add(/include:/.test(context.content), context.file);
   }

@@ -9,12 +9,13 @@
  * - Accessor/mutator patterns
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Context Validation Patterns
@@ -120,7 +121,7 @@ export class LaravelEloquentSemanticDetector extends SemanticDetector {
     for (const pattern of NON_ELOQUENT_FILE_PATTERNS) {
       if (pattern.test(file)) {
         const hasContext = ELOQUENT_CONTEXT_KEYWORDS.some(k => contextLower.includes(k));
-        if (!hasContext) return false;
+        if (!hasContext) {return false;}
       }
     }
 
@@ -135,7 +136,7 @@ export class LaravelEloquentSemanticDetector extends SemanticDetector {
       const hasContext = ELOQUENT_CONTEXT_KEYWORDS.some(k => contextLower.includes(k));
       if (!hasContext) {
         const inEloquentFile = ELOQUENT_FILE_PATTERNS.some(p => p.test(file));
-        if (!inEloquentFile) return false;
+        if (!inEloquentFile) {return false;}
       }
     }
 

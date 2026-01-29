@@ -4,9 +4,10 @@
  * Enterprise-grade statistics dashboard for contract overview.
  */
 
-import type { ContractStatistics } from './types';
 import { METHOD_ORDER, METHOD_CONFIG, STATUS_CONFIG, MISMATCH_TYPE_CONFIG } from './constants';
 import { formatPercentage } from './utils';
+
+import type { ContractStatistics } from './types';
 
 // ============================================================================
 // Stat Card
@@ -129,7 +130,7 @@ function MethodBreakdown({ byMethod }: MethodBreakdownProps) {
       <div className="flex gap-2 flex-wrap">
         {METHOD_ORDER.map(method => {
           const count = byMethod[method] || 0;
-          if (count === 0) return null;
+          if (count === 0) {return null;}
           const config = METHOD_CONFIG[method];
           
           return (
@@ -196,7 +197,7 @@ function MismatchSummary({ mismatchesByType, mismatchesBySeverity, total }: Mism
       <div className="space-y-1">
         {Object.entries(mismatchesByType).map(([type, count]) => {
           const config = MISMATCH_TYPE_CONFIG[type as keyof typeof MISMATCH_TYPE_CONFIG];
-          if (!config) return null;
+          if (!config) {return null;}
           
           return (
             <div key={type} className="flex items-center justify-between text-xs">

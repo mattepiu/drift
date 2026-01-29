@@ -10,9 +10,10 @@
  * @requirements 17.5 - Configuration validation patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -387,9 +388,9 @@ export function detectEnvValidation(
       let match;
       while ((match = regex.exec(line)) !== null) {
         let library = 'unknown';
-        if (/envalid|cleanEnv/i.test(match[0])) library = 'envalid';
-        else if (/env-var/i.test(match[0])) library = 'env-var';
-        else if (/dotenv-safe/i.test(match[0])) library = 'dotenv-safe';
+        if (/envalid|cleanEnv/i.test(match[0])) {library = 'envalid';}
+        else if (/env-var/i.test(match[0])) {library = 'env-var';}
+        else if (/dotenv-safe/i.test(match[0])) {library = 'dotenv-safe';}
 
         results.push({
           type: 'env-validation',
@@ -415,12 +416,12 @@ export function detectUnsafeCastViolations(
   const lines = content.split('\n');
 
   // Only flag in config-related files
-  if (!/config|env|settings/i.test(filePath)) return results;
+  if (!/config|env|settings/i.test(filePath)) {return results;}
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     // Skip comments
-    if (/^\s*\/\/|^\s*\/\*/.test(line)) continue;
+    if (/^\s*\/\/|^\s*\/\*/.test(line)) {continue;}
 
     for (const pattern of UNSAFE_CAST_PATTERNS) {
       const regex = new RegExp(pattern.source, pattern.flags);
@@ -451,7 +452,7 @@ export function detectMissingValidationViolations(
   const lines = content.split('\n');
 
   // Only flag in config-related files
-  if (!/config|env|settings/i.test(filePath)) return results;
+  if (!/config|env|settings/i.test(filePath)) {return results;}
 
   // Check if file has any validation
   const hasValidation =
@@ -460,7 +461,7 @@ export function detectMissingValidationViolations(
     YUP_SCHEMA_PATTERNS.some((p) => new RegExp(p.source, p.flags).test(content)) ||
     ENV_VALIDATION_PATTERNS.some((p) => new RegExp(p.source, p.flags).test(content));
 
-  if (hasValidation) return results;
+  if (hasValidation) {return results;}
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
@@ -519,11 +520,11 @@ export function analyzeConfigValidation(
 
   let validationLibrary: string | undefined;
   const libPattern = patterns.find((p) => p.library);
-  if (libPattern) validationLibrary = libPattern.library;
+  if (libPattern) {validationLibrary = libPattern.library;}
 
   let confidence = 0.7;
-  if (hasValidation) confidence += 0.2;
-  if (violations.length === 0) confidence += 0.05;
+  if (hasValidation) {confidence += 0.2;}
+  if (violations.length === 0) {confidence += 0.05;}
   confidence = Math.min(confidence, 0.95);
 
   return {

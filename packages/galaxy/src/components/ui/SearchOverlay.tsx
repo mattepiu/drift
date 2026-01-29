@@ -5,6 +5,7 @@
  */
 
 import { useState, useCallback, useEffect, useMemo } from 'react';
+
 import { useGalaxyStore } from '../../store/index.js';
 
 // ============================================================================
@@ -19,7 +20,7 @@ export function SearchOverlay() {
   
   // Search results
   const results = useMemo(() => {
-    if (!galaxyData || !query.trim()) return { tables: [], entryPoints: [], fields: [] };
+    if (!galaxyData || !query.trim()) {return { tables: [], entryPoints: [], fields: [] };}
     
     const q = query.toLowerCase();
     
@@ -53,7 +54,7 @@ export function SearchOverlay() {
     };
     
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+    return () => { window.removeEventListener('keydown', handleKeyDown); };
   }, []);
   
   const handleSelect = useCallback((type: 'table' | 'entryPoint', id: string) => {
@@ -73,7 +74,7 @@ export function SearchOverlay() {
     <>
       {/* Search trigger button */}
       <button
-        onClick={() => setIsOpen(true)}
+        onClick={() => { setIsOpen(true); }}
         className="absolute left-4 top-4 flex items-center gap-2 px-3 py-2 rounded-lg bg-slate-800/80 hover:bg-slate-700 text-slate-400 text-sm transition-colors"
       >
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -95,7 +96,7 @@ export function SearchOverlay() {
               <input
                 type="text"
                 value={query}
-                onChange={(e) => setQuery(e.target.value)}
+                onChange={(e) => { setQuery(e.target.value); }}
                 placeholder="Search tables, fields, endpoints..."
                 className="flex-1 bg-transparent text-white placeholder-slate-500 outline-none"
                 autoFocus
@@ -116,7 +117,7 @@ export function SearchOverlay() {
                   <ResultSection title="Tables">
                     {results.tables.map(t => (
                       <ResultItem key={t.id} icon="🪐" label={t.name} sublabel={`${t.fields.length} fields`}
-                        onClick={() => handleSelect('table', t.id)} />
+                        onClick={() => { handleSelect('table', t.id); }} />
                     ))}
                   </ResultSection>
                 )}
@@ -125,7 +126,7 @@ export function SearchOverlay() {
                   <ResultSection title="Entry Points">
                     {results.entryPoints.map(e => (
                       <ResultItem key={e.id} icon="🛸" label={e.path} sublabel={`${e.method} • ${e.framework}`}
-                        onClick={() => handleSelect('entryPoint', e.id)} />
+                        onClick={() => { handleSelect('entryPoint', e.id); }} />
                     ))}
                   </ResultSection>
                 )}
@@ -134,7 +135,7 @@ export function SearchOverlay() {
                   <ResultSection title="Fields">
                     {results.fields.map(f => (
                       <ResultItem key={f.id} icon="🌙" label={f.name} sublabel={`${(f as any).tableName} • ${f.dataType}`}
-                        onClick={() => handleSelect('table', f.tableId)} />
+                        onClick={() => { handleSelect('table', f.tableId); }} />
                     ))}
                   </ResultSection>
                 )}

@@ -53,6 +53,6 @@ export interface DisposableManager {
  */
 export interface ServiceContainer {
   get<T>(key: string): T;
-  register<T>(key: string, instance: T): void;
+  register(key: string, instance: unknown): void;
   has(key: string): boolean;
 }

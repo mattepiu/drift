@@ -5,9 +5,10 @@
  */
 
 
-import type { PatternStatistics } from './types';
 import { STATUS_CONFIG, CONFIDENCE_CONFIG } from './constants';
 import { formatPercentage } from './utils';
+
+import type { PatternStatistics } from './types';
 
 interface StatCardProps {
   label: string;
@@ -96,7 +97,7 @@ function ConfidenceBreakdown({ byConfidenceLevel, total }: ConfidenceBreakdownPr
           const percentage = total > 0 ? (count / total) * 100 : 0;
           const config = CONFIDENCE_CONFIG[level];
           
-          if (percentage === 0) return null;
+          if (percentage === 0) {return null;}
           
           return (
             <div
@@ -116,7 +117,7 @@ function ConfidenceBreakdown({ byConfidenceLevel, total }: ConfidenceBreakdownPr
         {levels.map(level => {
           const config = CONFIDENCE_CONFIG[level];
           const count = byConfidenceLevel[level];
-          if (count === 0) return null;
+          if (count === 0) {return null;}
           
           return (
             <div key={level} className="flex items-center gap-1">

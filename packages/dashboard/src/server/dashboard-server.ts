@@ -10,13 +10,15 @@
  * @requirements 1.5 - Handle port conflict errors gracefully
  */
 
-import type { Server } from 'http';
 import * as path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
 import { DriftDataReader, type DashboardViolation } from './drift-data-reader.js';
 import { createExpressApp } from './express-app.js';
-import { WebSocketManager } from './websocket-server.js';
 import { PatternWatcher, type PatternChangeEvent } from './pattern-watcher.js';
+import { WebSocketManager } from './websocket-server.js';
+
+import type { Server } from 'http';
 
 // Get the directory of this file for resolving static files
 const __filename = fileURLToPath(import.meta.url);

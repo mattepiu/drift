@@ -16,21 +16,23 @@ import {
   DidChangeConfigurationNotification,
 } from 'vscode-languageserver/node.js';
 import { TextDocument } from 'vscode-languageserver-textdocument';
+
+
+import { buildInitializeResult, clientSupportsConfiguration, clientSupportsWorkspaceFolders } from './capabilities.js';
+import { createCodeActionsHandler } from './handlers/code-actions.js';
+import { createCodeLensHandler } from './handlers/code-lens.js';
+import { createCommandsHandler } from './handlers/commands.js';
+import { createDiagnosticsHandler } from './handlers/diagnostics.js';
+import { createDocumentSyncHandler } from './handlers/document-sync.js';
+import { createHoverHandler } from './handlers/hover.js';
+import { createInitializeHandler } from './handlers/initialize.js';
+
 import type {
   Connection,
   InitializeParams,
   InitializeResult,
   TextDocumentChangeEvent,
 } from 'vscode-languageserver';
-
-import { buildInitializeResult, clientSupportsConfiguration, clientSupportsWorkspaceFolders } from './capabilities.js';
-import { createInitializeHandler } from './handlers/initialize.js';
-import { createDocumentSyncHandler } from './handlers/document-sync.js';
-import { createDiagnosticsHandler } from './handlers/diagnostics.js';
-import { createCodeActionsHandler } from './handlers/code-actions.js';
-import { createHoverHandler } from './handlers/hover.js';
-import { createCodeLensHandler } from './handlers/code-lens.js';
-import { createCommandsHandler } from './handlers/commands.js';
 
 // ============================================================================
 // Types

@@ -413,9 +413,9 @@ function detectWarpAuthPatterns(
     const line = getLineNumber(source, match.index);
 
     let authType: RustAuthType = 'middleware';
-    if (header === 'authorization') authType = 'bearer';
-    else if (header === 'x-api-key') authType = 'api-key';
-    else if (header === 'cookie') authType = 'session';
+    if (header === 'authorization') {authType = 'bearer';}
+    else if (header === 'x-api-key') {authType = 'api-key';}
+    else if (header === 'cookie') {authType = 'session';}
 
     patterns.push({
       id: `warp-auth-header-${filePath}:${line}`,

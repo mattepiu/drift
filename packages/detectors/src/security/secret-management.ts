@@ -11,9 +11,10 @@
  * @requirements 16.6 - Secret management patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -253,9 +254,9 @@ export function detectSecretManager(
       let match;
       while ((match = regex.exec(line)) !== null) {
         let provider = 'unknown';
-        if (/aws|secretsmanager/i.test(match[0])) provider = 'aws';
-        else if (/google|gcp/i.test(match[0])) provider = 'gcp';
-        else if (/azure|keyvault/i.test(match[0])) provider = 'azure';
+        if (/aws|secretsmanager/i.test(match[0])) {provider = 'aws';}
+        else if (/google|gcp/i.test(match[0])) {provider = 'gcp';}
+        else if (/azure|keyvault/i.test(match[0])) {provider = 'azure';}
 
         results.push({
           type: 'secret-manager',
@@ -396,7 +397,7 @@ export function detectHardcodedSecrets(
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     // Skip comments
-    if (/^\s*\/\/|^\s*\/\*|^\s*\*|^\s*#/.test(line)) continue;
+    if (/^\s*\/\/|^\s*\/\*|^\s*\*|^\s*#/.test(line)) {continue;}
 
     for (const pattern of HARDCODED_SECRET_PATTERNS) {
       const regex = new RegExp(pattern.source, pattern.flags);
@@ -429,20 +430,20 @@ export function detectHardcodedApiKeys(
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
-    if (/^\s*\/\/|^\s*\/\*|^\s*\*|^\s*#/.test(line)) continue;
+    if (/^\s*\/\/|^\s*\/\*|^\s*\*|^\s*#/.test(line)) {continue;}
 
     for (const pattern of HARDCODED_API_KEY_PATTERNS) {
       const regex = new RegExp(pattern.source, pattern.flags);
       let match;
       while ((match = regex.exec(line)) !== null) {
         let secretType = 'api-key';
-        if (/AIza/.test(match[0])) secretType = 'google-api-key';
-        else if (/AKIA/.test(match[0])) secretType = 'aws-access-key';
-        else if (/sk-/.test(match[0])) secretType = 'openai-api-key';
-        else if (/ghp_|gho_/.test(match[0])) secretType = 'github-token';
-        else if (/xox/.test(match[0])) secretType = 'slack-token';
-        else if (/sk_live|sk_test/.test(match[0])) secretType = 'stripe-key';
-        else if (/SG\./.test(match[0])) secretType = 'sendgrid-key';
+        if (/AIza/.test(match[0])) {secretType = 'google-api-key';}
+        else if (/AKIA/.test(match[0])) {secretType = 'aws-access-key';}
+        else if (/sk-/.test(match[0])) {secretType = 'openai-api-key';}
+        else if (/ghp_|gho_/.test(match[0])) {secretType = 'github-token';}
+        else if (/xox/.test(match[0])) {secretType = 'slack-token';}
+        else if (/sk_live|sk_test/.test(match[0])) {secretType = 'stripe-key';}
+        else if (/SG\./.test(match[0])) {secretType = 'sendgrid-key';}
 
         results.push({
           type: 'hardcoded-api-key',
@@ -471,9 +472,9 @@ export function detectHardcodedPasswords(
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
-    if (/^\s*\/\/|^\s*\/\*|^\s*\*|^\s*#/.test(line)) continue;
+    if (/^\s*\/\/|^\s*\/\*|^\s*\*|^\s*#/.test(line)) {continue;}
     // Skip type definitions and interfaces
-    if (/:\s*string|interface\s+|type\s+/.test(line)) continue;
+    if (/:\s*string|interface\s+|type\s+/.test(line)) {continue;}
 
     for (const pattern of HARDCODED_PASSWORD_PATTERNS) {
       const regex = new RegExp(pattern.source, pattern.flags);
@@ -506,15 +507,15 @@ export function detectHardcodedTokens(
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
-    if (/^\s*\/\/|^\s*\/\*|^\s*\*|^\s*#/.test(line)) continue;
+    if (/^\s*\/\/|^\s*\/\*|^\s*\*|^\s*#/.test(line)) {continue;}
 
     for (const pattern of HARDCODED_TOKEN_PATTERNS) {
       const regex = new RegExp(pattern.source, pattern.flags);
       let match;
       while ((match = regex.exec(line)) !== null) {
         let secretType = 'token';
-        if (/jwt|eyJ/.test(match[0])) secretType = 'jwt';
-        else if (/bearer/i.test(match[0])) secretType = 'bearer-token';
+        if (/jwt|eyJ/.test(match[0])) {secretType = 'jwt';}
+        else if (/bearer/i.test(match[0])) {secretType = 'bearer-token';}
 
         results.push({
           type: 'hardcoded-token',
@@ -632,9 +633,9 @@ export function analyzeSecretManagement(
   const usesVault = patterns.some((p) => p.type === 'vault-integration');
 
   let confidence = 0.7;
-  if (usesEnvVariables) confidence += 0.1;
-  if (usesSecretManager || usesVault) confidence += 0.15;
-  if (violations.length === 0) confidence += 0.05;
+  if (usesEnvVariables) {confidence += 0.1;}
+  if (usesSecretManager || usesVault) {confidence += 0.15;}
+  if (violations.length === 0) {confidence += 0.05;}
   confidence = Math.min(confidence, 0.95);
 
   return {

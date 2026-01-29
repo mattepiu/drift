@@ -67,7 +67,7 @@ export function createScanHandlers(
         });
 
         await notifications.info(
-          `Scan complete: ${result.patterns} patterns, ${result.violations} violations`
+          `Scan complete: ${String(result.patterns)} patterns, ${String(result.violations)} violations`
         );
       } catch (error) {
         stateManager.update(draft => {

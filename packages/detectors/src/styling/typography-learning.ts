@@ -12,7 +12,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -20,6 +19,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -183,9 +184,9 @@ function extractCSSTypography(content: string, file: string): TypographyPatternI
 
     let weight: number;
     const rawValue = match[1] || '';
-    if (rawValue === 'normal') weight = 400;
-    else if (rawValue === 'bold') weight = 700;
-    else weight = parseInt(rawValue, 10) || 400;
+    if (rawValue === 'normal') {weight = 400;}
+    else if (rawValue === 'bold') {weight = 700;}
+    else {weight = parseInt(rawValue, 10) || 400;}
 
     results.push({
       method: 'inline',
@@ -264,7 +265,7 @@ export class TypographyLearningDetector extends LearningDetector<TypographyConve
     const cssTypo = extractCSSTypography(context.content, context.file);
     const allPatterns = [...tailwindTypo, ...cssTypo];
 
-    if (allPatterns.length === 0) return;
+    if (allPatterns.length === 0) {return;}
 
     const methodDist = distributions.get('method')!;
     const fontFamiliesDist = distributions.get('fontFamilies')!;

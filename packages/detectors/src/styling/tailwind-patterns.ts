@@ -19,8 +19,9 @@
  * @requirements 9.6 - THE Styling_Detector SHALL detect Tailwind pattern consistency
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -433,7 +434,7 @@ export function detectUtilityClasses(content: string, file: string): TailwindPat
 
     while ((match = regex.exec(content)) !== null) {
       const key = `${match.index}-${match[0]}`;
-      if (seenMatches.has(key)) continue;
+      if (seenMatches.has(key)) {continue;}
       seenMatches.add(key);
 
       // Skip if inside a comment
@@ -678,13 +679,13 @@ function extractClassNamesFromLine(line: string): string[] {
   
   // Match className="..." or class="..."
   const classAttrMatch = line.match(/(?:className|class)=["']([^"']+)["']/);
-  if (classAttrMatch && classAttrMatch[1]) {
+  if (classAttrMatch?.[1]) {
     classNames.push(...classAttrMatch[1].split(/\s+/).filter(Boolean));
   }
   
   // Match className={`...`} template literals
   const templateMatch = line.match(/(?:className|class)=\{`([^`]+)`\}/);
-  if (templateMatch && templateMatch[1]) {
+  if (templateMatch?.[1]) {
     // Extract static parts (ignore ${...} expressions)
     const staticParts = templateMatch[1].replace(/\$\{[^}]+\}/g, ' ');
     classNames.push(...staticParts.split(/\s+/).filter(Boolean));
@@ -692,7 +693,7 @@ function extractClassNamesFromLine(line: string): string[] {
   
   // Match @apply directive
   const applyMatch = line.match(/@apply\s+([^;]+)/);
-  if (applyMatch && applyMatch[1]) {
+  if (applyMatch?.[1]) {
     classNames.push(...applyMatch[1].split(/\s+/).filter(Boolean));
   }
   
@@ -741,7 +742,7 @@ export function detectArbitraryValueViolations(
  */
 export function suggestStandardClass(arbitraryClass: string): string | undefined {
   const match = arbitraryClass.match(/^([a-z][a-z0-9-]*)-\[([^\]]+)\]$/i);
-  if (!match) return undefined;
+  if (!match) {return undefined;}
 
   const [, property, value] = match;
   
@@ -769,12 +770,12 @@ export function suggestStandardClass(arbitraryClass: string): string | undefined
 
   // Handle percentage values for width/height
   if ((property === 'w' || property === 'h') && value) {
-    if (value === '100%') return `${property}-full`;
-    if (value === '50%') return `${property}-1/2`;
-    if (value === '33.333333%' || value === '33.33%') return `${property}-1/3`;
-    if (value === '66.666667%' || value === '66.67%') return `${property}-2/3`;
-    if (value === '25%') return `${property}-1/4`;
-    if (value === '75%') return `${property}-3/4`;
+    if (value === '100%') {return `${property}-full`;}
+    if (value === '50%') {return `${property}-1/2`;}
+    if (value === '33.333333%' || value === '33.33%') {return `${property}-1/3`;}
+    if (value === '66.666667%' || value === '66.67%') {return `${property}-2/3`;}
+    if (value === '25%') {return `${property}-1/4`;}
+    if (value === '75%') {return `${property}-3/4`;}
   }
 
   return undefined;
@@ -791,7 +792,7 @@ export function detectConflictingClasses(content: string, file: string): Tailwin
     const line = lines[lineIndex]!;
     const classNames = extractClassNamesFromLine(line);
     
-    if (classNames.length === 0) continue;
+    if (classNames.length === 0) {continue;}
 
     // Check for conflicting pairs
     for (const [pattern1, pattern2, description] of CONFLICTING_CLASS_PAIRS) {
@@ -836,7 +837,7 @@ export function detectInconsistentBreakpointOrder(content: string, file: string)
     const line = lines[lineIndex]!;
     const classNames = extractClassNamesFromLine(line);
     
-    if (classNames.length === 0) continue;
+    if (classNames.length === 0) {continue;}
 
     // Group classes by their property prefix (e.g., 'p' for p-4, 'flex' for flex)
     const classGroups = new Map<string, Array<{ className: string; breakpoint: string | null; index: number }>>();
@@ -859,7 +860,7 @@ export function detectInconsistentBreakpointOrder(content: string, file: string)
     for (const [propertyPrefix, group] of classGroups) {
       const responsiveClasses = group.filter(g => g.breakpoint !== null);
       
-      if (responsiveClasses.length < 2) continue;
+      if (responsiveClasses.length < 2) {continue;}
 
       // Check if breakpoints are in order (by their position in the class list)
       // Sort by their original index to check order

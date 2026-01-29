@@ -133,7 +133,7 @@ export class FactoryExtractor {
   private extractModelClass(classBody: string): string {
     // Try FQN first
     const fqnMatch = classBody.match(MODEL_PROPERTY_FQN_PATTERN);
-    if (fqnMatch && fqnMatch[1]) {
+    if (fqnMatch?.[1]) {
       const parts = fqnMatch[1].split('\\');
       return parts[parts.length - 1] || '';
     }
@@ -154,7 +154,7 @@ export class FactoryExtractor {
     while ((match = STATE_METHOD_PATTERN.exec(classBody)) !== null) {
       const name = match[1] || '';
       // Skip definition and configure methods
-      if (name === 'definition' || name === 'configure') continue;
+      if (name === 'definition' || name === 'configure') {continue;}
 
       const line = classLine + this.getLineNumber(classBody.substring(0, match.index), 0);
 
@@ -211,8 +211,8 @@ export class FactoryExtractor {
     let i = startIndex;
 
     while (i < content.length && depth > 0) {
-      if (content[i] === '{') depth++;
-      else if (content[i] === '}') depth--;
+      if (content[i] === '{') {depth++;}
+      else if (content[i] === '}') {depth--;}
       i++;
     }
 

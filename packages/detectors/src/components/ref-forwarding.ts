@@ -8,8 +8,9 @@
  * @requirements 8.7 - THE Component_Detector SHALL detect ref forwarding patterns
  */
 
-import type { PatternMatch, Violation, QuickFix, Language, Range, ASTNode } from 'driftdetect-core';
 import { ASTDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language, Range, ASTNode } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -203,7 +204,7 @@ export function getComponentName(node: ASTNode, content: string): string | undef
   const line = lines[node.startPosition.row];
   if (line) {
     const match = line.match(/(?:const|let|var|export\s+(?:const|let|var)?)\s+([A-Z][a-zA-Z0-9]*)\s*[=:]/);
-    if (match && match[1]) {
+    if (match?.[1]) {
       return match[1];
     }
   }
@@ -1004,7 +1005,7 @@ export class RefForwardingDetector extends ASTDetector {
     
     const processMatch = (match: RegExpExecArray, _pattern: RegExp) => {
       const componentName = match[1];
-      if (!componentName || seenComponents.has(componentName)) return;
+      if (!componentName || seenComponents.has(componentName)) {return;}
       
       const beforeMatch = content.slice(0, match.index);
       const lineNumber = beforeMatch.split('\n').length;

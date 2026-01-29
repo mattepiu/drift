@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -135,7 +136,7 @@ export class CompositionLearningDetector extends LearningDetector<CompositionCon
     distributions: Map<keyof CompositionConventions, ValueDistribution>
   ): void {
     const patterns = extractCompositionPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const styleDist = distributions.get('preferredStyle')!;
     const childrenDist = distributions.get('usesChildren')!;
@@ -148,9 +149,9 @@ export class CompositionLearningDetector extends LearningDetector<CompositionCon
 
     for (const pattern of patterns) {
       styleDist.add(pattern.style, context.file);
-      if (pattern.style === 'children') hasChildren = true;
-      if (pattern.style === 'render-props') hasRenderProps = true;
-      if (pattern.style === 'hoc') hasHOCs = true;
+      if (pattern.style === 'children') {hasChildren = true;}
+      if (pattern.style === 'render-props') {hasRenderProps = true;}
+      if (pattern.style === 'hoc') {hasHOCs = true;}
     }
 
     childrenDist.add(hasChildren, context.file);

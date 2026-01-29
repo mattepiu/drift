@@ -4,12 +4,13 @@
  * Language-agnostic detector for SQL injection prevention patterns.
  */
 
-import type { Violation } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../base/semantic-detector.js';
+
+import type { Violation } from 'driftdetect-core';
 
 export class SQLInjectionSemanticDetector extends SemanticDetector {
   readonly id = 'security/sql-injection';

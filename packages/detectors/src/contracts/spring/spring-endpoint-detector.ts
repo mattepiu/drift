@@ -7,9 +7,15 @@
  * @module contracts/spring/spring-endpoint-detector
  */
 
-import type { ContractField, HttpMethod, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import { SpringDtoExtractor } from './dto-extractor.js';
+import {
+  SPRING_MAPPING_ANNOTATIONS,
+  REQUEST_METHOD_MAP,
+  PARAM_ANNOTATION_MAP,
+} from './types.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import type { ExtractedEndpoint, BackendExtractionResult } from '../types.js';
 import type {
   SpringEndpoint,
@@ -20,12 +26,8 @@ import type {
   SpringMethodMapping,
   SpringAnnotationInfo,
 } from './types.js';
-import {
-  SPRING_MAPPING_ANNOTATIONS,
-  REQUEST_METHOD_MAP,
-  PARAM_ANNOTATION_MAP,
-} from './types.js';
-import { SpringDtoExtractor } from './dto-extractor.js';
+import type { ContractField, HttpMethod, Language } from 'driftdetect-core';
+
 
 /**
  * Unwrap wrapper types to get the inner type.
@@ -41,7 +43,7 @@ function unwrapType(javaType: string): string {
   ];
   for (const pattern of patterns) {
     const match = javaType.match(pattern);
-    if (match?.[1]) return match[1];
+    if (match?.[1]) {return match[1];}
   }
   return javaType;
 }
@@ -243,7 +245,7 @@ export class SpringEndpointDetector extends BaseDetector {
     const classPattern = /(?:(@RestController|@Controller)\s*(?:\([^)]*\))?\s*)?(?:(@RequestMapping\s*\(\s*(?:value\s*=\s*)?["']([^"']+)["'][^)]*\))\s*)?(?:@\w+(?:\([^)]*\))?\s*)*public\s+class\s+(\w+)/g;
 
     const match = classPattern.exec(content);
-    if (!match) return null;
+    if (!match) {return null;}
 
     const controllerAnnotation = match[1] || '';
     const baseRoute = match[3] || null;
@@ -290,7 +292,7 @@ export class SpringEndpointDetector extends BaseDetector {
 
       // Parse the mapping annotation
       const mappingInfo = this.parseMappingAnnotation(annotationBlock);
-      if (!mappingInfo) continue;
+      if (!mappingInfo) {continue;}
 
       // Parse method parameters
       const parameters = this.parseMethodParameters(paramsStr);
@@ -341,7 +343,7 @@ export class SpringEndpointDetector extends BaseDetector {
     // Check for @RequestMapping with method attribute
     const requestMappingPattern = /@RequestMapping\s*\(\s*([^)]+)\)/i;
     const rmMatch = annotationBlock.match(requestMappingPattern);
-    if (rmMatch && rmMatch[1]) {
+    if (rmMatch?.[1]) {
       const args = rmMatch[1];
 
       // Extract path
@@ -360,7 +362,7 @@ export class SpringEndpointDetector extends BaseDetector {
       // Extract method
       let method: HttpMethod = 'GET';
       const methodMatch = args.match(/method\s*=\s*(?:RequestMethod\.)?(\w+)/);
-      if (methodMatch && methodMatch[1]) {
+      if (methodMatch?.[1]) {
         const methodStr = methodMatch[1].toUpperCase();
         method = REQUEST_METHOD_MAP[methodStr] || REQUEST_METHOD_MAP[`RequestMethod.${methodStr}`] || 'GET';
       }
@@ -376,13 +378,13 @@ export class SpringEndpointDetector extends BaseDetector {
    */
   private parseMethodParameters(paramsStr: string): SpringParamInfo[] {
     const params: SpringParamInfo[] = [];
-    if (!paramsStr.trim()) return params;
+    if (!paramsStr.trim()) {return params;}
 
     const paramParts = this.splitParameters(paramsStr);
 
     for (const part of paramParts) {
       const trimmed = part.trim();
-      if (!trimmed) continue;
+      if (!trimmed) {continue;}
 
       const paramInfo = this.parseParameter(trimmed);
       if (paramInfo) {
@@ -417,13 +419,13 @@ export class SpringEndpointDetector extends BaseDetector {
 
           // Check for required attribute
           const requiredMatch = args.match(/required\s*=\s*(true|false)/i);
-          if (requiredMatch && requiredMatch[1]) {
+          if (requiredMatch?.[1]) {
             required = requiredMatch[1].toLowerCase() === 'true';
           }
 
           // Check for defaultValue attribute
           const defaultMatch = args.match(/defaultValue\s*=\s*["']([^"']*)["']/);
-          if (defaultMatch && defaultMatch[1] !== undefined) {
+          if (defaultMatch?.[1] !== undefined) {
             defaultValue = defaultMatch[1];
             required = false; // Has default, so not required
           }
@@ -438,7 +440,7 @@ export class SpringEndpointDetector extends BaseDetector {
 
     // Parse type and name
     const paramMatch = cleanParam.match(/(\w+(?:<[^>]+>)?)\s+(\w+)/);
-    if (!paramMatch || !paramMatch[1] || !paramMatch[2]) return null;
+    if (!paramMatch?.[1] || !paramMatch[2]) {return null;}
 
     return {
       name: paramMatch[2],
@@ -470,7 +472,7 @@ export class SpringEndpointDetector extends BaseDetector {
       if (argsStr) {
         // Check for simple value
         const simpleValueMatch = argsStr.match(/^["']([^"']+)["']$/);
-        if (simpleValueMatch && simpleValueMatch[1]) {
+        if (simpleValueMatch?.[1]) {
           annotation.value = simpleValueMatch[1];
         } else {
           // Parse named arguments
@@ -530,7 +532,7 @@ export class SpringEndpointDetector extends BaseDetector {
 
     // @PreAuthorize("expression")
     const preAuthorizeMatch = block.match(/@PreAuthorize\s*\(\s*["']([^"']+)["']\s*\)/);
-    if (preAuthorizeMatch && preAuthorizeMatch[1]) {
+    if (preAuthorizeMatch?.[1]) {
       authInfos.push({
         type: 'PreAuthorize',
         expression: preAuthorizeMatch[1],
@@ -540,7 +542,7 @@ export class SpringEndpointDetector extends BaseDetector {
 
     // @PostAuthorize("expression")
     const postAuthorizeMatch = block.match(/@PostAuthorize\s*\(\s*["']([^"']+)["']\s*\)/);
-    if (postAuthorizeMatch && postAuthorizeMatch[1]) {
+    if (postAuthorizeMatch?.[1]) {
       authInfos.push({
         type: 'PostAuthorize',
         expression: postAuthorizeMatch[1],
@@ -550,7 +552,7 @@ export class SpringEndpointDetector extends BaseDetector {
 
     // @Secured({"ROLE_ADMIN", "ROLE_USER"})
     const securedMatch = block.match(/@Secured\s*\(\s*\{?\s*([^})]+)\s*\}?\s*\)/);
-    if (securedMatch && securedMatch[1]) {
+    if (securedMatch?.[1]) {
       const rolesStr = securedMatch[1];
       const roles = this.parseRolesList(rolesStr);
       authInfos.push({
@@ -562,7 +564,7 @@ export class SpringEndpointDetector extends BaseDetector {
 
     // @RolesAllowed({"ADMIN", "USER"})
     const rolesAllowedMatch = block.match(/@RolesAllowed\s*\(\s*\{?\s*([^})]+)\s*\}?\s*\)/);
-    if (rolesAllowedMatch && rolesAllowedMatch[1]) {
+    if (rolesAllowedMatch?.[1]) {
       const rolesStr = rolesAllowedMatch[1];
       const roles = this.parseRolesList(rolesStr);
       authInfos.push({
@@ -696,9 +698,9 @@ export class SpringEndpointDetector extends BaseDetector {
     const base = baseRoute || '';
     const method = methodRoute || '';
 
-    if (!base && !method) return '/';
-    if (!base) return method.startsWith('/') ? method : `/${method}`;
-    if (!method) return base.startsWith('/') ? base : `/${base}`;
+    if (!base && !method) {return '/';}
+    if (!base) {return method.startsWith('/') ? method : `/${method}`;}
+    if (!method) {return base.startsWith('/') ? base : `/${base}`;}
 
     const normalizedBase = base.endsWith('/') ? base.slice(0, -1) : base;
     const normalizedMethod = method.startsWith('/') ? method : `/${method}`;
@@ -739,8 +741,8 @@ export class SpringEndpointDetector extends BaseDetector {
     let depth = 0;
 
     for (const char of paramsStr) {
-      if (char === '<' || char === '(') depth++;
-      else if (char === '>' || char === ')') depth--;
+      if (char === '<' || char === '(') {depth++;}
+      else if (char === '>' || char === ')') {depth--;}
       else if (char === ',' && depth === 0) {
         result.push(current);
         current = '';

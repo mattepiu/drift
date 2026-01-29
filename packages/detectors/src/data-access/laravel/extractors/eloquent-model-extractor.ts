@@ -6,6 +6,8 @@
  * @module data-access/laravel/extractors/eloquent-model-extractor
  */
 
+import { MODEL_EVENTS } from '../types.js';
+
 import type {
   EloquentModelInfo,
   RelationshipInfo,
@@ -16,7 +18,6 @@ import type {
   ModelExtractionResult,
   ModelEvent,
 } from '../types.js';
-import { MODEL_EVENTS } from '../types.js';
 
 // ============================================================================
 // Regex Patterns
@@ -409,7 +410,7 @@ export class EloquentModelExtractor {
    */
   private extractArrayProperty(content: string, pattern: RegExp): string[] {
     const match = content.match(pattern);
-    if (!match || !match[1]) return [];
+    if (!match?.[1]) {return [];}
 
     return match[1]
       .split(',')
@@ -422,7 +423,7 @@ export class EloquentModelExtractor {
    */
   private extractCasts(content: string): Record<string, string> {
     const match = content.match(CASTS_PATTERN);
-    if (!match || !match[1]) return {};
+    if (!match?.[1]) {return {};}
 
     const casts: Record<string, string> = {};
     const castPattern = /['"](\w+)['"]\s*=>\s*['"]?([^'",\]]+)['"]?/g;
@@ -453,8 +454,8 @@ export class EloquentModelExtractor {
     let i = startIndex;
 
     while (i < content.length && depth > 0) {
-      if (content[i] === '{') depth++;
-      else if (content[i] === '}') depth--;
+      if (content[i] === '{') {depth++;}
+      else if (content[i] === '}') {depth--;}
       i++;
     }
 
@@ -466,14 +467,14 @@ export class EloquentModelExtractor {
    */
   private extractMethodBody(content: string, startIndex: number): string {
     const openBrace = content.indexOf('{', startIndex);
-    if (openBrace === -1) return '';
+    if (openBrace === -1) {return '';}
 
     let depth = 1;
     let i = openBrace + 1;
 
     while (i < content.length && depth > 0) {
-      if (content[i] === '{') depth++;
-      else if (content[i] === '}') depth--;
+      if (content[i] === '{') {depth++;}
+      else if (content[i] === '}') {depth--;}
       i++;
     }
 
@@ -500,7 +501,7 @@ export class EloquentModelExtractor {
    * Simple pluralize
    */
   private pluralize(word: string): string {
-    if (word.endsWith('y')) return word.slice(0, -1) + 'ies';
+    if (word.endsWith('y')) {return word.slice(0, -1) + 'ies';}
     if (word.endsWith('s') || word.endsWith('x') || word.endsWith('ch') || word.endsWith('sh')) {
       return word + 'es';
     }

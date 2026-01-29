@@ -4,12 +4,13 @@
  * Language-agnostic detector for feature flag patterns.
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 export class FeatureFlagsSemanticDetector extends SemanticDetector {
   readonly id = 'config/feature-flags';

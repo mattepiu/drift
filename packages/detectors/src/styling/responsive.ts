@@ -19,8 +19,9 @@
  * @requirements 9.8 - THE Styling_Detector SHALL detect responsive breakpoint usage patterns
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -565,13 +566,13 @@ function extractClassNamesFromLine(line: string): string[] {
   
   // Match className="..." or class="..."
   const classAttrMatch = line.match(/(?:className|class)=["']([^"']+)["']/);
-  if (classAttrMatch && classAttrMatch[1]) {
+  if (classAttrMatch?.[1]) {
     classNames.push(...classAttrMatch[1].split(/\s+/).filter(Boolean));
   }
   
   // Match className={`...`} template literals
   const templateMatch = line.match(/(?:className|class)=\{`([^`]+)`\}/);
-  if (templateMatch && templateMatch[1]) {
+  if (templateMatch?.[1]) {
     // Extract static parts (ignore ${...} expressions)
     const staticParts = templateMatch[1].replace(/\$\{[^}]+\}/g, ' ');
     classNames.push(...staticParts.split(/\s+/).filter(Boolean));
@@ -591,7 +592,7 @@ export function detectInconsistentBreakpointOrder(content: string, file: string)
     const line = lines[lineIndex]!;
     const classNames = extractClassNamesFromLine(line);
     
-    if (classNames.length === 0) continue;
+    if (classNames.length === 0) {continue;}
 
     // Group responsive classes by their base class
     const responsiveGroups = new Map<string, Array<{ breakpoint: string; className: string; index: number }>>();
@@ -615,7 +616,7 @@ export function detectInconsistentBreakpointOrder(content: string, file: string)
 
     // Check each group for ordering issues
     for (const [_propertyPrefix, group] of responsiveGroups) {
-      if (group.length < 2) continue;
+      if (group.length < 2) {continue;}
 
       // Check if breakpoints are in correct order
       for (let i = 0; i < group.length - 1; i++) {

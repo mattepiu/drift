@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -139,7 +140,7 @@ export class AriaRolesLearningDetector extends LearningDetector<AriaRolesConvent
     distributions: Map<keyof AriaRolesConventions, ValueDistribution>
   ): void {
     const patterns = extractAriaPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const styleDist = distributions.get('usageStyle')!;
     const labelDist = distributions.get('usesAriaLabels')!;
@@ -151,10 +152,10 @@ export class AriaRolesLearningDetector extends LearningDetector<AriaRolesConvent
     let hasDescribedby = false;
 
     for (const pattern of patterns) {
-      if (pattern.type === 'role') hasRoles = true;
-      if (pattern.type === 'semantic') hasSemantic = true;
-      if (pattern.type === 'label') hasLabels = true;
-      if (pattern.type === 'describedby') hasDescribedby = true;
+      if (pattern.type === 'role') {hasRoles = true;}
+      if (pattern.type === 'semantic') {hasSemantic = true;}
+      if (pattern.type === 'label') {hasLabels = true;}
+      if (pattern.type === 'describedby') {hasDescribedby = true;}
     }
 
     if (hasRoles && hasSemantic) {

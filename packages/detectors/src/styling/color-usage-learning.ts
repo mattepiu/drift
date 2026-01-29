@@ -11,7 +11,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -19,6 +18,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -154,7 +155,7 @@ export class ColorUsageLearningDetector extends LearningDetector<ColorConvention
     distributions: Map<keyof ColorConventions, ValueDistribution>
   ): void {
     const patterns = extractColorPatterns(context.content);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const systemDist = distributions.get('colorSystem')!;
     const cssVarDist = distributions.get('usesCSSVariables')!;
@@ -170,10 +171,10 @@ export class ColorUsageLearningDetector extends LearningDetector<ColorConvention
     for (const pattern of patterns) {
       systemDist.add(pattern.system, context.file);
 
-      if (pattern.system === 'css-variables') hasCSSVars = true;
-      if (pattern.system === 'theme-object') hasTheme = true;
-      if (pattern.system === 'tailwind') hasTailwind = true;
-      if (pattern.system === 'hardcoded') hasHardcoded = true;
+      if (pattern.system === 'css-variables') {hasCSSVars = true;}
+      if (pattern.system === 'theme-object') {hasTheme = true;}
+      if (pattern.system === 'tailwind') {hasTailwind = true;}
+      if (pattern.system === 'hardcoded') {hasHardcoded = true;}
     }
 
     cssVarDist.add(hasCSSVars, context.file);

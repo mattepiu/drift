@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -71,9 +72,9 @@ function extractCircuitBreakers(content: string, file: string): CircuitBreakerIn
 }
 
 function detectStateManagement(content: string): StateManagement | null {
-  if (/@CircuitBreaker|@Resilient/.test(content)) return 'decorator';
-  if (/class\s+\w*CircuitBreaker/.test(content)) return 'class-based';
-  if (/createCircuitBreaker|circuitBreaker\s*\(/.test(content)) return 'functional';
+  if (/@CircuitBreaker|@Resilient/.test(content)) {return 'decorator';}
+  if (/class\s+\w*CircuitBreaker/.test(content)) {return 'class-based';}
+  if (/createCircuitBreaker|circuitBreaker\s*\(/.test(content)) {return 'functional';}
   return null;
 }
 
@@ -122,9 +123,9 @@ export class CircuitBreakerLearningDetector extends LearningDetector<CircuitBrea
       libraryDist.add(breaker.library, context.file);
     }
     
-    if (stateManagement) stateDist.add(stateManagement, context.file);
-    if (timeout) timeoutDist.add(timeout, context.file);
-    if (threshold) thresholdDist.add(threshold, context.file);
+    if (stateManagement) {stateDist.add(stateManagement, context.file);}
+    if (timeout) {timeoutDist.add(timeout, context.file);}
+    if (threshold) {thresholdDist.add(threshold, context.file);}
     
     const hasHalfOpen = /halfOpen|half-open|HALF_OPEN/i.test(context.content);
     if (breakers.length > 0) {

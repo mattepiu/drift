@@ -12,9 +12,10 @@
  * language-specific syntax.
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import { BaseDetector, type DetectionContext, type DetectionResult } from './base-detector.js';
+
 import type { DetectionMethod } from '../registry/types.js';
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -272,8 +273,8 @@ export abstract class SemanticDetector extends BaseDetector {
           const contextType = this.detectContextType(line, keyword);
           
           // Skip comments/strings if configured
-          if (contextType === 'comment' && !this.config.includeComments) continue;
-          if (contextType === 'string_literal' && !this.config.includeStrings) continue;
+          if (contextType === 'comment' && !this.config.includeComments) {continue;}
+          if (contextType === 'string_literal' && !this.config.includeStrings) {continue;}
           
           const semanticMatch: SemanticMatch = {
             keyword,
@@ -355,8 +356,8 @@ export abstract class SemanticDetector extends BaseDetector {
 
     // Analyze each file
     for (const context of contexts) {
-      if (!this.supportsLanguage(context.language)) continue;
-      if (context.isTestFile || context.isTypeDefinition) continue;
+      if (!this.supportsLanguage(context.language)) {continue;}
+      if (context.isTestFile || context.isTypeDefinition) {continue;}
       
       const matches = this.findSemanticMatches(context);
       allMatches.push(...matches);
@@ -376,7 +377,7 @@ export abstract class SemanticDetector extends BaseDetector {
     const totalMatches = allMatches.length;
     
     for (const [contextType, data] of contextCounts) {
-      if (data.count === 0) continue;
+      if (data.count === 0) {continue;}
       
       patterns.push({
         contextType,
@@ -468,10 +469,10 @@ export abstract class SemanticDetector extends BaseDetector {
     
     // Determine level
     let level: 'high' | 'medium' | 'low' | 'uncertain';
-    if (score >= 0.85) level = 'high';
-    else if (score >= 0.70) level = 'medium';
-    else if (score >= 0.50) level = 'low';
-    else level = 'uncertain';
+    if (score >= 0.85) {level = 'high';}
+    else if (score >= 0.70) {level = 'medium';}
+    else if (score >= 0.50) {level = 'low';}
+    else {level = 'uncertain';}
     
     return { score, level };
   }

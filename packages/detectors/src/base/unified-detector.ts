@@ -9,12 +9,13 @@
  * @requirements 6.4 - THE Detector_System SHALL support multiple detection methods
  */
 
+import { BaseDetector, type DetectionContext, type DetectionResult } from './base-detector.js';
+
 import type {
   PatternMatch,
   Violation,
 } from 'driftdetect-core';
 
-import { BaseDetector, type DetectionContext, type DetectionResult } from './base-detector.js';
 
 // ============================================================================
 // Types
@@ -144,7 +145,7 @@ export abstract class UnifiedDetector extends BaseDetector {
    */
   get detectionMethod(): 'ast' | 'regex' | 'semantic' | 'structural' | 'custom' {
     const primary = this.strategies[0];
-    if (primary === 'learning') return 'custom';
+    if (primary === 'learning') {return 'custom';}
     return primary || 'custom';
   }
 
@@ -349,7 +350,7 @@ export abstract class UnifiedDetector extends BaseDetector {
    * Calculate combined confidence from multiple strategy results
    */
   private calculateCombinedConfidence(results: StrategyResult[]): number {
-    if (results.length === 0) return 0;
+    if (results.length === 0) {return 0;}
 
     switch (this.mergeConfig.confidenceCombination) {
       case 'max':

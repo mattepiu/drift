@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -108,7 +109,7 @@ export class DebounceThrottleLearningDetector extends LearningDetector<DebounceT
     distributions: Map<keyof DebounceThrottleConventions, ValueDistribution>
   ): void {
     const patterns = extractDebounceThrottlePatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const methodDist = distributions.get('preferredMethod')!;
     const debounceMsDist = distributions.get('defaultDebounceMs')!;

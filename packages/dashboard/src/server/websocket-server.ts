@@ -8,8 +8,9 @@
  */
 
 import { WebSocketServer, WebSocket, type RawData } from 'ws';
-import type { Server } from 'http';
+
 import type { DashboardViolation } from './drift-data-reader.js';
+import type { Server } from 'http';
 
 // ============================================================================
 // Types

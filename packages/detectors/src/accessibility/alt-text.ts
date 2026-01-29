@@ -3,9 +3,10 @@
  * @requirements 20.6 - Alt text patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 export type AltTextPatternType = 'img-alt' | 'decorative-alt' | 'svg-title' | 'icon-label' | 'figure-caption';
 export type AltTextViolationType = 'missing-alt' | 'empty-alt-non-decorative' | 'redundant-alt';
@@ -82,12 +83,12 @@ export function detectRedundantAltViolations(content: string, filePath: string):
 }
 
 export function analyzeAltText(content: string, filePath: string): AltTextAnalysis {
-  if (shouldExcludeFile(filePath)) return { patterns: [], violations: [], imgWithAltCount: 0, decorativeCount: 0, confidence: 1.0 };
+  if (shouldExcludeFile(filePath)) {return { patterns: [], violations: [], imgWithAltCount: 0, decorativeCount: 0, confidence: 1.0 };}
   const patterns: AltTextPatternInfo[] = [...detectImgAlt(content, filePath), ...detectDecorativeAlt(content, filePath), ...detectSvgTitle(content, filePath), ...detectIconLabel(content, filePath), ...detectFigureCaption(content, filePath)];
   const violations: AltTextViolationInfo[] = [...detectMissingAltViolations(content, filePath), ...detectRedundantAltViolations(content, filePath)];
   const imgWithAltCount = patterns.filter((p) => p.type === 'img-alt').length;
   const decorativeCount = patterns.filter((p) => p.type === 'decorative-alt').length;
-  let confidence = 0.7; if (patterns.length > 0) confidence += 0.15; if (violations.length === 0) confidence += 0.1; confidence = Math.min(confidence, 0.95);
+  let confidence = 0.7; if (patterns.length > 0) {confidence += 0.15;} if (violations.length === 0) {confidence += 0.1;} confidence = Math.min(confidence, 0.95);
   return { patterns, violations, imgWithAltCount, decorativeCount, confidence };
 }
 
@@ -100,9 +101,9 @@ export class AltTextDetector extends RegexDetector {
   readonly supportedLanguages: Language[] = ['typescript', 'javascript'];
 
   async detect(context: DetectionContext): Promise<DetectionResult> {
-    if (!this.supportsLanguage(context.language)) return this.createEmptyResult();
+    if (!this.supportsLanguage(context.language)) {return this.createEmptyResult();}
     const analysis = analyzeAltText(context.content, context.file);
-    if (analysis.patterns.length === 0 && analysis.violations.length === 0) return this.createEmptyResult();
+    if (analysis.patterns.length === 0 && analysis.violations.length === 0) {return this.createEmptyResult();}
     
     // Convert internal violations to standard Violation format
     const violations = analysis.violations.map(v => this.convertViolationInfo({

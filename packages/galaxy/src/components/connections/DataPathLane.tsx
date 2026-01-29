@@ -5,15 +5,17 @@
  * entry points and tables. Animated particles flow along the path.
  */
 
-import { useRef, useMemo } from 'react';
-import { useFrame } from '@react-three/fiber';
 import { Line } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useRef, useMemo } from 'react';
 import * as THREE from 'three';
-import type { DataPath, Vector3D } from '../../types/index.js';
+
+import { PATH_CONFIG, ANIMATION_CONFIG } from '../../constants/index.js';
 import { useGalaxyStore } from '../../store/index.js';
 import { getOperationThreeColor, getSensitivityThreeColor } from '../../utils/color-utils.js';
 import { generateCurvedPath, calculatePathWidth, toThreeVector } from '../../utils/geometry-utils.js';
-import { PATH_CONFIG, ANIMATION_CONFIG } from '../../constants/index.js';
+
+import type { DataPath, Vector3D } from '../../types/index.js';
 
 // ============================================================================
 // Types
@@ -89,15 +91,15 @@ export function DataPathLane({
     }
     
     // Dim if not selected/hovered and something else is
-    if (isSelected) return 1;
-    if (isHovered) return Math.min(1, base * 1.3);
+    if (isSelected) {return 1;}
+    if (isHovered) {return Math.min(1, base * 1.3);}
     
     return base;
   }, [display.pathOpacity, viewMode, path.isTested, isSelected, isHovered]);
   
   // Animation - flowing dashes
   useFrame((_, delta) => {
-    if (!lineRef.current) return;
+    if (!lineRef.current) {return;}
     
     dashOffsetRef.current -= PATH_CONFIG.FLOW_SPEED * delta * display.animationSpeed;
     
@@ -108,7 +110,7 @@ export function DataPathLane({
   });
   
   // Don't render if paths are hidden
-  if (!display.showPaths) return null;
+  if (!display.showPaths) {return null;}
   
   return (
     <group

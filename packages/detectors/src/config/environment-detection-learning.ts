@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -44,10 +45,10 @@ const ENV_ACCESS_PATTERNS = {
 };
 
 function detectEnvAccessMethod(content: string): EnvAccessMethod | null {
-  if (ENV_ACCESS_PATTERNS.importMeta.test(content)) return 'import-meta';
-  if (ENV_ACCESS_PATTERNS.processEnv.test(content)) return 'process-env';
-  if (ENV_ACCESS_PATTERNS.dotenv.test(content)) return 'dotenv';
-  if (ENV_ACCESS_PATTERNS.configObject.test(content)) return 'config-object';
+  if (ENV_ACCESS_PATTERNS.importMeta.test(content)) {return 'import-meta';}
+  if (ENV_ACCESS_PATTERNS.processEnv.test(content)) {return 'process-env';}
+  if (ENV_ACCESS_PATTERNS.dotenv.test(content)) {return 'dotenv';}
+  if (ENV_ACCESS_PATTERNS.configObject.test(content)) {return 'config-object';}
   return null;
 }
 
@@ -75,7 +76,7 @@ export class EnvironmentDetectionLearningDetector extends LearningDetector<Envir
     const methodDist = distributions.get('envAccessMethod')!;
     const validationDist = distributions.get('usesEnvValidation')!;
     
-    if (method) methodDist.add(method, context.file);
+    if (method) {methodDist.add(method, context.file);}
     
     const usesValidation = /z\.string\(\)|yup\.string\(\)|joi\.string\(\)|validateEnv/i.test(context.content);
     validationDist.add(usesValidation, context.file);

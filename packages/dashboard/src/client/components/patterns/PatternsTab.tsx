@@ -10,15 +10,17 @@
  */
 
 import React, { useMemo, useState, useCallback } from 'react';
-import { usePatterns } from '../../hooks';
-import { useDashboardStore } from '../../store';
-import type { ViewMode, SortConfig } from './types';
-import { PatternStats } from './PatternStats';
+
+import { PatternDetail, PatternDetailEmpty } from './PatternDetail';
 import { PatternFilters } from './PatternFilters';
 import { PatternList } from './PatternList';
-import { PatternDetail, PatternDetailEmpty } from './PatternDetail';
+import { PatternStats } from './PatternStats';
 import { QuickReviewPanel, NeedsReviewPanel } from './ReviewPanels';
 import { calculateStatistics, groupPatternsByCategory, sortPatterns } from './utils';
+import { usePatterns } from '../../hooks';
+import { useDashboardStore } from '../../store';
+
+import type { ViewMode, SortConfig } from './types';
 
 export function PatternsTab(): React.ReactElement {
   // Global state
@@ -37,17 +39,17 @@ export function PatternsTab(): React.ReactElement {
 
   // Computed data
   const sortedPatterns = useMemo(() => {
-    if (!patterns) return [];
+    if (!patterns) {return [];}
     return sortPatterns(patterns, sort);
   }, [patterns, sort]);
 
   const groupedPatterns = useMemo(() => {
-    if (!patterns) return [];
+    if (!patterns) {return [];}
     return groupPatternsByCategory(patterns);
   }, [patterns]);
 
   const statistics = useMemo(() => {
-    if (!patterns) return null;
+    if (!patterns) {return null;}
     return calculateStatistics(patterns);
   }, [patterns]);
 

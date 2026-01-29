@@ -10,8 +10,9 @@
  * @requirements Go Language Support - Phase 8
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -148,7 +149,7 @@ export class FiberDetector extends RegexDetector {
     for (const match of matches) {
       const middlewares = match.captures[2]?.split(',').map(m => m.trim()) ?? [];
       for (const middleware of middlewares) {
-        if (middleware.startsWith('"') || middleware.startsWith("'")) continue;
+        if (middleware.startsWith('"') || middleware.startsWith("'")) {continue;}
         patterns.push({
           patternId: `${this.id}/middleware`,
           location: { file, line: match.line, column: match.column },
@@ -162,7 +163,7 @@ export class FiberDetector extends RegexDetector {
   }
 
   private calculateConfidence(patterns: PatternMatch[]): number {
-    if (patterns.length === 0) return 1.0;
+    if (patterns.length === 0) {return 1.0;}
     return patterns.reduce((sum, p) => sum + p.confidence, 0) / patterns.length;
   }
 }

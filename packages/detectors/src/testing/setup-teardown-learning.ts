@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -92,10 +93,10 @@ export class SetupTeardownLearningDetector extends LearningDetector<SetupTeardow
     context: DetectionContext,
     distributions: Map<keyof SetupTeardownConventions, ValueDistribution>
   ): void {
-    if (!context.isTestFile) return;
+    if (!context.isTestFile) {return;}
 
     const patterns = extractSetupPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const styleDist = distributions.get('setupStyle')!;
     const afterEachDist = distributions.get('usesAfterEach')!;
@@ -107,10 +108,10 @@ export class SetupTeardownLearningDetector extends LearningDetector<SetupTeardow
     let hasAfterAll = false;
 
     for (const pattern of patterns) {
-      if (pattern.type === 'beforeEach') hasBeforeEach = true;
-      if (pattern.type === 'beforeAll') hasBeforeAll = true;
-      if (pattern.type === 'afterEach') hasAfterEach = true;
-      if (pattern.type === 'afterAll') hasAfterAll = true;
+      if (pattern.type === 'beforeEach') {hasBeforeEach = true;}
+      if (pattern.type === 'beforeAll') {hasBeforeAll = true;}
+      if (pattern.type === 'afterEach') {hasAfterEach = true;}
+      if (pattern.type === 'afterAll') {hasAfterAll = true;}
     }
 
     if (hasBeforeEach && hasBeforeAll) {

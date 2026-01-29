@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -65,8 +66,8 @@ function extractJSDocPatterns(content: string, file: string): JSDocPatternInfo[]
 
     // Determine style
     let style: JSDocStyle = 'minimal';
-    if (hasParams && hasReturn) style = 'full';
-    if (/@remarks\b|@see\b|@link\b/.test(comment)) style = 'tsdoc';
+    if (hasParams && hasReturn) {style = 'full';}
+    if (/@remarks\b|@see\b|@link\b/.test(comment)) {style = 'tsdoc';}
 
     results.push({
       style,
@@ -103,7 +104,7 @@ export class JSDocPatternsLearningDetector extends LearningDetector<JSDocConvent
     distributions: Map<keyof JSDocConventions, ValueDistribution>
   ): void {
     const patterns = extractJSDocPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const styleDist = distributions.get('style')!;
     const paramsDist = distributions.get('usesParamTags')!;

@@ -83,10 +83,10 @@ export class DjangoSerializerExtractor {
       const name = match[1];
       const bases = match[2];
 
-      if (!name || !bases) continue;
+      if (!name || !bases) {continue;}
 
       // Check if this is a serializer class
-      if (!this.isSerializerClass(bases)) continue;
+      if (!this.isSerializerClass(bases)) {continue;}
 
       const line = this.getLineNumber(content, match.index);
       const classBody = this.extractClassBody(content, match.index + match[0].length);
@@ -141,18 +141,18 @@ export class DjangoSerializerExtractor {
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      if (line === undefined) continue;
+      if (line === undefined) {continue;}
 
       // Stop at next class definition at same or lower indentation
-      if (i > 0 && /^class\s+\w+/.test(line)) break;
+      if (i > 0 && /^class\s+\w+/.test(line)) {break;}
 
       // Stop at unindented non-empty line (except first line)
-      if (i > 0 && line.trim() && !line.startsWith(' ') && !line.startsWith('\t')) break;
+      if (i > 0 && line.trim() && !line.startsWith(' ') && !line.startsWith('\t')) {break;}
 
       bodyLines.push(line);
 
       // Limit to reasonable size
-      if (bodyLines.length > 200) break;
+      if (bodyLines.length > 200) {break;}
     }
 
     return bodyLines.join('\n');
@@ -216,10 +216,10 @@ export class DjangoSerializerExtractor {
       const fieldClass = match[2];
       const argsStr = match[3];
 
-      if (!fieldName || !fieldClass) continue;
+      if (!fieldName || !fieldClass) {continue;}
 
       // Skip Meta class and methods
-      if (fieldName === 'Meta' || fieldName === 'class') continue;
+      if (fieldName === 'Meta' || fieldName === 'class') {continue;}
 
       const field = this.parseField(fieldName, fieldClass, argsStr ?? '', match.index);
       fields.push(field);
@@ -271,7 +271,7 @@ export class DjangoSerializerExtractor {
       const key = match[1];
       const value = match[2]?.trim();
 
-      if (!key || !value) continue;
+      if (!key || !value) {continue;}
 
       // Parse the value
       kwargs[this.camelCase(key)] = this.parseValue(value);
@@ -286,9 +286,9 @@ export class DjangoSerializerExtractor {
   private parseValue(value: string): unknown {
     const trimmed = value.trim();
 
-    if (trimmed === 'True') return true;
-    if (trimmed === 'False') return false;
-    if (trimmed === 'None') return null;
+    if (trimmed === 'True') {return true;}
+    if (trimmed === 'False') {return false;}
+    if (trimmed === 'None') {return null;}
 
     // Number
     const num = parseFloat(trimmed);
@@ -321,7 +321,7 @@ export class DjangoSerializerExtractor {
     const parts = inner.split(',');
     for (const part of parts) {
       const trimmed = part.trim();
-      if (!trimmed) continue;
+      if (!trimmed) {continue;}
 
       // Remove quotes
       if ((trimmed.startsWith('"') && trimmed.endsWith('"')) ||
@@ -356,7 +356,7 @@ export class DjangoSerializerExtractor {
     // Find Meta class
     META_CLASS_PATTERN.lastIndex = 0;
     const metaMatch = META_CLASS_PATTERN.exec(classBody);
-    if (!metaMatch) return result;
+    if (!metaMatch) {return result;}
 
     const metaStart = metaMatch.index + metaMatch[0].length;
     const metaBody = this.extractMetaBody(classBody, metaStart);
@@ -407,17 +407,17 @@ export class DjangoSerializerExtractor {
 
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i];
-      if (line === undefined) continue;
+      if (line === undefined) {continue;}
 
       // Stop at next class or method definition
-      if (i > 0 && /^\s{0,4}(?:class|def)\s+/.test(line)) break;
+      if (i > 0 && /^\s{0,4}(?:class|def)\s+/.test(line)) {break;}
 
       // Stop at field definition (not indented enough for Meta)
-      if (i > 0 && /^\s{4}\w+\s*=/.test(line)) break;
+      if (i > 0 && /^\s{4}\w+\s*=/.test(line)) {break;}
 
       bodyLines.push(line);
 
-      if (bodyLines.length > 50) break;
+      if (bodyLines.length > 50) {break;}
     }
 
     return bodyLines.join('\n');
@@ -437,7 +437,7 @@ export class DjangoSerializerExtractor {
       const fieldName = match[1];
       const kwargsStr = match[2];
 
-      if (!fieldName || !kwargsStr) continue;
+      if (!fieldName || !kwargsStr) {continue;}
 
       result[fieldName] = this.parseFieldKwargs(kwargsStr) as DjangoFieldKwargs;
     }

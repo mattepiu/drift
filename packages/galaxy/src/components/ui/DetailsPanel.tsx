@@ -5,8 +5,8 @@
  * Shows table fields, entry point details, or path information.
  */
 
-import { useGalaxyStore, useSelectedTable, useSelectedEntryPoint, useSelectedTablePaths } from '../../store/index.js';
 import { SENSITIVITY_COLORS, AUTH_LEVEL_COLORS } from '../../constants/index.js';
+import { useGalaxyStore, useSelectedTable, useSelectedEntryPoint, useSelectedTablePaths } from '../../store/index.js';
 
 // ============================================================================
 // Component
@@ -18,7 +18,7 @@ export function DetailsPanel() {
   const selectedEntryPoint = useSelectedEntryPoint();
   const tablePaths = useSelectedTablePaths();
   
-  if (!isPanelOpen || activePanel !== 'details') return null;
+  if (!isPanelOpen || activePanel !== 'details') {return null;}
   
   return (
     <div className="absolute right-4 top-4 w-80 max-h-[calc(100vh-8rem)] overflow-y-auto bg-slate-900/95 backdrop-blur-sm rounded-lg border border-slate-700 shadow-xl">

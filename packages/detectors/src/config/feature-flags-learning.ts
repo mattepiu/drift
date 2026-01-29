@@ -12,7 +12,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -20,6 +19,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -112,7 +113,7 @@ function extractFlagUsages(content: string, _file: string): FlagUsageInfo[] {
       // Try to extract flag name from arguments
       const argMatch = content.slice(match.index).match(/\(\s*['"`]([^'"`]+)['"`]/);
       const funcName = match[1];
-      if (!funcName) continue;
+      if (!funcName) {continue;}
       
       usages.push({
         type: 'function',
@@ -136,7 +137,7 @@ function extractFlagUsages(content: string, _file: string): FlagUsageInfo[] {
       
       const argMatch = content.slice(match.index).match(/\(\s*['"`]([^'"`]+)['"`]/);
       const hookName = match[1];
-      if (!hookName) continue;
+      if (!hookName) {continue;}
       
       usages.push({
         type: 'hook',
@@ -160,7 +161,7 @@ function extractFlagUsages(content: string, _file: string): FlagUsageInfo[] {
       
       // Extract prefix (FEATURE_, FF_, ENABLE_, etc.)
       const envName = match[1];
-      if (!envName) continue;
+      if (!envName) {continue;}
       const prefixMatch = envName.match(/^(FEATURE_|FF_|ENABLE_|VITE_FEATURE_|VITE_FF_)/);
       
       usages.push({
@@ -183,7 +184,7 @@ function extractFlagUsages(content: string, _file: string): FlagUsageInfo[] {
       const lastNewline = beforeMatch.lastIndexOf('\n');
       const column = match.index - lastNewline;
       const serviceName = match[1];
-      if (!serviceName) continue;
+      if (!serviceName) {continue;}
       
       usages.push({
         type: 'service',
@@ -204,7 +205,7 @@ function extractFlagUsages(content: string, _file: string): FlagUsageInfo[] {
       const lastNewline = beforeMatch.lastIndexOf('\n');
       const column = match.index - lastNewline;
       const flagName = match[1];
-      if (!flagName) continue;
+      if (!flagName) {continue;}
       
       usages.push({
         type: 'hardcoded',
@@ -223,9 +224,9 @@ function extractFlagUsages(content: string, _file: string): FlagUsageInfo[] {
  * Detect flag naming convention
  */
 function detectFlagNaming(flagName: string): 'camelCase' | 'SCREAMING_SNAKE_CASE' | 'kebab-case' | 'mixed' {
-  if (/^[A-Z][A-Z0-9_]*$/.test(flagName)) return 'SCREAMING_SNAKE_CASE';
-  if (/^[a-z][a-zA-Z0-9]*$/.test(flagName)) return 'camelCase';
-  if (/^[a-z][a-z0-9-]*$/.test(flagName)) return 'kebab-case';
+  if (/^[A-Z][A-Z0-9_]*$/.test(flagName)) {return 'SCREAMING_SNAKE_CASE';}
+  if (/^[a-z][a-zA-Z0-9]*$/.test(flagName)) {return 'camelCase';}
+  if (/^[a-z][a-z0-9-]*$/.test(flagName)) {return 'kebab-case';}
   return 'mixed';
 }
 
@@ -255,7 +256,7 @@ export class FeatureFlagsLearningDetector extends LearningDetector<FeatureFlagCo
   ): void {
     const usages = extractFlagUsages(context.content, context.file);
     
-    if (usages.length === 0) return;
+    if (usages.length === 0) {return;}
     
     const functionDist = distributions.get('checkFunction')!;
     const hookDist = distributions.get('hookName')!;

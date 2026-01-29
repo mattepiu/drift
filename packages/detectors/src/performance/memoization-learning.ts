@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -94,7 +95,7 @@ export class MemoizationLearningDetector extends LearningDetector<MemoizationCon
     distributions: Map<keyof MemoizationConventions, ValueDistribution>
   ): void {
     const patterns = extractMemoizationPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const methodDist = distributions.get('preferredMethod')!;
     const reactMemoDist = distributions.get('usesReactMemo')!;
@@ -107,9 +108,9 @@ export class MemoizationLearningDetector extends LearningDetector<MemoizationCon
 
     for (const pattern of patterns) {
       methodDist.add(pattern.method, context.file);
-      if (pattern.method === 'React.memo') hasReactMemo = true;
-      if (pattern.method === 'useMemo') hasUseMemo = true;
-      if (pattern.method === 'useCallback') hasUseCallback = true;
+      if (pattern.method === 'React.memo') {hasReactMemo = true;}
+      if (pattern.method === 'useMemo') {hasUseMemo = true;}
+      if (pattern.method === 'useCallback') {hasUseCallback = true;}
     }
 
     if (patterns.length > 0) {

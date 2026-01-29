@@ -4,9 +4,10 @@
  * Detailed view of a selected table's data access.
  */
 
-import type { TableInfo, DataAccessPoint, BoundaryViolation } from './types';
 import { OPERATION_CONFIG, SENSITIVITY_CONFIG } from './constants';
 import { truncatePath } from './utils';
+
+import type { TableInfo, DataAccessPoint, BoundaryViolation } from './types';
 
 // ============================================================================
 // Empty State

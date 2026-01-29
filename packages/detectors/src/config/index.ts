@@ -12,12 +12,12 @@
  * @requirements 17 - Configuration pattern detection
  */
 
-import { createEnvNamingDetector } from './env-naming.js';
-import { createRequiredOptionalDetector } from './required-optional.js';
-import { createDefaultValuesDetector } from './default-values.js';
-import { createFeatureFlagsDetector } from './feature-flags.js';
 import { createConfigValidationDetector } from './config-validation.js';
+import { createDefaultValuesDetector } from './default-values.js';
+import { createEnvNamingDetector } from './env-naming.js';
 import { createEnvironmentDetectionDetector } from './environment-detection.js';
+import { createFeatureFlagsDetector } from './feature-flags.js';
+import { createRequiredOptionalDetector } from './required-optional.js';
 
 // Env Naming
 export {

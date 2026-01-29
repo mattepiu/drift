@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -45,14 +46,14 @@ interface MetricInfo {
 // ============================================================================
 
 function detectMetricStyle(name: string): MetricNamingStyle {
-  if (name.includes('.')) return 'dot.separated';
-  if (name.includes('_')) return 'snake_case';
+  if (name.includes('.')) {return 'dot.separated';}
+  if (name.includes('_')) {return 'snake_case';}
   return 'camelCase';
 }
 
 function extractPrefix(name: string): string | null {
   const parts = name.split(/[._]/);
-  if (parts.length > 1) return parts[0] || null;
+  if (parts.length > 1) {return parts[0] || null;}
   return null;
 }
 
@@ -110,7 +111,7 @@ export class MetricNamingLearningDetector extends LearningDetector<MetricNamingC
     distributions: Map<keyof MetricNamingConventions, ValueDistribution>
   ): void {
     const metrics = extractMetrics(context.content, context.file);
-    if (metrics.length === 0) return;
+    if (metrics.length === 0) {return;}
 
     const styleDist = distributions.get('namingStyle')!;
     const prefixDist = distributions.get('usesPrefix')!;

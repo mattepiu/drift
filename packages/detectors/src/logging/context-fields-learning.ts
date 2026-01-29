@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -45,8 +46,8 @@ interface ContextFieldInfo {
 // ============================================================================
 
 function detectFieldStyle(name: string): ContextFieldStyle {
-  if (name.includes('_')) return 'snake_case';
-  if (/^[A-Z]/.test(name)) return 'PascalCase';
+  if (name.includes('_')) {return 'snake_case';}
+  if (/^[A-Z]/.test(name)) {return 'PascalCase';}
   return 'camelCase';
 }
 
@@ -102,7 +103,7 @@ export class ContextFieldsLearningDetector extends LearningDetector<ContextField
     distributions: Map<keyof ContextFieldsConventions, ValueDistribution>
   ): void {
     const fields = extractContextFields(context.content, context.file);
-    if (fields.length === 0) return;
+    if (fields.length === 0) {return;}
 
     const namingDist = distributions.get('fieldNaming')!;
     const requestIdDist = distributions.get('usesRequestId')!;
@@ -115,9 +116,9 @@ export class ContextFieldsLearningDetector extends LearningDetector<ContextField
 
     for (const field of fields) {
       namingDist.add(field.style, context.file);
-      if (/request.?id/i.test(field.fieldName)) hasRequestId = true;
-      if (/user.?id/i.test(field.fieldName)) hasUserId = true;
-      if (/timestamp|time|date/i.test(field.fieldName)) hasTimestamp = true;
+      if (/request.?id/i.test(field.fieldName)) {hasRequestId = true;}
+      if (/user.?id/i.test(field.fieldName)) {hasUserId = true;}
+      if (/timestamp|time|date/i.test(field.fieldName)) {hasTimestamp = true;}
     }
 
     if (fields.length > 0) {

@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -45,12 +46,12 @@ interface DTOPatternInfo {
 // ============================================================================
 
 function detectSuffix(name: string): DTONamingSuffix | null {
-  if (name.endsWith('DTO')) return 'DTO';
-  if (name.endsWith('Dto')) return 'Dto';
-  if (name.endsWith('Request')) return 'Request';
-  if (name.endsWith('Response')) return 'Response';
-  if (name.endsWith('Input')) return 'Input';
-  if (name.endsWith('Output')) return 'Output';
+  if (name.endsWith('DTO')) {return 'DTO';}
+  if (name.endsWith('Dto')) {return 'Dto';}
+  if (name.endsWith('Request')) {return 'Request';}
+  if (name.endsWith('Response')) {return 'Response';}
+  if (name.endsWith('Input')) {return 'Input';}
+  if (name.endsWith('Output')) {return 'Output';}
   return null;
 }
 
@@ -125,7 +126,7 @@ export class DTOPatternsLearningDetector extends LearningDetector<DTOPatternsCon
     distributions: Map<keyof DTOPatternsConventions, ValueDistribution>
   ): void {
     const patterns = extractDTOPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const suffixDist = distributions.get('namingSuffix')!;
     const validationDist = distributions.get('usesValidation')!;

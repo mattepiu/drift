@@ -9,8 +9,9 @@
  * @requirements 7.5 - THE Structural_Detector SHALL detect import ordering and grouping patterns
  */
 
-import type { PatternMatch, Violation, QuickFix, Language, Range } from 'driftdetect-core';
 import { StructuralDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language, Range } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -223,7 +224,7 @@ export function parsePythonImports(content: string): ImportInfo[] {
     // Try to match import patterns
     for (const pattern of importPatterns) {
       const match = trimmedLine.match(pattern);
-      if (match && match[1]) {
+      if (match?.[1]) {
         const source = match[1];
         imports.push({
           source,
@@ -317,7 +318,7 @@ export function parseImports(content: string, filePath?: string): ImportInfo[] {
         const fullStatement = multilineContent;
         for (const pattern of importPatterns) {
           const match = fullStatement.match(pattern);
-          if (match && match[1]) {
+          if (match?.[1]) {
             const source = match[1];
             imports.push({
               source,
@@ -346,7 +347,7 @@ export function parseImports(content: string, filePath?: string): ImportInfo[] {
     // Try to match single-line imports
     for (const pattern of importPatterns) {
       const match = trimmedLine.match(pattern);
-      if (match && match[1]) {
+      if (match?.[1]) {
         const source = match[1];
         imports.push({
           source,
@@ -405,7 +406,7 @@ export function detectImportGroups(imports: ImportInfo[], content: string): Impo
     if (prevImp) {
       for (let lineNum = prevImp.line; lineNum < imp.line - 1; lineNum++) {
         const line = lines[lineNum];
-        if (line !== undefined && line.trim() === '') {
+        if (line?.trim() === '') {
           hasBlankLineBefore = true;
           break;
         }
@@ -467,7 +468,7 @@ export function hasBlankLineSeparators(groups: ImportGroup[], content: string): 
     let hasBlankLine = false;
     for (let lineNum = prevGroup.endLine; lineNum < currGroup.startLine - 1; lineNum++) {
       const line = lines[lineNum];
-      if (line !== undefined && line.trim() === '') {
+      if (line?.trim() === '') {
         hasBlankLine = true;
         break;
       }

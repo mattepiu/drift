@@ -7,8 +7,9 @@
  * @requirements 8.5 - THE Component_Detector SHALL detect state management patterns (local vs global)
  */
 
-import type { PatternMatch, Violation, QuickFix, Language, Range, ASTNode } from 'driftdetect-core';
 import { ASTDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language, Range, ASTNode } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -241,7 +242,7 @@ export function getComponentName(node: ASTNode, content: string): string | undef
   const line = lines[node.startPosition.row];
   if (line) {
     const match = line.match(/(?:const|let|var|export\s+(?:const|let|var)?)\s+([A-Z][a-zA-Z0-9]*)\s*[=:]/);
-    if (match && match[1]) {
+    if (match?.[1]) {
       return match[1];
     }
   }
@@ -909,16 +910,16 @@ export function extractPropsFromComponent(nodeText: string): string[] {
   
   // Match destructured props: ({ prop1, prop2, prop3 })
   const destructuringMatch = nodeText.match(/\(\s*\{\s*([^}]+)\s*\}/);
-  if (destructuringMatch && destructuringMatch[1]) {
+  if (destructuringMatch?.[1]) {
     const propsStr = destructuringMatch[1];
     const propParts = propsStr.split(',');
     
     for (const part of propParts) {
       const trimmed = part.trim();
-      if (trimmed.startsWith('...')) continue;
+      if (trimmed.startsWith('...')) {continue;}
       
       const propMatch = trimmed.match(/^([a-zA-Z_$][a-zA-Z0-9_$]*)/);
-      if (propMatch && propMatch[1]) {
+      if (propMatch?.[1]) {
         props.push(propMatch[1]);
       }
     }
@@ -1250,7 +1251,7 @@ export class StatePatternDetector extends ASTDetector {
       let match;
       while ((match = pattern.exec(content)) !== null) {
         const componentName = match[1];
-        if (!componentName) continue;
+        if (!componentName) {continue;}
         
         const sourceCode = match[0];
         const beforeMatch = content.slice(0, match.index);

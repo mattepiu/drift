@@ -262,7 +262,7 @@ export class MassAssignmentExtractor {
    */
   private extractArrayProperty(content: string, pattern: RegExp): string[] {
     const match = content.match(pattern);
-    if (!match || !match[1]) return [];
+    if (!match?.[1]) {return [];}
 
     return match[1]
       .split(',')
@@ -278,8 +278,8 @@ export class MassAssignmentExtractor {
     let i = startIndex;
 
     while (i < content.length && depth > 0) {
-      if (content[i] === '{') depth++;
-      else if (content[i] === '}') depth--;
+      if (content[i] === '{') {depth++;}
+      else if (content[i] === '}') {depth--;}
       i++;
     }
 

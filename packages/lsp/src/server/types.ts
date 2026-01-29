@@ -5,8 +5,6 @@
  * used throughout the LSP implementation.
  */
 
-import type { Connection, TextDocuments } from 'vscode-languageserver';
-import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type {
   DriftDiagnostic,
   ServerState,
@@ -15,6 +13,8 @@ import type {
   ViolationInfo,
   DocumentState,
 } from '../types/lsp-types.js';
+import type { Connection, TextDocuments } from 'vscode-languageserver';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 
 // ============================================================================
 // Logger Interface

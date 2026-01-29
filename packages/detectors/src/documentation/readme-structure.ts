@@ -3,9 +3,10 @@
  * @requirements 21.2 - README structure patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 export type ReadmePatternType = 'title' | 'description' | 'installation' | 'usage' | 'api-section' | 'contributing' | 'license' | 'badges' | 'table-of-contents';
 export type ReadmeViolationType = 'missing-title' | 'missing-installation' | 'missing-usage';
@@ -55,13 +56,13 @@ export function detectBadges(content: string, filePath: string): ReadmePatternIn
 export function detectTableOfContents(content: string, filePath: string): ReadmePatternInfo[] { return detectPatterns(content, filePath, TABLE_OF_CONTENTS_PATTERNS, 'table-of-contents'); }
 
 export function analyzeReadmeStructure(content: string, filePath: string): ReadmeAnalysis {
-  if (shouldExcludeFile(filePath)) return { patterns: [], violations: [], sectionCount: 0, hasInstallation: false, hasUsage: false, confidence: 1.0 };
+  if (shouldExcludeFile(filePath)) {return { patterns: [], violations: [], sectionCount: 0, hasInstallation: false, hasUsage: false, confidence: 1.0 };}
   const patterns: ReadmePatternInfo[] = [...detectTitle(content, filePath), ...detectDescription(content, filePath), ...detectInstallation(content, filePath), ...detectUsage(content, filePath), ...detectApiSection(content, filePath), ...detectContributing(content, filePath), ...detectLicense(content, filePath), ...detectBadges(content, filePath), ...detectTableOfContents(content, filePath)];
   const violations: ReadmeViolationInfo[] = [];
   const sectionCount = patterns.length;
   const hasInstallation = patterns.some((p) => p.type === 'installation');
   const hasUsage = patterns.some((p) => p.type === 'usage');
-  let confidence = 0.7; if (patterns.length > 0) confidence += 0.15; if (hasInstallation && hasUsage) confidence += 0.1; confidence = Math.min(confidence, 0.95);
+  let confidence = 0.7; if (patterns.length > 0) {confidence += 0.15;} if (hasInstallation && hasUsage) {confidence += 0.1;} confidence = Math.min(confidence, 0.95);
   return { patterns, violations, sectionCount, hasInstallation, hasUsage, confidence };
 }
 
@@ -74,9 +75,9 @@ export class ReadmeStructureDetector extends RegexDetector {
   readonly supportedLanguages: Language[] = ['markdown'];
 
   async detect(context: DetectionContext): Promise<DetectionResult> {
-    if (!this.supportsLanguage(context.language) && !context.file.toLowerCase().includes('readme')) return this.createEmptyResult();
+    if (!this.supportsLanguage(context.language) && !context.file.toLowerCase().includes('readme')) {return this.createEmptyResult();}
     const analysis = analyzeReadmeStructure(context.content, context.file);
-    if (analysis.patterns.length === 0 && analysis.violations.length === 0) return this.createEmptyResult();
+    if (analysis.patterns.length === 0 && analysis.violations.length === 0) {return this.createEmptyResult();}
     
     // Convert internal violations to standard Violation format
     const violations = this.convertViolationInfos(

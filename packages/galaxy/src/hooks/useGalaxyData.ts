@@ -6,8 +6,10 @@
  */
 
 import { useEffect, useCallback } from 'react';
+
 import { useGalaxyStore } from '../store/index.js';
 import { computeGalaxyLayout } from '../utils/layout-engine.js';
+
 import type { GalaxyData, TableNode, EntryPointNode, DataPath, TableRelationship, GalaxyStats } from '../types/index.js';
 
 // ============================================================================
@@ -189,12 +191,12 @@ export function useGalaxyData(options: UseGalaxyDataOptions = {}) {
         raw = await dataSource();
       } else if (typeof dataSource === 'string') {
         const response = await fetch(dataSource);
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        if (!response.ok) {throw new Error(`HTTP ${response.status}`);}
         raw = await response.json();
       } else {
         // Default: try to fetch from Drift MCP or local endpoint
         const response = await fetch('/api/drift/galaxy');
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        if (!response.ok) {throw new Error(`HTTP ${response.status}`);}
         raw = await response.json();
       }
       
@@ -216,7 +218,7 @@ export function useGalaxyData(options: UseGalaxyDataOptions = {}) {
   useEffect(() => {
     if (refreshInterval > 0) {
       const interval = setInterval(fetchData, refreshInterval);
-      return () => clearInterval(interval);
+      return () => { clearInterval(interval); };
     }
     return undefined;
   }, [refreshInterval, fetchData]);

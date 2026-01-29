@@ -4,12 +4,13 @@
  * Language-agnostic detector for environment configuration patterns.
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 export class EnvConfigSemanticDetector extends SemanticDetector {
   readonly id = 'config/env-config';

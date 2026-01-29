@@ -36,39 +36,35 @@ export function validateConfig(config: Partial<DriftConfig>): ValidationResult {
   const errors: string[] = [];
 
   // Validate server config
-  if (config.server) {
-    if (config.server.trace && !VALID_TRACE_LEVELS.includes(config.server.trace)) {
-      errors.push(`Invalid trace level: ${config.server.trace}`);
-    }
+  if (config.server?.trace !== undefined && !VALID_TRACE_LEVELS.includes(config.server.trace)) {
+    errors.push(`Invalid trace level: ${config.server.trace}`);
   }
 
   // Validate scan config
-  if (config.scan) {
+  if (config.scan !== undefined) {
     if (typeof config.scan.debounceMs === 'number' && config.scan.debounceMs < 0) {
       errors.push('debounceMs must be non-negative');
     }
-    if (config.scan.excludePatterns && !Array.isArray(config.scan.excludePatterns)) {
+    if (config.scan.excludePatterns !== undefined && !Array.isArray(config.scan.excludePatterns)) {
       errors.push('excludePatterns must be an array');
     }
   }
 
   // Validate display config
-  if (config.display) {
-    if (config.display.severityFilter) {
-      for (const severity of config.display.severityFilter) {
-        if (!VALID_SEVERITIES.includes(severity)) {
-          errors.push(`Invalid severity: ${severity}`);
-        }
+  if (config.display?.severityFilter !== undefined) {
+    for (const severity of config.display.severityFilter) {
+      if (!VALID_SEVERITIES.includes(severity)) {
+        errors.push(`Invalid severity: ${severity}`);
       }
     }
   }
 
   // Validate AI config
-  if (config.ai) {
-    if (config.ai.provider && !VALID_PROVIDERS.includes(config.ai.provider)) {
+  if (config.ai !== undefined) {
+    if (config.ai.provider !== undefined && !VALID_PROVIDERS.includes(config.ai.provider)) {
       errors.push(`Invalid AI provider: ${config.ai.provider}`);
     }
-    if (config.ai.enabled && config.ai.provider === 'none') {
+    if (config.ai.enabled === true && config.ai.provider === 'none') {
       errors.push('AI enabled but provider is "none"');
     }
   }
@@ -99,14 +95,14 @@ export function validateConfigValue(
       if (key === 'severityFilter' && Array.isArray(value)) {
         for (const v of value) {
           if (!VALID_SEVERITIES.includes(v as Severity)) {
-            errors.push(`Invalid severity: ${v}`);
+            errors.push(`Invalid severity: ${String(v)}`);
           }
         }
       }
       break;
     case 'ai':
       if (key === 'provider' && !VALID_PROVIDERS.includes(value as AIProvider)) {
-        errors.push(`Invalid AI provider: ${value}`);
+        errors.push(`Invalid AI provider: ${String(value)}`);
       }
       break;
   }

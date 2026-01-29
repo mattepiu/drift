@@ -187,12 +187,12 @@ export type {
 // Factory Function
 // ============================================================================
 
+import { BundleSizeDetector } from './bundle-size.js';
+import { CachingPatternsDetector } from './caching-patterns.js';
 import { CodeSplittingDetector } from './code-splitting.js';
+import { DebounceThrottleDetector } from './debounce-throttle.js';
 import { LazyLoadingDetector } from './lazy-loading.js';
 import { MemoizationDetector } from './memoization.js';
-import { CachingPatternsDetector } from './caching-patterns.js';
-import { DebounceThrottleDetector } from './debounce-throttle.js';
-import { BundleSizeDetector } from './bundle-size.js';
 
 export type PerformanceDetector =
   | CodeSplittingDetector

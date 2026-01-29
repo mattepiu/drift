@@ -5,19 +5,21 @@
  * Color indicates authentication level (red = public, green = protected).
  */
 
-import { useRef, useMemo, useState, useCallback } from 'react';
-import { useFrame } from '@react-three/fiber';
 import { Html } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useRef, useMemo, useState, useCallback } from 'react';
 import * as THREE from 'three';
-import type { EntryPointNode } from '../../types/index.js';
+
+import { useGalaxySound } from '../../audio/index.js';
+import { ENTRY_POINT_SIZE, ANIMATION_CONFIG, LABEL_CONFIG } from '../../constants/index.js';
 import { useGalaxyStore } from '../../store/index.js';
 import {
   getAuthLevelThreeColor,
   getSecurityTierThreeColor,
 } from '../../utils/color-utils.js';
 import { toThreeVector } from '../../utils/geometry-utils.js';
-import { ENTRY_POINT_SIZE, ANIMATION_CONFIG, LABEL_CONFIG } from '../../constants/index.js';
-import { useGalaxySound } from '../../audio/index.js';
+
+import type { EntryPointNode } from '../../types/index.js';
 
 // ============================================================================
 // Types
@@ -119,7 +121,7 @@ export function EntryPointStation({
   
   // Animation
   useFrame((state, delta) => {
-    if (!groupRef.current) return;
+    if (!groupRef.current) {return;}
     
     // Slow rotation
     groupRef.current.rotation.y += 0.005 * display.animationSpeed;

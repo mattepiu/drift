@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -46,8 +47,8 @@ interface CodeSplitInfo {
 // ============================================================================
 
 function detectChunkNamingStyle(name: string): ChunkNamingStyle {
-  if (name.includes('-')) return 'kebab-case';
-  if (/^[a-z]/.test(name) && /[A-Z]/.test(name)) return 'camelCase';
+  if (name.includes('-')) {return 'kebab-case';}
+  if (/^[a-z]/.test(name) && /[A-Z]/.test(name)) {return 'camelCase';}
   return 'descriptive';
 }
 
@@ -81,7 +82,7 @@ function extractCodeSplitPatterns(content: string, file: string): CodeSplitInfo[
   const plainImportPattern = /import\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
   while ((match = plainImportPattern.exec(content)) !== null) {
     // Skip if already matched with magic comment
-    if (content.slice(match.index - 50, match.index).includes('webpackChunkName')) continue;
+    if (content.slice(match.index - 50, match.index).includes('webpackChunkName')) {continue;}
 
     const beforeMatch = content.slice(0, match.index);
     const line = beforeMatch.split('\n').length;
@@ -123,7 +124,7 @@ export class CodeSplittingLearningDetector extends LearningDetector<CodeSplittin
     distributions: Map<keyof CodeSplittingConventions, ValueDistribution>
   ): void {
     const patterns = extractCodeSplitPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const namingDist = distributions.get('chunkNaming')!;
     const magicDist = distributions.get('usesWebpackMagicComments')!;

@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -44,7 +45,7 @@ const DEPRECATION_PATTERNS = {
 
 function detectDeprecationStyle(content: string): DeprecationStyle | null {
   for (const [style, pattern] of Object.entries(DEPRECATION_PATTERNS)) {
-    if (pattern.test(content)) return style as DeprecationStyle;
+    if (pattern.test(content)) {return style as DeprecationStyle;}
   }
   return null;
 }

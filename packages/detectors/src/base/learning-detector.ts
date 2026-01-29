@@ -7,9 +7,10 @@
  * @requirements DRIFT-CORE - Detectors learn from user's code, not enforce arbitrary rules
  */
 
-import type { Violation, QuickFix } from 'driftdetect-core';
 import { BaseDetector, type DetectionContext, type DetectionResult } from './base-detector.js';
+
 import type { DetectionMethod } from '../registry/types.js';
+import type { Violation, QuickFix } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -148,9 +149,9 @@ export class ValueDistribution<T = unknown> {
   }
 
   private serializeValue(value: T): string {
-    if (typeof value === 'string') return value;
-    if (typeof value === 'number') return String(value);
-    if (typeof value === 'boolean') return String(value);
+    if (typeof value === 'string') {return value;}
+    if (typeof value === 'number') {return String(value);}
+    if (typeof value === 'boolean') {return String(value);}
     return JSON.stringify(value);
   }
 }

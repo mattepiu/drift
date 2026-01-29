@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -44,9 +45,9 @@ interface DirectoryInfo {
 // ============================================================================
 
 function detectNamingStyle(name: string): DirectoryNamingStyle {
-  if (name.includes('-')) return 'kebab-case';
-  if (name.includes('_')) return 'snake_case';
-  if (/^[A-Z]/.test(name)) return 'PascalCase';
+  if (name.includes('-')) {return 'kebab-case';}
+  if (name.includes('_')) {return 'snake_case';}
+  if (/^[A-Z]/.test(name)) {return 'PascalCase';}
   return 'camelCase';
 }
 
@@ -57,7 +58,7 @@ function extractDirectoryInfo(file: string): DirectoryInfo[] {
   // Skip the filename, analyze directories
   for (let i = 0; i < parts.length - 1; i++) {
     const dirName = parts[i];
-    if (!dirName || dirName === '.' || dirName === '..') continue;
+    if (!dirName || dirName === '.' || dirName === '..') {continue;}
     
     results.push({
       name: dirName,
@@ -91,7 +92,7 @@ export class DirectoryStructureLearningDetector extends LearningDetector<Directo
     distributions: Map<keyof DirectoryStructureConventions, ValueDistribution>
   ): void {
     const dirs = extractDirectoryInfo(context.file);
-    if (dirs.length === 0) return;
+    if (dirs.length === 0) {return;}
 
     const namingDist = distributions.get('namingStyle')!;
     const indexDist = distributions.get('usesIndexFiles')!;

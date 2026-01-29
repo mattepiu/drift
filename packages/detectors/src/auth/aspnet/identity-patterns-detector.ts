@@ -10,9 +10,10 @@
  * - User/role store patterns
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -159,7 +160,7 @@ export class IdentityPatternsDetector extends BaseDetector {
           customUserType = userManagerMatch[1];
         }
         const method = this.extractMethod(line, USER_MANAGER_METHODS);
-        if (method) methodsUsed.add(method);
+        if (method) {methodsUsed.add(method);}
       }
 
       // Detect SignInManager<T>
@@ -173,7 +174,7 @@ export class IdentityPatternsDetector extends BaseDetector {
           file,
         });
         const method = this.extractMethod(line, SIGNIN_MANAGER_METHODS);
-        if (method) methodsUsed.add(method);
+        if (method) {methodsUsed.add(method);}
       }
 
       // Detect RoleManager<T>
@@ -194,7 +195,7 @@ export class IdentityPatternsDetector extends BaseDetector {
       // Detect custom IdentityUser
       if (line.includes(': IdentityUser')) {
         const classMatch = line.match(/class\s+(\w+)\s*:\s*IdentityUser/);
-        if (classMatch && classMatch[1]) {
+        if (classMatch?.[1]) {
           customUserType = classMatch[1];
           usages.push({
             type: 'identity-user',

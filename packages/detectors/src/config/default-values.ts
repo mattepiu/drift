@@ -10,9 +10,10 @@
  * @requirements 17.3 - Default value patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -354,12 +355,12 @@ export function detectMagicNumberViolations(
   const lines = content.split('\n');
 
   // Skip config files where magic numbers are expected
-  if (/config\.[jt]s$/.test(filePath)) return results;
+  if (/config\.[jt]s$/.test(filePath)) {return results;}
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     // Skip comments and const declarations with descriptive names
-    if (/^\s*\/\/|^\s*\/\*|const\s+[A-Z_]+\s*=/.test(line)) continue;
+    if (/^\s*\/\/|^\s*\/\*|const\s+[A-Z_]+\s*=/.test(line)) {continue;}
 
     for (const pattern of MAGIC_NUMBER_PATTERNS) {
       const regex = new RegExp(pattern.source, pattern.flags);
@@ -390,12 +391,12 @@ export function detectMagicStringViolations(
   const lines = content.split('\n');
 
   // Skip config files where magic strings are expected
-  if (/config\.[jt]s$/.test(filePath)) return results;
+  if (/config\.[jt]s$/.test(filePath)) {return results;}
 
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     // Skip comments and const declarations
-    if (/^\s*\/\/|^\s*\/\*|const\s+[A-Z_]+\s*=/.test(line)) continue;
+    if (/^\s*\/\/|^\s*\/\*|const\s+[A-Z_]+\s*=/.test(line)) {continue;}
 
     for (const pattern of MAGIC_STRING_PATTERNS) {
       const regex = new RegExp(pattern.source, pattern.flags);
@@ -450,9 +451,9 @@ export function analyzeDefaultValues(
   const hasEnvDefaults = patterns.some((p) => p.type === 'env-default');
 
   let confidence = 0.7;
-  if (hasHardcodedDefaults || hasEnvDefaults) confidence += 0.15;
-  if (patterns.some((p) => p.type === 'factory-default')) confidence += 0.1;
-  if (violations.length === 0) confidence += 0.05;
+  if (hasHardcodedDefaults || hasEnvDefaults) {confidence += 0.15;}
+  if (patterns.some((p) => p.type === 'factory-default')) {confidence += 0.1;}
+  if (violations.length === 0) {confidence += 0.05;}
   confidence = Math.min(confidence, 0.95);
 
   return {

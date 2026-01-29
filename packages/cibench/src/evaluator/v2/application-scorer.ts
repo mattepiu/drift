@@ -171,7 +171,7 @@ export function evaluateCompositionalReasoning(
     const expectedStep = task.composition[i];
     const foundStep = toolOutput.compositionSteps[i];
     
-    if (!expectedStep || !foundStep) continue;
+    if (!expectedStep || !foundStep) {continue;}
     
     // Check if operation matches
     if (foundStep.operation === expectedStep.operation) {

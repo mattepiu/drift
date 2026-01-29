@@ -3,9 +3,10 @@
  * @requirements 20.5 - Heading hierarchy patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 export type HeadingHierarchyPatternType = 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6' | 'heading-component';
 export type HeadingHierarchyViolationType = 'skipped-heading' | 'multiple-h1' | 'empty-heading';
@@ -76,12 +77,12 @@ export function detectEmptyHeadingViolations(content: string, filePath: string):
 }
 
 export function analyzeHeadingHierarchy(content: string, filePath: string): HeadingHierarchyAnalysis {
-  if (shouldExcludeFile(filePath)) return { patterns: [], violations: [], headingCount: 0, hasH1: false, confidence: 1.0 };
+  if (shouldExcludeFile(filePath)) {return { patterns: [], violations: [], headingCount: 0, hasH1: false, confidence: 1.0 };}
   const patterns: HeadingHierarchyPatternInfo[] = [...detectH1(content, filePath), ...detectH2(content, filePath), ...detectH3(content, filePath), ...detectH4(content, filePath), ...detectH5(content, filePath), ...detectH6(content, filePath), ...detectHeadingComponent(content, filePath)];
   const violations: HeadingHierarchyViolationInfo[] = [...detectMultipleH1Violations(content, filePath), ...detectEmptyHeadingViolations(content, filePath)];
   const headingCount = patterns.length;
   const hasH1 = patterns.some((p) => p.type === 'h1');
-  let confidence = 0.7; if (patterns.length > 0) confidence += 0.15; if (violations.length === 0) confidence += 0.1; confidence = Math.min(confidence, 0.95);
+  let confidence = 0.7; if (patterns.length > 0) {confidence += 0.15;} if (violations.length === 0) {confidence += 0.1;} confidence = Math.min(confidence, 0.95);
   return { patterns, violations, headingCount, hasH1, confidence };
 }
 
@@ -94,9 +95,9 @@ export class HeadingHierarchyDetector extends RegexDetector {
   readonly supportedLanguages: Language[] = ['typescript', 'javascript'];
 
   async detect(context: DetectionContext): Promise<DetectionResult> {
-    if (!this.supportsLanguage(context.language)) return this.createEmptyResult();
+    if (!this.supportsLanguage(context.language)) {return this.createEmptyResult();}
     const analysis = analyzeHeadingHierarchy(context.content, context.file);
-    if (analysis.patterns.length === 0 && analysis.violations.length === 0) return this.createEmptyResult();
+    if (analysis.patterns.length === 0 && analysis.violations.length === 0) {return this.createEmptyResult();}
     
     // Convert internal violations to standard Violation format
     const violations = this.convertViolationInfos(analysis.violations.map(v => ({

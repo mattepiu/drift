@@ -14,7 +14,7 @@ import { getHealthScoreColor } from '../../utils/color-utils.js';
 export function StatsOverlay() {
   const { galaxyData, viewMode, isLiveMode } = useGalaxyStore();
   
-  if (!galaxyData) return null;
+  if (!galaxyData) {return null;}
   
   const { stats } = galaxyData;
   

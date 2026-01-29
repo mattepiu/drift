@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -44,9 +45,9 @@ function detectAssertionSyntax(content: string): AssertionSyntax | null {
   const hasAs = AS_ASSERTION_PATTERN.test(content);
   const hasAngle = ANGLE_BRACKET_PATTERN.test(content);
   
-  if (hasAs && hasAngle) return 'mixed';
-  if (hasAs) return 'as';
-  if (hasAngle) return 'angle-bracket';
+  if (hasAs && hasAngle) {return 'mixed';}
+  if (hasAs) {return 'as';}
+  if (hasAngle) {return 'angle-bracket';}
   return null;
 }
 
@@ -74,7 +75,7 @@ export class TypeAssertionsLearningDetector extends LearningDetector<TypeAsserti
     const syntaxDist = distributions.get('assertionSyntax')!;
     const guardDist = distributions.get('prefersTypeGuards')!;
     
-    if (syntax) syntaxDist.add(syntax, context.file);
+    if (syntax) {syntaxDist.add(syntax, context.file);}
     
     const hasTypeGuards = TYPE_GUARD_PATTERN.test(context.content);
     guardDist.add(hasTypeGuards, context.file);

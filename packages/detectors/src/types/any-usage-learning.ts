@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -72,8 +73,8 @@ export class AnyUsageLearningDetector extends LearningDetector<AnyUsageConventio
     const explicitDist = distributions.get('allowsExplicitAny')!;
     const catchDist = distributions.get('allowsInCatchBlocks')!;
     
-    if (usage.hasUnknown) altDist.add('unknown', context.file);
-    else if (usage.hasAny) altDist.add('any-allowed', context.file);
+    if (usage.hasUnknown) {altDist.add('unknown', context.file);}
+    else if (usage.hasAny) {altDist.add('any-allowed', context.file);}
     
     explicitDist.add(usage.hasAny, context.file);
     catchDist.add(usage.inCatch, context.file);

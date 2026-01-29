@@ -11,7 +11,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -19,6 +18,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -65,11 +66,11 @@ interface TestStructurePatternInfo {
  * Detect test framework from content
  */
 function detectFramework(content: string): TestFramework {
-  if (/from\s+['"]vitest['"]/.test(content)) return 'vitest';
-  if (/from\s+['"]@jest\/globals['"]/.test(content)) return 'jest';
-  if (/require\s*\(\s*['"]mocha['"]\s*\)/.test(content)) return 'mocha';
-  if (/import\s+pytest/.test(content) || /def\s+test_/.test(content)) return 'pytest';
-  if (/describe\s*\(|it\s*\(|test\s*\(/.test(content)) return 'jest'; // Default to jest-like
+  if (/from\s+['"]vitest['"]/.test(content)) {return 'vitest';}
+  if (/from\s+['"]@jest\/globals['"]/.test(content)) {return 'jest';}
+  if (/require\s*\(\s*['"]mocha['"]\s*\)/.test(content)) {return 'mocha';}
+  if (/import\s+pytest/.test(content) || /def\s+test_/.test(content)) {return 'pytest';}
+  if (/describe\s*\(|it\s*\(|test\s*\(/.test(content)) {return 'jest';} // Default to jest-like
   return 'unknown';
 }
 
@@ -130,10 +131,10 @@ export class TestStructureLearningDetector extends LearningDetector<TestStructur
     distributions: Map<keyof TestStructureConventions, ValueDistribution>
   ): void {
     // Only analyze test files
-    if (!context.isTestFile) return;
+    if (!context.isTestFile) {return;}
 
     const patterns = extractTestStructurePatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const frameworkDist = distributions.get('framework')!;
     const describeDist = distributions.get('usesDescribe')!;

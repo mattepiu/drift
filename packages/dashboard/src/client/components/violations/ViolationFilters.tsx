@@ -4,9 +4,10 @@
  * Advanced filtering and search for violations.
  */
 
-import type { ViolationFilters as ViolationFiltersType, Severity } from '../../types';
-import type { ViewMode, SortConfig, SortField } from './types';
 import { SEVERITY_ORDER, SEVERITY_CONFIG, VIEW_MODE_CONFIG, CATEGORY_CONFIG, CATEGORY_ORDER } from './constants';
+
+import type { ViewMode, SortConfig, SortField } from './types';
+import type { ViolationFilters as ViolationFiltersType, Severity } from '../../types';
 
 interface ViolationFiltersProps {
   filters: ViolationFiltersType;

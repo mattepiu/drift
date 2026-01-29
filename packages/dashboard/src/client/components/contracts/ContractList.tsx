@@ -5,10 +5,12 @@
  */
 
 import { useState } from 'react';
-import type { Contract } from '../../types';
-import type { ViewMode, EndpointGroup, MethodGroup } from './types';
+
 import { METHOD_CONFIG, STATUS_CONFIG } from './constants';
 import { getConfidenceColor, formatPercentage, groupByEndpoint, groupByMethod } from './utils';
+
+import type { ViewMode, EndpointGroup, MethodGroup } from './types';
+import type { Contract } from '../../types';
 
 // ============================================================================
 // Contract Card (List View)

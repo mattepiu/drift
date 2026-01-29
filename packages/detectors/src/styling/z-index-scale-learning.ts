@@ -11,7 +11,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -19,6 +18,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -196,7 +197,7 @@ export class ZIndexScaleLearningDetector extends LearningDetector<ZIndexConventi
     const themeZIndex = extractThemeZIndex(context.content, context.file);
     const allPatterns = [...tailwindZIndex, ...cssZIndex, ...themeZIndex];
 
-    if (allPatterns.length === 0) return;
+    if (allPatterns.length === 0) {return;}
 
     const methodDist = distributions.get('method')!;
     const scaleValuesDist = distributions.get('scaleValues')!;

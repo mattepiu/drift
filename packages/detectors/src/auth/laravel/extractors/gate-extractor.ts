@@ -291,13 +291,13 @@ export class GateExtractor {
 
     // Match function parameters
     const paramMatch = callback.match(/function\s*\(([^)]*)\)/);
-    if (paramMatch && paramMatch[1]) {
+    if (paramMatch?.[1]) {
       const paramStr = paramMatch[1];
       const paramParts = paramStr.split(',');
 
       for (const part of paramParts) {
         const trimmed = part.trim();
-        if (!trimmed) continue;
+        if (!trimmed) {continue;}
 
         // Match type hint and variable name
         const match = trimmed.match(/(?:(\??\w+(?:\|\w+)*)\s+)?\$(\w+)/);
@@ -337,9 +337,9 @@ export class GateExtractor {
 
     let confidence = 0.5;
 
-    if (definitions.length > 0) confidence += 0.2;
-    if (checks.length > 0) confidence += 0.2;
-    if (hooks.length > 0) confidence += 0.1;
+    if (definitions.length > 0) {confidence += 0.2;}
+    if (checks.length > 0) {confidence += 0.2;}
+    if (hooks.length > 0) {confidence += 0.1;}
 
     return Math.min(confidence, 1.0);
   }

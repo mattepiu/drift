@@ -9,12 +9,13 @@
  * - Semantic disambiguation (API tokens vs auth tokens)
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Context Validation Patterns
@@ -134,9 +135,9 @@ export class TokenHandlingSemanticDetector extends SemanticDetector {
     // Require positive auth context for ambiguous keywords
     if (authContextScore === 0 && nonAuthContextScore === 0) {
       // No clear context - check for common false positive patterns
-      if (/tokens?\s*[:=]\s*\d+/i.test(lineContent)) return false; // token count
-      if (/tokens?\s*[:=]\s*{/i.test(lineContent)) return false; // token object (likely metrics)
-      if (/cost.*tokens?|tokens?.*cost/i.test(contextLower)) return false; // cost tracking
+      if (/tokens?\s*[:=]\s*\d+/i.test(lineContent)) {return false;} // token count
+      if (/tokens?\s*[:=]\s*{/i.test(lineContent)) {return false;} // token object (likely metrics)
+      if (/cost.*tokens?|tokens?.*cost/i.test(contextLower)) {return false;} // cost tracking
     }
     
     return authContextScore > nonAuthContextScore;

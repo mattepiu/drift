@@ -10,8 +10,9 @@
  * @requirements 7.8 - THE Structural_Detector SHALL detect package boundary violations in monorepos
  */
 
-import type { PatternMatch, Violation, QuickFix, Language, Range } from 'driftdetect-core';
 import { StructuralDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language, Range } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -738,7 +739,7 @@ export class PackageBoundariesDetector extends StructuralDetector {
     for (let i = 0; i < lines.length; i++) {
       const line = lines[i]!;
       const match = importRegex.exec(line);
-      if (match && match[1]) {
+      if (match?.[1]) {
         imports.push({
           source: match[1],
           line: i + 1,

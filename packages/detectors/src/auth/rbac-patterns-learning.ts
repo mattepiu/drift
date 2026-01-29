@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -79,7 +80,7 @@ function extractRBACPatterns(content: string, file: string): RBACInfo[] {
 
 function detectCheckStyle(content: string): PermissionCheckStyle | null {
   for (const [style, regex] of Object.entries(CHECK_PATTERNS)) {
-    if (regex.test(content)) return style as PermissionCheckStyle;
+    if (regex.test(content)) {return style as PermissionCheckStyle;}
   }
   return null;
 }
@@ -115,7 +116,7 @@ export class RBACPatternsLearningDetector extends LearningDetector<RBACConventio
       styleDist.add(pattern.style, context.file);
     }
     
-    if (checkStyle) checkDist.add(checkStyle, context.file);
+    if (checkStyle) {checkDist.add(checkStyle, context.file);}
     
     const usesHierarchy = /roleHierarchy|parentRole|inherits|extends.*Role/i.test(context.content);
     if (patterns.length > 0) {

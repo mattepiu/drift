@@ -10,6 +10,10 @@
  * @module php/class-extractor
  */
 
+import { AttributeExtractor } from './attribute-extractor.js';
+import { DocblockExtractor } from './docblock-extractor.js';
+import { MethodExtractor } from './method-extractor.js';
+
 import type {
   PhpClassInfo,
   PhpClassModifiers,
@@ -20,9 +24,6 @@ import type {
   PhpVisibility,
   ExtractionResult,
 } from './types.js';
-import { DocblockExtractor } from './docblock-extractor.js';
-import { AttributeExtractor } from './attribute-extractor.js';
-import { MethodExtractor } from './method-extractor.js';
 
 // ============================================================================
 // Regex Patterns
@@ -119,7 +120,7 @@ export class ClassExtractor {
     const extendsClass = match[3] || null;
     const implementsStr = match[4] || '';
 
-    if (!className) return null;
+    if (!className) {return null;}
 
     const line = this.getLineNumber(content, match.index);
     const classBody = this.extractClassBody(content, match.index + match[0].length);
@@ -195,8 +196,8 @@ export class ClassExtractor {
 
     while (i < content.length && depth > 0) {
       const char = content[i];
-      if (char === '{') depth++;
-      else if (char === '}') depth--;
+      if (char === '{') {depth++;}
+      else if (char === '}') {depth--;}
       i++;
     }
 
@@ -238,7 +239,7 @@ export class ClassExtractor {
       const name = match[5];
       const defaultValue = match[6]?.trim() || null;
 
-      if (!name) continue;
+      if (!name) {continue;}
 
       const line = this.getLineNumber(classBody, match.index);
       const attributes = this.attributeExtractor.extractFromString(attributesStr);
@@ -278,7 +279,7 @@ export class ClassExtractor {
       const name = match[5];
       const value = match[6]?.trim() || '';
 
-      if (!name) continue;
+      if (!name) {continue;}
 
       const line = this.getLineNumber(classBody, match.index);
 

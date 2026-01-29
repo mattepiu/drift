@@ -11,9 +11,10 @@
  * @requirements 18.2 - Type naming convention patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -557,9 +558,9 @@ export function analyzeNamingConventions(
   const conventions = [...new Set(patterns.filter((p) => p.convention).map((p) => p.convention!))];
 
   let confidence = 0.7;
-  if (usesPascalCase) confidence += 0.15;
-  if (conventions.length > 0) confidence += 0.1;
-  if (violations.length === 0) confidence += 0.05;
+  if (usesPascalCase) {confidence += 0.15;}
+  if (conventions.length > 0) {confidence += 0.1;}
+  if (violations.length === 0) {confidence += 0.05;}
   confidence = Math.min(confidence, 0.95);
 
   return {

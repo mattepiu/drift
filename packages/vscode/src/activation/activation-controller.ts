@@ -77,7 +77,7 @@ export class ActivationController implements vscode.Disposable {
 
       // Phase 2: Deferred (non-blocking)
       setImmediate(() => {
-        this.runDeferredPhase().catch(error => {
+        this.runDeferredPhase().catch((error: unknown) => {
           this.getLogger().error('Deferred activation failed:', error);
         });
       });
@@ -171,30 +171,30 @@ export class ActivationController implements vscode.Disposable {
   private async initializePhase(name: string): Promise<void> {
     switch (name) {
       case 'infrastructure':
-        await this.initializeInfrastructure();
+        this.initializeInfrastructure();
         break;
       case 'state':
-        await this.initializeState();
+        this.initializeState();
         break;
       case 'config':
-        await this.initializeConfig();
+        this.initializeConfig();
         break;
       case 'statusBar':
-        await this.initializeStatusBar();
+        this.initializeStatusBar();
         break;
       case 'connection':
         await this.initializeConnection();
         break;
       case 'commands':
-        await this.initializeCommands();
+        this.initializeCommands();
         break;
       case 'decorations':
-        await this.initializeDecorations();
+        this.initializeDecorations();
         break;
     }
   }
 
-  private async initializeInfrastructure(): Promise<void> {
+  private initializeInfrastructure(): void {
     // Create logger
     const logger = createLogger('Drift', 'info');
     this.services.register(ServiceKeys.Logger, logger);
@@ -208,7 +208,7 @@ export class ActivationController implements vscode.Disposable {
     logger.info('Infrastructure initialized');
   }
 
-  private async initializeState(): Promise<void> {
+  private initializeState(): void {
     const stateManager = createStateManager(this.context);
     this.services.register(ServiceKeys.StateManager, stateManager);
     this.disposables.add(stateManager);
@@ -216,7 +216,7 @@ export class ActivationController implements vscode.Disposable {
     this.getLogger().debug('State manager initialized');
   }
 
-  private async initializeConfig(): Promise<void> {
+  private initializeConfig(): void {
     const configManager = createConfigManager(this.getLogger());
     this.services.register(ServiceKeys.ConfigManager, configManager);
     this.disposables.add(configManager);
@@ -224,7 +224,7 @@ export class ActivationController implements vscode.Disposable {
     this.getLogger().debug('Config manager initialized');
   }
 
-  private async initializeStatusBar(): Promise<void> {
+  private initializeStatusBar(): void {
     const stateManager = this.services.get<StateManager>(ServiceKeys.StateManager);
     const statusBar = createStatusBar(stateManager);
     this.services.register(ServiceKeys.StatusBar, statusBar);
@@ -260,7 +260,7 @@ export class ActivationController implements vscode.Disposable {
     this.getLogger().debug('Connection manager initialized');
   }
 
-  private async initializeCommands(): Promise<void> {
+  private initializeCommands(): void {
     const stateManager = this.services.get<StateManager>(ServiceKeys.StateManager);
     const connectionManager = this.services.get<ConnectionManager>(ServiceKeys.ConnectionManager);
     const eventBus = this.services.get<EventBus>('eventBus');
@@ -288,7 +288,7 @@ export class ActivationController implements vscode.Disposable {
     this.getLogger().debug('Commands initialized');
   }
 
-  private async initializeDecorations(): Promise<void> {
+  private initializeDecorations(): void {
     const configManager = this.services.get<ConfigManager>(ServiceKeys.ConfigManager);
     
     const decorationController = createDecorationController(this.context, configManager);

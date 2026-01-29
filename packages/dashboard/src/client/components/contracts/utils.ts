@@ -4,7 +4,8 @@
  * Data transformation, aggregation, and helper functions.
  */
 
-import type { Contract, ContractStatus, HttpMethod, FieldMismatch } from '../../types';
+import { METHOD_ORDER, MISMATCH_TYPE_CONFIG, DISPLAY_LIMITS } from './constants';
+
 import type { 
   ContractMetrics, 
   ContractStatistics, 
@@ -14,7 +15,7 @@ import type {
   ContractHealth,
   MismatchSummary,
 } from './types';
-import { METHOD_ORDER, MISMATCH_TYPE_CONFIG, DISPLAY_LIMITS } from './constants';
+import type { Contract, ContractStatus, HttpMethod, FieldMismatch } from '../../types';
 
 // ============================================================================
 // Metrics Calculation
@@ -88,7 +89,7 @@ export function calculateStatistics(contracts: Contract[]): ContractStatistics {
 }
 
 function calculateHealthScore(contracts: Contract[]): number {
-  if (contracts.length === 0) return 100;
+  if (contracts.length === 0) {return 100;}
 
   let score = 100;
   const total = contracts.length;
@@ -247,7 +248,7 @@ export function summarizeMismatches(mismatches: FieldMismatch[]): MismatchSummar
 // ============================================================================
 
 export function formatEndpoint(endpoint: string, maxLength = 40): string {
-  if (endpoint.length <= maxLength) return endpoint;
+  if (endpoint.length <= maxLength) {return endpoint;}
   return endpoint.slice(0, maxLength - 3) + '...';
 }
 
@@ -260,8 +261,8 @@ export function formatFieldType(type: string): string {
 }
 
 export function getConfidenceColor(score: number): string {
-  if (score >= 0.9) return 'text-status-approved';
-  if (score >= 0.7) return 'text-severity-warning';
+  if (score >= 0.9) {return 'text-status-approved';}
+  if (score >= 0.7) {return 'text-severity-warning';}
   return 'text-severity-error';
 }
 

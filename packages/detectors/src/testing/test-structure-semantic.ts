@@ -5,12 +5,13 @@
  * by looking for semantic concepts like test, describe, expect, etc.
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 export class TestStructureSemanticDetector extends SemanticDetector {
   readonly id = 'testing/test-structure';

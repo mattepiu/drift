@@ -5,10 +5,12 @@
  */
 
 import { useState } from 'react';
-import { useContract, useVerifyContract, useIgnoreContract } from '../../hooks';
-import type { Contract, ContractField, FieldMismatch } from '../../types';
+
 import { METHOD_CONFIG, STATUS_CONFIG, MISMATCH_TYPE_CONFIG, DISPLAY_LIMITS } from './constants';
 import { getConfidenceColor, formatPercentage, analyzeContractHealth } from './utils';
+import { useContract, useVerifyContract, useIgnoreContract } from '../../hooks';
+
+import type { Contract, ContractField, FieldMismatch } from '../../types';
 
 // ============================================================================
 // Field List
@@ -145,7 +147,7 @@ export function ContractDetail({ contractId }: ContractDetailProps) {
   const [copySuccess, setCopySuccess] = useState(false);
 
   const copyForAI = async () => {
-    if (!contract) return;
+    if (!contract) {return;}
     
     setIsCopying(true);
     setCopySuccess(false);

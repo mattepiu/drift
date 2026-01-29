@@ -11,7 +11,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -19,6 +18,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -91,7 +92,7 @@ function extractFieldNames(objectContent: string): string[] {
   const fieldPattern = /([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g;
   let match;
   while ((match = fieldPattern.exec(objectContent)) !== null) {
-    if (match[1]) fields.push(match[1]);
+    if (match[1]) {fields.push(match[1]);}
   }
   return fields;
 }
@@ -147,7 +148,7 @@ function extractPaginationPatterns(content: string): PaginationPatternInfo[] {
       let braceCount = 0;
       let endIndex = startIndex;
       for (let i = startIndex; i < content.length && i < startIndex + 500; i++) {
-        if (content[i] === '{') braceCount++;
+        if (content[i] === '{') {braceCount++;}
         if (content[i] === '}') {
           braceCount--;
           if (braceCount === 0) { endIndex = i + 1; break; }
@@ -201,7 +202,7 @@ export class PaginationLearningDetector extends LearningDetector<PaginationConve
     distributions: Map<keyof PaginationConventions, ValueDistribution>
   ): void {
     const patterns = extractPaginationPatterns(context.content);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const styleDist = distributions.get('paginationStyle')!;
     const requiresDist = distributions.get('requiresPagination')!;

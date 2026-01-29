@@ -102,10 +102,6 @@ export interface ConstantTreeItem extends BaseTreeItem {
 export class ConstantsTreeProvider extends BaseTreeProvider<ConstantTreeItem> {
   private viewMode: 'category' | 'language' | 'issues' = 'category';
 
-  constructor(client: LanguageClient | null) {
-    super(client);
-  }
-
   /**
    * Set the view mode
    */
@@ -162,7 +158,8 @@ export class ConstantsTreeProvider extends BaseTreeProvider<ConstantTreeItem> {
         data: { byCategory: Record<string, number> };
       }>('drift/constants', { action: 'status' });
 
-      const categories = Object.entries(response.data.byCategory || {})
+      const byCategory = response.data.byCategory ?? {};
+      const categories = Object.entries(byCategory)
         .filter(([, count]) => count > 0)
         .sort(([, a], [, b]) => b - a);
 
@@ -180,7 +177,8 @@ export class ConstantsTreeProvider extends BaseTreeProvider<ConstantTreeItem> {
         data: { byLanguage: Record<string, number> };
       }>('drift/constants', { action: 'status' });
 
-      const languages = Object.entries(response.data.byLanguage || {})
+      const byLanguage = response.data.byLanguage ?? {};
+      const languages = Object.entries(byLanguage)
         .filter(([, count]) => count > 0)
         .sort(([, a], [, b]) => b - a);
 
@@ -204,7 +202,7 @@ export class ConstantsTreeProvider extends BaseTreeProvider<ConstantTreeItem> {
         };
       }>('drift/constants', { action: 'status' });
 
-      const issues = response.data.issues || {
+      const issues = response.data.issues ?? {
         potentialSecrets: 0,
         inconsistentValues: 0,
         deadConstants: 0,
@@ -246,11 +244,11 @@ export class ConstantsTreeProvider extends BaseTreeProvider<ConstantTreeItem> {
 
       const items: ConstantTreeItem[] = [];
 
-      for (const constant of response.data.constants || []) {
+      for (const constant of response.data.constants ?? []) {
         items.push(this.createConstantItem(constant));
       }
 
-      for (const enumDef of response.data.enums || []) {
+      for (const enumDef of response.data.enums ?? []) {
         items.push(this.createEnumItem(enumDef));
       }
 
@@ -268,11 +266,11 @@ export class ConstantsTreeProvider extends BaseTreeProvider<ConstantTreeItem> {
 
       const items: ConstantTreeItem[] = [];
 
-      for (const constant of response.data.constants || []) {
+      for (const constant of response.data.constants ?? []) {
         items.push(this.createConstantItem(constant));
       }
 
-      for (const enumDef of response.data.enums || []) {
+      for (const enumDef of response.data.enums ?? []) {
         items.push(this.createEnumItem(enumDef));
       }
 
@@ -289,7 +287,7 @@ export class ConstantsTreeProvider extends BaseTreeProvider<ConstantTreeItem> {
           data: { potentialSecrets: SecretIssue[] };
         }>('drift/constants', { action: 'secrets', limit: 50 });
 
-        return (response.data.potentialSecrets || []).map((secret) =>
+        return (response.data.potentialSecrets ?? []).map((secret) =>
           this.createSecretItem(secret)
         );
       }
@@ -299,7 +297,7 @@ export class ConstantsTreeProvider extends BaseTreeProvider<ConstantTreeItem> {
           data: { inconsistencies: InconsistentIssue[] };
         }>('drift/constants', { action: 'inconsistent', limit: 50 });
 
-        return (response.data.inconsistencies || []).map((inc) =>
+        return (response.data.inconsistencies ?? []).map((inc) =>
           this.createInconsistentItem(inc)
         );
       }
@@ -309,7 +307,7 @@ export class ConstantsTreeProvider extends BaseTreeProvider<ConstantTreeItem> {
           data: { deadConstants: Array<{ id: string; name: string; file: string; line: number }> };
         }>('drift/constants', { action: 'dead', limit: 50 });
 
-        return (response.data.deadConstants || []).map((dead) =>
+        return (response.data.deadConstants ?? []).map((dead) =>
           this.createDeadItem(dead)
         );
       }
@@ -324,7 +322,7 @@ export class ConstantsTreeProvider extends BaseTreeProvider<ConstantTreeItem> {
     return {
       type: 'category',
       label: category.name,
-      description: `${category.count} constants`,
+      description: `${String(category.count)} constants`,
       iconPath: this.getCategoryIcon(category.name),
       collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
       contextValue: 'constant-category',
@@ -336,7 +334,7 @@ export class ConstantsTreeProvider extends BaseTreeProvider<ConstantTreeItem> {
     return {
       type: 'language',
       label: language.name,
-      description: `${language.count} constants`,
+      description: `${String(language.count)} constants`,
       iconPath: this.getLanguageIcon(language.name),
       collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
       contextValue: 'constant-language',
@@ -359,7 +357,7 @@ export class ConstantsTreeProvider extends BaseTreeProvider<ConstantTreeItem> {
     return {
       type: 'issue-group',
       label: name,
-      description: `${count} issues`,
+      description: `${String(count)} issues`,
       iconPath: new vscode.ThemeIcon(icon, new vscode.ThemeColor(color)),
       collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
       contextValue: 'constant-issue-group',
@@ -433,7 +431,7 @@ export class ConstantsTreeProvider extends BaseTreeProvider<ConstantTreeItem> {
     return {
       type: 'inconsistent',
       label: inc.name,
-      description: `${inc.instanceCount} different values`,
+      description: `${String(inc.instanceCount)} different values`,
       iconPath: new vscode.ThemeIcon('warning', new vscode.ThemeColor('charts.yellow')),
       collapsibleState: vscode.TreeItemCollapsibleState.None,
       contextValue: 'constant-inconsistent',
@@ -501,7 +499,7 @@ export class ConstantsTreeProvider extends BaseTreeProvider<ConstantTreeItem> {
 
     md.appendMarkdown(`### ${constant.name}\n\n`);
     md.appendMarkdown(`**Qualified Name:** \`${constant.qualifiedName}\`\n\n`);
-    md.appendMarkdown(`**File:** ${constant.file}:${constant.line}\n\n`);
+    md.appendMarkdown(`**File:** ${constant.file}:${String(constant.line)}\n\n`);
     md.appendMarkdown(`**Language:** ${constant.language}\n\n`);
     md.appendMarkdown(`**Kind:** ${constant.kind}\n\n`);
     md.appendMarkdown(`**Category:** ${constant.category}\n\n`);

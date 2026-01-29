@@ -11,7 +11,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -19,6 +18,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -66,10 +67,10 @@ interface ErrorLoggingPatternInfo {
  * Detect logger type from name
  */
 function detectLoggerType(name: string): LoggerType {
-  if (name === 'console') return 'console';
-  if (name.includes('winston')) return 'winston';
-  if (name.includes('pino')) return 'pino';
-  if (name.includes('bunyan')) return 'bunyan';
+  if (name === 'console') {return 'console';}
+  if (name.includes('winston')) {return 'winston';}
+  if (name.includes('pino')) {return 'pino';}
+  if (name.includes('bunyan')) {return 'bunyan';}
   return 'custom';
 }
 
@@ -88,7 +89,7 @@ function extractErrorLoggingPatterns(content: string, file: string): ErrorLoggin
     const args = match[3] || '';
 
     // Skip non-error logging
-    if (method !== 'error' && method !== 'warn') continue;
+    if (method !== 'error' && method !== 'warn') {continue;}
 
     const beforeMatch = content.slice(0, match.index);
     const line = beforeMatch.split('\n').length;
@@ -142,7 +143,7 @@ export class ErrorLoggingLearningDetector extends LearningDetector<ErrorLoggingC
   ): void {
     const patterns = extractErrorLoggingPatterns(context.content, context.file);
 
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const loggerTypeDist = distributions.get('loggerType')!;
     const loggerNameDist = distributions.get('loggerName')!;

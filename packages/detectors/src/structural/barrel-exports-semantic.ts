@@ -5,12 +5,13 @@
  * by looking for semantic concepts like re-exports and index files.
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 export class BarrelExportsSemanticDetector extends SemanticDetector {
   readonly id = 'structural/barrel-exports';

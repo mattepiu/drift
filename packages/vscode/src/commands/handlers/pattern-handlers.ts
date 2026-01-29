@@ -48,7 +48,7 @@ export function createPatternHandlers(
 
       const patternId = ctx.args[0] as string | undefined;
       
-      if (!patternId) {
+      if (patternId === null || patternId === '') {
         // Show pattern picker
         const patterns = await client.sendRequest<Array<{ id: string; name: string }>>(
           'drift/patterns/list',
@@ -90,7 +90,7 @@ export function createPatternHandlers(
 
       const patternId = ctx.args[0] as string | undefined;
 
-      if (!patternId) {
+      if (patternId === null || patternId === '') {
         // Show pattern picker
         const patterns = await client.sendRequest<Array<{ id: string; name: string }>>(
           'drift/patterns/list',
@@ -133,7 +133,7 @@ export function createPatternHandlers(
       const patternId = ctx.args[0] as string | undefined;
       const violationId = ctx.args[1] as string | undefined;
 
-      if (!patternId) {
+      if (patternId === null || patternId === '') {
         await notifications.warning('No pattern specified for variant creation.');
         return;
       }

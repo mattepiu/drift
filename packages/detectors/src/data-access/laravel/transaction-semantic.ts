@@ -8,12 +8,13 @@
  * - Transaction callbacks
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 const TRANSACTION_FILE_PATTERNS = [
   /services\//i, /repositories\//i, /controllers\//i,
@@ -98,7 +99,7 @@ export class LaravelTransactionSemanticDetector extends SemanticDetector {
       const hasContext = TRANSACTION_CONTEXT_KEYWORDS.some(k => contextLower.includes(k));
       if (!hasContext) {
         const inTransactionFile = TRANSACTION_FILE_PATTERNS.some(p => p.test(file));
-        if (!inTransactionFile) return false;
+        if (!inTransactionFile) {return false;}
       }
     }
 

@@ -12,7 +12,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -20,6 +19,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -106,7 +107,7 @@ function categorizeClass(className: string): TailwindCategory {
   const baseClass = className.replace(/^(?:sm:|md:|lg:|xl:|2xl:|hover:|focus:|active:|disabled:|group-hover:)+/, '');
 
   for (const [category, patterns] of Object.entries(CATEGORY_PATTERNS)) {
-    if (category === 'other') continue;
+    if (category === 'other') {continue;}
     for (const pattern of patterns) {
       if (pattern.test(baseClass)) {
         return category as TailwindCategory;
@@ -183,7 +184,7 @@ export class TailwindPatternsLearningDetector extends LearningDetector<TailwindC
   ): void {
     const classes = extractTailwindClasses(context.content, context.file);
 
-    if (classes.length === 0) return;
+    if (classes.length === 0) {return;}
 
     const arbitraryDist = distributions.get('usesArbitraryValues')!;
     const arbitraryPatternsDist = distributions.get('arbitraryPatterns')!;

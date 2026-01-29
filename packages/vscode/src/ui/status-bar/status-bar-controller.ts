@@ -89,15 +89,15 @@ export class StatusBarController implements vscode.Disposable {
     // Add stats if connected
     if (state.connection.status === 'connected') {
       md.appendMarkdown(`---\n\n`);
-      md.appendMarkdown(`**Patterns:** ${state.patterns.total}\n\n`);
-      md.appendMarkdown(`**Violations:** ${state.violations.total}\n\n`);
+      md.appendMarkdown(`**Patterns:** ${String(state.patterns.total)}\n\n`);
+      md.appendMarkdown(`**Violations:** ${String(state.violations.total)}\n\n`);
 
       if (state.violations.total > 0) {
         md.appendMarkdown(`\n`);
         for (const [severity, count] of Object.entries(state.violations.bySeverity)) {
           if (count > 0) {
             const icon = this.getSeverityIcon(severity);
-            md.appendMarkdown(`- ${icon} ${severity}: ${count}\n`);
+            md.appendMarkdown(`- ${icon} ${severity}: ${String(count)}\n`);
           }
         }
       }

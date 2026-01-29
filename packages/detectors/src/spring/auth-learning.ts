@@ -9,7 +9,7 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
+import { SPRING_KEYWORD_GROUPS } from './keywords.js';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,7 +17,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
-import { SPRING_KEYWORD_GROUPS } from './keywords.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -63,7 +64,7 @@ function extractAuthPatterns(content: string, file: string): AuthPatternInfo[] {
       // Skip imports
       const lineStart = content.lastIndexOf('\n', match.index) + 1;
       const lineContent = content.slice(lineStart, content.indexOf('\n', match.index));
-      if (lineContent.trim().startsWith('import ')) continue;
+      if (lineContent.trim().startsWith('import ')) {continue;}
       
       const beforeMatch = content.slice(0, match.index);
       const line = beforeMatch.split('\n').length;
@@ -135,10 +136,10 @@ export class SpringAuthLearningDetector extends LearningDetector<SpringAuthConve
     context: DetectionContext,
     distributions: Map<keyof SpringAuthConventions, ValueDistribution>
   ): void {
-    if (context.language !== 'java') return;
+    if (context.language !== 'java') {return;}
 
     const patterns = extractAuthPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const annotationDist = distributions.get('securityAnnotation')!;
     const roleNamingDist = distributions.get('roleNamingStyle')!;

@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -43,8 +44,8 @@ function detectCoLocationStyle(filePath: string, fileType: 'test' | 'style' | 't
   };
   
   const p = patterns[fileType];
-  if (p.colocated.test(filePath)) return 'colocated';
-  if (p.separate.test(filePath)) return 'separate-folder';
+  if (p.colocated.test(filePath)) {return 'colocated';}
+  if (p.separate.test(filePath)) {return 'separate-folder';}
   return null;
 }
 
@@ -76,9 +77,9 @@ export class CoLocationLearningDetector extends LearningDetector<CoLocationConve
     const styleStyle = detectCoLocationStyle(context.file, 'style');
     const typeStyle = detectCoLocationStyle(context.file, 'type');
     
-    if (testStyle) testDist.add(testStyle, context.file);
-    if (styleStyle) styleDist.add(styleStyle, context.file);
-    if (typeStyle) typeDist.add(typeStyle, context.file);
+    if (testStyle) {testDist.add(testStyle, context.file);}
+    if (styleStyle) {styleDist.add(styleStyle, context.file);}
+    if (typeStyle) {typeDist.add(typeStyle, context.file);}
   }
 
   protected async detectWithConventions(

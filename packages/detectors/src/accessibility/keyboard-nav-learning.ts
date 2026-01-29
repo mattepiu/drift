@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -130,7 +131,7 @@ export class KeyboardNavLearningDetector extends LearningDetector<KeyboardNavCon
     distributions: Map<keyof KeyboardNavConventions, ValueDistribution>
   ): void {
     const patterns = extractKeyboardPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const styleDist = distributions.get('handlingStyle')!;
     const tabIndexDist = distributions.get('usesTabIndex')!;
@@ -145,8 +146,8 @@ export class KeyboardNavLearningDetector extends LearningDetector<KeyboardNavCon
         styles.add(pattern.style);
         styleDist.add(pattern.style, context.file);
       }
-      if (pattern.type === 'tabindex') hasTabIndex = true;
-      if (pattern.type === 'focus-trap') hasFocusTrap = true;
+      if (pattern.type === 'tabindex') {hasTabIndex = true;}
+      if (pattern.type === 'focus-trap') {hasFocusTrap = true;}
     }
 
     if (styles.size > 1) {

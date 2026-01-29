@@ -21,8 +21,9 @@
  * @requirements 10.1 - THE API_Detector SHALL detect route URL structure patterns
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -244,11 +245,11 @@ export function extractRouteParameters(routePath: string): string[] {
   let match;
   const expressRegex = new RegExp(ROUTE_PARAMETER_PATTERNS.express.source, 'g');
   while ((match = expressRegex.exec(routePath)) !== null) {
-    if (match[1]) params.push(match[1]);
+    if (match[1]) {params.push(match[1]);}
   }
   const nextjsRegex = new RegExp(ROUTE_PARAMETER_PATTERNS.nextjsDynamic.source, 'g');
   while ((match = nextjsRegex.exec(routePath)) !== null) {
-    if (match[1]) params.push(match[1]);
+    if (match[1]) {params.push(match[1]);}
   }
   return params;
 }
@@ -313,7 +314,7 @@ export function detectNextjsAppRouterPatterns(content: string, file: string): Ro
     return results;
   }
   const routeMatch = file.match(/\/app(\/(?:api\/)?[^/]+(?:\/[^/]+)*?)\/route\.[jt]sx?$/);
-  if (routeMatch && routeMatch[1]) {
+  if (routeMatch?.[1]) {
     const routePath = routeMatch[1];
     results.push({
       type: 'nextjs-app-router',
@@ -353,7 +354,7 @@ export function detectNextjsPagesRouterPatterns(_content: string, file: string):
     return results;
   }
   const routeMatch = file.match(/\/pages\/api(\/[^.]+)\.[jt]sx?$/);
-  if (routeMatch && routeMatch[1]) {
+  if (routeMatch?.[1]) {
     const routePath = '/api' + routeMatch[1];
     results.push({
       type: 'nextjs-pages-router',
@@ -407,7 +408,7 @@ export function detectUrlLiterals(content: string, file: string): RoutePatternIn
       continue;
     }
     const routePath = match[1];
-    if (!routePath) continue;
+    if (!routePath) {continue;}
     if (!routePath.includes('/api/') && !routePath.startsWith('/v') && !routePath.includes(':')) {
       continue;
     }
@@ -442,7 +443,7 @@ export function detectCasingViolations(
     'lowercase': 0,
   };
   for (const pattern of routePatterns) {
-    if (!pattern.routePath) continue;
+    if (!pattern.routePath) {continue;}
     const segments = pattern.routePath.split('/').filter(Boolean);
     for (const segment of segments) {
       // Skip path parameters entirely - they follow language conventions, not URL conventions
@@ -476,7 +477,7 @@ export function detectCasingViolations(
   if (dominantCasing === 'kebab-case') {
     // Only flag camelCase and snake_case as violations
     for (const pattern of routePatterns) {
-      if (!pattern.routePath) continue;
+      if (!pattern.routePath) {continue;}
       const segments = pattern.routePath.split('/').filter(Boolean);
       for (const segment of segments) {
         // Skip path parameters entirely
@@ -505,7 +506,7 @@ export function detectCasingViolations(
   } else {
     // If camelCase or snake_case is dominant, flag everything else
     for (const pattern of routePatterns) {
-      if (!pattern.routePath) continue;
+      if (!pattern.routePath) {continue;}
       const segments = pattern.routePath.split('/').filter(Boolean);
       for (const segment of segments) {
         if (segment.startsWith(':') || segment.startsWith('[') || 
@@ -542,7 +543,7 @@ export function detectNamingViolations(
   let pluralCount = 0;
   let singularCount = 0;
   for (const pattern of routePatterns) {
-    if (!pattern.routePath) continue;
+    if (!pattern.routePath) {continue;}
     const segments = pattern.routePath.split('/').filter(Boolean);
     for (const segment of segments) {
       if (segment.startsWith(':') || segment.startsWith('[') || 
@@ -558,7 +559,7 @@ export function detectNamingViolations(
   }
   const usePlural = pluralCount >= singularCount;
   for (const pattern of routePatterns) {
-    if (!pattern.routePath) continue;
+    if (!pattern.routePath) {continue;}
     const segments = pattern.routePath.split('/').filter(Boolean);
     for (const segment of segments) {
       if (segment.startsWith(':') || segment.startsWith('[') || 
@@ -616,7 +617,7 @@ export function detectMissingVersioning(
   );
   if (hasVersioning) {
     for (const pattern of routePatterns) {
-      if (!pattern.routePath) continue;
+      if (!pattern.routePath) {continue;}
       
       // Skip if already versioned
       if (/\/v\d+\//.test(pattern.routePath)) {
@@ -667,7 +668,7 @@ export function detectDeepNestingViolations(
 ): RouteViolationInfo[] {
   const violations: RouteViolationInfo[] = [];
   for (const pattern of routePatterns) {
-    if (!pattern.routePath) continue;
+    if (!pattern.routePath) {continue;}
     const depth = calculateNestingDepth(pattern.routePath);
     if (depth > MAX_NESTING_DEPTH) {
       violations.push({
@@ -734,7 +735,7 @@ export function analyzeRouteStructure(content: string, file: string): RouteStruc
     'lowercase': 0,
   };
   for (const pattern of routePatterns) {
-    if (!pattern.routePath) continue;
+    if (!pattern.routePath) {continue;}
     const segments = pattern.routePath.split('/').filter(Boolean);
     for (const segment of segments) {
       if (!segment.startsWith(':') && !segment.startsWith('[') && 
@@ -754,11 +755,11 @@ export function analyzeRouteStructure(content: string, file: string): RouteStruc
   let pluralCount = 0;
   let singularCount = 0;
   for (const pattern of routePatterns) {
-    if (!pattern.routePath) continue;
+    if (!pattern.routePath) {continue;}
     const segments = pattern.routePath.split('/').filter(Boolean);
     for (const segment of segments) {
-      if (isPlural(segment)) pluralCount++;
-      else if (isSingular(segment)) singularCount++;
+      if (isPlural(segment)) {pluralCount++;}
+      else if (isSingular(segment)) {singularCount++;}
     }
   }
   const usesPluralResources = pluralCount >= singularCount;

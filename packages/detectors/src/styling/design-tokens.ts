@@ -16,8 +16,9 @@
  * @requirements 9.1 - THE Styling_Detector SHALL detect design token usage vs hardcoded values
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -631,13 +632,13 @@ function isInsideComment(content: string, index: number): boolean {
 function extractCSSProperty(line: string): string | undefined {
   // Match CSS property: property-name: value
   const cssMatch = line.match(/([a-zA-Z-]+)\s*:/);
-  if (cssMatch && cssMatch[1]) {
+  if (cssMatch?.[1]) {
     return cssMatch[1];
   }
 
   // Match JS object property: propertyName: value
   const jsMatch = line.match(/([a-zA-Z]+)\s*:/);
-  if (jsMatch && jsMatch[1]) {
+  if (jsMatch?.[1]) {
     // Convert camelCase to kebab-case
     return jsMatch[1].replace(/([A-Z])/g, '-$1').toLowerCase();
   }
@@ -678,20 +679,20 @@ function suggestSpacingToken(value: string): string {
 
   // Common spacing scale suggestions
   if (value.endsWith('px')) {
-    if (num <= 4) return 'spacing.xs or --spacing-1';
-    if (num <= 8) return 'spacing.sm or --spacing-2';
-    if (num <= 16) return 'spacing.md or --spacing-4';
-    if (num <= 24) return 'spacing.lg or --spacing-6';
-    if (num <= 32) return 'spacing.xl or --spacing-8';
+    if (num <= 4) {return 'spacing.xs or --spacing-1';}
+    if (num <= 8) {return 'spacing.sm or --spacing-2';}
+    if (num <= 16) {return 'spacing.md or --spacing-4';}
+    if (num <= 24) {return 'spacing.lg or --spacing-6';}
+    if (num <= 32) {return 'spacing.xl or --spacing-8';}
     return 'spacing.2xl or --spacing-10';
   }
 
   if (value.endsWith('rem')) {
-    if (num <= 0.25) return 'spacing.xs or --spacing-1';
-    if (num <= 0.5) return 'spacing.sm or --spacing-2';
-    if (num <= 1) return 'spacing.md or --spacing-4';
-    if (num <= 1.5) return 'spacing.lg or --spacing-6';
-    if (num <= 2) return 'spacing.xl or --spacing-8';
+    if (num <= 0.25) {return 'spacing.xs or --spacing-1';}
+    if (num <= 0.5) {return 'spacing.sm or --spacing-2';}
+    if (num <= 1) {return 'spacing.md or --spacing-4';}
+    if (num <= 1.5) {return 'spacing.lg or --spacing-6';}
+    if (num <= 2) {return 'spacing.xl or --spacing-8';}
     return 'spacing.2xl or --spacing-10';
   }
 
@@ -976,7 +977,7 @@ export class DesignTokensDetector extends RegexDetector {
 
     // Extract the value from the message
     const valueMatch = violation.message.match(/Hardcoded [^']+ '([^']+)'/);
-    if (!valueMatch || !valueMatch[1]) {
+    if (!valueMatch?.[1]) {
       return null;
     }
 

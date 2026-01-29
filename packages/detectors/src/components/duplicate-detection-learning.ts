@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -43,10 +44,10 @@ const ABSTRACTION_PATTERNS = {
 };
 
 function detectAbstractionStyle(content: string, filePath: string): AbstractionStyle | null {
-  if (ABSTRACTION_PATTERNS.sharedComponents.test(filePath)) return 'shared-components';
-  if (ABSTRACTION_PATTERNS.hoc.test(content)) return 'hoc';
-  if (ABSTRACTION_PATTERNS.renderProps.test(content)) return 'render-props';
-  if (ABSTRACTION_PATTERNS.hooks.test(content)) return 'hooks';
+  if (ABSTRACTION_PATTERNS.sharedComponents.test(filePath)) {return 'shared-components';}
+  if (ABSTRACTION_PATTERNS.hoc.test(content)) {return 'hoc';}
+  if (ABSTRACTION_PATTERNS.renderProps.test(content)) {return 'render-props';}
+  if (ABSTRACTION_PATTERNS.hooks.test(content)) {return 'hooks';}
   return null;
 }
 
@@ -73,7 +74,7 @@ export class DuplicateDetectionLearningDetector extends LearningDetector<Duplica
     const style = detectAbstractionStyle(context.content, context.file);
     const styleDist = distributions.get('abstractionStyle')!;
     
-    if (style) styleDist.add(style, context.file);
+    if (style) {styleDist.add(style, context.file);}
   }
 
   protected async detectWithConventions(

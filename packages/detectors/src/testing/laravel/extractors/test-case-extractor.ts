@@ -6,13 +6,14 @@
  * @module testing/laravel/extractors/test-case-extractor
  */
 
+import { PHPUNIT_ASSERTIONS } from '../types.js';
+
 import type {
   TestCaseInfo,
   TestMethodInfo,
   TestType,
   TestCaseExtractionResult,
 } from '../types.js';
-import { PHPUNIT_ASSERTIONS } from '../types.js';
 
 // ============================================================================
 // Regex Patterns
@@ -78,7 +79,7 @@ export class TestCaseExtractor {
     let match;
     while ((match = TEST_METHOD_PATTERN.exec(classBody)) !== null) {
       const name = match[1] || '';
-      if (!name.startsWith('test') && !match[0].includes('@test')) continue;
+      if (!name.startsWith('test') && !match[0].includes('@test')) {continue;}
 
       const line = classLine + this.getLineNumber(classBody.substring(0, match.index), 0);
       const methodBody = this.extractMethodBody(classBody, match.index);
@@ -103,16 +104,16 @@ export class TestCaseExtractor {
 
     let match;
     while ((match = ASSERTION_PATTERN.exec(methodBody)) !== null) {
-      if (match[1]) assertions.push(match[1]);
+      if (match[1]) {assertions.push(match[1]);}
     }
 
     return [...new Set(assertions)];
   }
 
   private determineTestType(file: string, extendsClass: string): TestType {
-    if (file.includes('/Feature/') || file.includes('\\Feature\\')) return 'feature';
-    if (file.includes('/Unit/') || file.includes('\\Unit\\')) return 'unit';
-    if (extendsClass.includes('Dusk') || file.includes('/Browser/')) return 'browser';
+    if (file.includes('/Feature/') || file.includes('\\Feature\\')) {return 'feature';}
+    if (file.includes('/Unit/') || file.includes('\\Unit\\')) {return 'unit';}
+    if (extendsClass.includes('Dusk') || file.includes('/Browser/')) {return 'browser';}
     return 'integration';
   }
 
@@ -137,8 +138,8 @@ export class TestCaseExtractor {
   private extractClassBody(content: string, startIndex: number): string {
     let depth = 1, i = startIndex;
     while (i < content.length && depth > 0) {
-      if (content[i] === '{') depth++;
-      else if (content[i] === '}') depth--;
+      if (content[i] === '{') {depth++;}
+      else if (content[i] === '}') {depth--;}
       i++;
     }
     return content.substring(startIndex, i - 1);
@@ -146,11 +147,11 @@ export class TestCaseExtractor {
 
   private extractMethodBody(content: string, startIndex: number): string {
     const openBrace = content.indexOf('{', startIndex);
-    if (openBrace === -1) return '';
+    if (openBrace === -1) {return '';}
     let depth = 1, i = openBrace + 1;
     while (i < content.length && depth > 0) {
-      if (content[i] === '{') depth++;
-      else if (content[i] === '}') depth--;
+      if (content[i] === '{') {depth++;}
+      else if (content[i] === '}') {depth--;}
       i++;
     }
     return content.substring(openBrace + 1, i - 1);

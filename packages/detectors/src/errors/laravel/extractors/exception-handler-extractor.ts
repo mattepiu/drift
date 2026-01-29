@@ -159,7 +159,7 @@ export class ExceptionHandlerExtractor {
     const methods: RenderMethodInfo[] = [];
 
     const renderMatch = classBody.match(RENDER_METHOD_PATTERN);
-    if (renderMatch && renderMatch[1]) {
+    if (renderMatch?.[1]) {
       const methodBody = renderMatch[1];
       const methodLine = classLine + this.getLineNumber(classBody.substring(0, classBody.indexOf('function render')), 0);
 
@@ -200,7 +200,7 @@ export class ExceptionHandlerExtractor {
     const methods: ReportMethodInfo[] = [];
 
     const reportMatch = classBody.match(REPORT_METHOD_PATTERN);
-    if (reportMatch && reportMatch[1]) {
+    if (reportMatch?.[1]) {
       const methodBody = reportMatch[1];
       const methodLine = classLine + this.getLineNumber(classBody.substring(0, classBody.indexOf('function report')), 0);
 
@@ -292,7 +292,7 @@ export class ExceptionHandlerExtractor {
    */
   private extractArrayProperty(content: string, pattern: RegExp): string[] {
     const match = content.match(pattern);
-    if (!match || !match[1]) return [];
+    if (!match?.[1]) {return [];}
 
     return match[1]
       .match(/([A-Z][\w\\]+)::class/g)
@@ -315,8 +315,8 @@ export class ExceptionHandlerExtractor {
     let i = startIndex;
 
     while (i < content.length && depth > 0) {
-      if (content[i] === '{') depth++;
-      else if (content[i] === '}') depth--;
+      if (content[i] === '{') {depth++;}
+      else if (content[i] === '}') {depth--;}
       i++;
     }
 

@@ -145,11 +145,11 @@ export function detectRocketPatterns(
       // Find fairing hooks
       const afterImpl = source.slice(match.index);
       const hooks: string[] = [];
-      if (afterImpl.includes('on_ignite')) hooks.push('on_ignite');
-      if (afterImpl.includes('on_liftoff')) hooks.push('on_liftoff');
-      if (afterImpl.includes('on_request')) hooks.push('on_request');
-      if (afterImpl.includes('on_response')) hooks.push('on_response');
-      if (afterImpl.includes('on_shutdown')) hooks.push('on_shutdown');
+      if (afterImpl.includes('on_ignite')) {hooks.push('on_ignite');}
+      if (afterImpl.includes('on_liftoff')) {hooks.push('on_liftoff');}
+      if (afterImpl.includes('on_request')) {hooks.push('on_request');}
+      if (afterImpl.includes('on_response')) {hooks.push('on_response');}
+      if (afterImpl.includes('on_shutdown')) {hooks.push('on_shutdown');}
 
       fairings.push({
         name: fairingName,

@@ -5,9 +5,10 @@
  * Creates ambient space lighting with accent lights for depth.
  */
 
-import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { useRef } from 'react';
 import * as THREE from 'three';
+
 import { useGalaxyStore } from '../../store/index.js';
 
 // ============================================================================

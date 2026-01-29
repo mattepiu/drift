@@ -8,9 +8,10 @@
  * - Task.Run() patterns
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 export interface AsyncPatternInfo {
   type: 'async-task' | 'async-valuetask' | 'async-void' | 'configure-await' | 'task-run' | 'wait-sync';
@@ -40,7 +41,7 @@ export class AsyncPatternsDetector extends BaseDetector {
 
   async detect(context: DetectionContext): Promise<DetectionResult> {
     const { content, file } = context;
-    if (!this.isRelevantFile(content)) return this.createEmptyResult();
+    if (!this.isRelevantFile(content)) {return this.createEmptyResult();}
 
     const analysis = this.analyzeAsyncPatterns(content, file);
     const patterns: PatternMatch[] = analysis.patterns.map(p => ({

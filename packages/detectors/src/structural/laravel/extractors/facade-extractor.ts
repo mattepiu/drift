@@ -173,14 +173,14 @@ export class FacadeExtractor {
    */
   private isLikelyFacade(name: string, content: string): boolean {
     // Built-in Laravel facades
-    if (LARAVEL_FACADES.includes(name)) return true;
+    if (LARAVEL_FACADES.includes(name)) {return true;}
 
     // Check if it's imported from Facades namespace
-    if (content.includes(`use Illuminate\\Support\\Facades\\${name}`)) return true;
-    if (content.includes(`use App\\Facades\\${name}`)) return true;
+    if (content.includes(`use Illuminate\\Support\\Facades\\${name}`)) {return true;}
+    if (content.includes(`use App\\Facades\\${name}`)) {return true;}
 
     // Check for common facade patterns
-    if (content.includes(`${name}::fake(`)) return true;
+    if (content.includes(`${name}::fake(`)) {return true;}
 
     return false;
   }
@@ -201,8 +201,8 @@ export class FacadeExtractor {
     let i = startIndex;
 
     while (i < content.length && depth > 0) {
-      if (content[i] === '{') depth++;
-      else if (content[i] === '}') depth--;
+      if (content[i] === '{') {depth++;}
+      else if (content[i] === '}') {depth--;}
       i++;
     }
 

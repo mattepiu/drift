@@ -9,14 +9,16 @@
  */
 
 import { useMemo, useState, useCallback } from 'react';
-import { useContracts } from '../../hooks';
-import type { ContractFilters as ContractFiltersType } from '../../types';
-import type { ViewMode, SortConfig } from './types';
-import { ContractStats } from './ContractStats';
+
+import { ContractDetail, ContractDetailEmpty } from './ContractDetail';
 import { ContractFilters } from './ContractFilters';
 import { ContractList } from './ContractList';
-import { ContractDetail, ContractDetailEmpty } from './ContractDetail';
+import { ContractStats } from './ContractStats';
 import { calculateStatistics, sortContracts } from './utils';
+import { useContracts } from '../../hooks';
+
+import type { ViewMode, SortConfig } from './types';
+import type { ContractFilters as ContractFiltersType } from '../../types';
 
 export function ContractsTab() {
   // Local state
@@ -31,13 +33,13 @@ export function ContractsTab() {
 
   // Sort contracts
   const sortedContracts = useMemo(() => {
-    if (!contracts) return [];
+    if (!contracts) {return [];}
     return sortContracts(contracts, sort);
   }, [contracts, sort]);
 
   // Calculate statistics
   const statistics = useMemo(() => {
-    if (!contracts) return null;
+    if (!contracts) {return null;}
     return calculateStatistics(contracts);
   }, [contracts]);
 

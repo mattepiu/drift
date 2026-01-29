@@ -5,13 +5,15 @@
  * Shows a particle traveling from entry point to table.
  */
 
-import { useRef, useState, useEffect } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { useRef, useState, useEffect } from 'react';
 import * as THREE from 'three';
-import type { Vector3D, DataOperation } from '../../types/index.js';
+
+import { PARTICLE_CONFIG } from '../../constants/index.js';
 import { getOperationThreeColor } from '../../utils/color-utils.js';
 import { generateCurvedPath, toThreeVector } from '../../utils/geometry-utils.js';
-import { PARTICLE_CONFIG } from '../../constants/index.js';
+
+import type { Vector3D, DataOperation } from '../../types/index.js';
 
 // ============================================================================
 // Types
@@ -61,7 +63,7 @@ export function AccessPulse({
   
   // Animation
   useFrame((_, delta) => {
-    if (isComplete || !meshRef.current) return;
+    if (isComplete || !meshRef.current) {return;}
     
     // Update progress
     const speed = 1000 / duration;
@@ -105,7 +107,7 @@ export function AccessPulse({
     };
   }, []);
   
-  if (isComplete) return null;
+  if (isComplete) {return null;}
   
   return (
     <group>

@@ -17,8 +17,9 @@
  * @requirements 9.3 - THE Styling_Detector SHALL detect color usage patterns (system colors vs hex)
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -321,13 +322,13 @@ function isInsideComment(content: string, index: number): boolean {
 function extractCSSProperty(line: string): string | undefined {
   // Match CSS property: property-name: value
   const cssMatch = line.match(/([a-zA-Z-]+)\s*:/);
-  if (cssMatch && cssMatch[1]) {
+  if (cssMatch?.[1]) {
     return cssMatch[1];
   }
 
   // Match JS object property: propertyName: value
   const jsMatch = line.match(/([a-zA-Z]+)\s*:/);
-  if (jsMatch && jsMatch[1]) {
+  if (jsMatch?.[1]) {
     // Convert camelCase to kebab-case
     return jsMatch[1].replace(/([A-Z])/g, '-$1').toLowerCase();
   }
@@ -591,17 +592,17 @@ function identifyColorFamily(hex: string): string | null {
   const b = parseInt(normalizedHex.slice(4, 6), 16);
 
   // Simple heuristics for color family identification
-  if (r > 200 && g < 100 && b < 100) return 'red';
-  if (r < 100 && g > 200 && b < 100) return 'green';
-  if (r < 100 && g < 100 && b > 200) return 'blue';
-  if (r > 200 && g > 200 && b < 100) return 'yellow';
-  if (r > 200 && g < 150 && b > 200) return 'pink';
-  if (r > 200 && g > 100 && b < 100) return 'orange';
-  if (r > 100 && g < 100 && b > 200) return 'purple';
-  if (r < 100 && g > 200 && b > 200) return 'cyan';
+  if (r > 200 && g < 100 && b < 100) {return 'red';}
+  if (r < 100 && g > 200 && b < 100) {return 'green';}
+  if (r < 100 && g < 100 && b > 200) {return 'blue';}
+  if (r > 200 && g > 200 && b < 100) {return 'yellow';}
+  if (r > 200 && g < 150 && b > 200) {return 'pink';}
+  if (r > 200 && g > 100 && b < 100) {return 'orange';}
+  if (r > 100 && g < 100 && b > 200) {return 'purple';}
+  if (r < 100 && g > 200 && b > 200) {return 'cyan';}
   if (Math.abs(r - g) < 30 && Math.abs(g - b) < 30 && Math.abs(r - b) < 30) {
-    if (r < 50) return 'black';
-    if (r > 200) return 'white';
+    if (r < 50) {return 'black';}
+    if (r > 200) {return 'white';}
     return 'gray';
   }
 
@@ -797,7 +798,7 @@ export class ColorUsageDetector extends RegexDetector {
 
     // Extract the value from the message
     const valueMatch = violation.message.match(/Hardcoded [^']+ '([^']+)'/);
-    if (!valueMatch || !valueMatch[1]) {
+    if (!valueMatch?.[1]) {
       return null;
     }
 

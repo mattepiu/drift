@@ -7,8 +7,8 @@
  * @module contracts/spring/dto-extractor
  */
 
-import type { ContractField } from 'driftdetect-core';
 import type { SpringDtoInfo } from './types.js';
+import type { ContractField } from 'driftdetect-core';
 
 // ============================================
 // Local Type Mapping (to avoid circular dependency)
@@ -73,29 +73,29 @@ const JAVA_COLLECTION_TYPES = ['List', 'ArrayList', 'LinkedList', 'Set', 'HashSe
  * Map a Java type to a contract type.
  */
 function mapJavaType(javaType: string): string {
-  if (!javaType) return 'unknown';
+  if (!javaType) {return 'unknown';}
   const cleanType = javaType.trim();
   const baseType = cleanType.replace(/\?$/, '');
 
   // Handle arrays
-  if (baseType.endsWith('[]')) return 'array';
+  if (baseType.endsWith('[]')) {return 'array';}
 
   // Handle Optional<T>
   const optionalMatch = baseType.match(/^Optional<(.+)>$/);
-  if (optionalMatch?.[1]) return `${mapJavaType(optionalMatch[1])} | null`;
+  if (optionalMatch?.[1]) {return `${mapJavaType(optionalMatch[1])} | null`;}
 
   // Handle ResponseEntity<T>
   const responseMatch = baseType.match(/^ResponseEntity<(.+)>$/);
-  if (responseMatch?.[1]) return mapJavaType(responseMatch[1]);
+  if (responseMatch?.[1]) {return mapJavaType(responseMatch[1]);}
 
   // Handle collections
   for (const collType of JAVA_COLLECTION_TYPES) {
-    if (baseType.startsWith(`${collType}<`)) return 'array';
+    if (baseType.startsWith(`${collType}<`)) {return 'array';}
   }
-  if (JAVA_COLLECTION_TYPES.includes(baseType)) return 'array';
+  if (JAVA_COLLECTION_TYPES.includes(baseType)) {return 'array';}
 
   // Direct mapping
-  if (JAVA_TYPE_MAP[baseType]) return JAVA_TYPE_MAP[baseType];
+  if (JAVA_TYPE_MAP[baseType]) {return JAVA_TYPE_MAP[baseType];}
 
   // Custom types
   return baseType.toLowerCase();
@@ -129,7 +129,7 @@ function unwrapType(javaType: string): string {
   ];
   for (const pattern of patterns) {
     const match = javaType.match(pattern);
-    if (match?.[1]) return match[1];
+    if (match?.[1]) {return match[1];}
   }
   return javaType;
 }
@@ -153,11 +153,11 @@ export class SpringDtoExtractor {
   extractDto(content: string, typeName: string, file: string): SpringDtoInfo | null {
     // Try to find as a record first (Java 16+)
     const recordInfo = this.extractRecord(content, typeName, file);
-    if (recordInfo) return recordInfo;
+    if (recordInfo) {return recordInfo;}
 
     // Try to find as a class
     const classInfo = this.extractClass(content, typeName, file);
-    if (classInfo) return classInfo;
+    if (classInfo) {return classInfo;}
 
     return null;
   }
@@ -184,11 +184,11 @@ export class SpringDtoExtractor {
 
     // Try record first
     const recordFields = this.extractRecordFields(content, unwrappedType);
-    if (recordFields.length > 0) return recordFields;
+    if (recordFields.length > 0) {return recordFields;}
 
     // Try class
     const classFields = this.extractClassFields(content, unwrappedType);
-    if (classFields.length > 0) return classFields;
+    if (classFields.length > 0) {return classFields;}
 
     return [];
   }
@@ -204,7 +204,7 @@ export class SpringDtoExtractor {
     );
 
     const match = recordPattern.exec(content);
-    if (!match) return null;
+    if (!match) {return null;}
 
     const paramsStr = match[1] || '';
     const line = this.getLineNumber(content, match.index);
@@ -234,7 +234,7 @@ export class SpringDtoExtractor {
     );
 
     const match = classPattern.exec(content);
-    if (!match) return null;
+    if (!match) {return null;}
 
     const line = this.getLineNumber(content, match.index);
     const parentClass = match[1] || null;
@@ -269,7 +269,7 @@ export class SpringDtoExtractor {
     );
 
     const match = recordPattern.exec(content);
-    if (!match || !match[1]) return [];
+    if (!match?.[1]) {return [];}
 
     return this.parseRecordParameters(match[1]);
   }
@@ -282,7 +282,7 @@ export class SpringDtoExtractor {
 
     // Find the class body
     const classBody = this.extractClassBody(content, typeName);
-    if (!classBody) return fields;
+    if (!classBody) {return fields;}
 
     // Pattern for fields: private Type fieldName;
     const fieldPattern = /(?:private|protected|public)\s+(?:final\s+)?(\w+(?:<[^>]+>)?)\s+(\w+)\s*(?:=|;)/g;
@@ -293,7 +293,7 @@ export class SpringDtoExtractor {
       const fieldName = fieldMatch[2] || '';
 
       // Skip common non-DTO fields
-      if (this.isSkippableField(fieldName, javaType)) continue;
+      if (this.isSkippableField(fieldName, javaType)) {continue;}
 
       fields.push({
         name: fieldName,
@@ -322,14 +322,14 @@ export class SpringDtoExtractor {
 
     for (const param of params) {
       const trimmed = param.trim();
-      if (!trimmed) continue;
+      if (!trimmed) {continue;}
 
       // Remove annotations from parameter
       const cleanParam = trimmed.replace(/@\w+(?:\([^)]*\))?\s*/g, '').trim();
 
       // Parse type and name: Type name
       const paramMatch = cleanParam.match(/^(\w+(?:<[^>]+>)?)\s+(\w+)$/);
-      if (paramMatch && paramMatch[1] && paramMatch[2]) {
+      if (paramMatch?.[1] && paramMatch[2]) {
         const javaType = paramMatch[1];
         const fieldName = paramMatch[2];
 
@@ -359,15 +359,15 @@ export class SpringDtoExtractor {
     );
 
     const match = classPattern.exec(content);
-    if (!match) return null;
+    if (!match) {return null;}
 
     const startIndex = match.index + match[0].length;
     let depth = 1;
     let i = startIndex;
 
     while (i < content.length && depth > 0) {
-      if (content[i] === '{') depth++;
-      else if (content[i] === '}') depth--;
+      if (content[i] === '{') {depth++;}
+      else if (content[i] === '}') {depth--;}
       i++;
     }
 
@@ -383,8 +383,8 @@ export class SpringDtoExtractor {
     let depth = 0;
 
     for (const char of paramsStr) {
-      if (char === '<') depth++;
-      else if (char === '>') depth--;
+      if (char === '<') {depth++;}
+      else if (char === '>') {depth--;}
       else if (char === ',' && depth === 0) {
         result.push(current);
         current = '';
@@ -405,7 +405,7 @@ export class SpringDtoExtractor {
    */
   private extractPackage(content: string): string | null {
     const packageMatch = content.match(/package\s+([\w.]+)\s*;/);
-    return packageMatch && packageMatch[1] ? packageMatch[1] : null;
+    return packageMatch?.[1] ? packageMatch[1] : null;
   }
 
   /**
@@ -431,7 +431,7 @@ export class SpringDtoExtractor {
    */
   private isOptionalField(classBody: string, fieldName: string, javaType: string): boolean {
     // Check for Optional type
-    if (javaType.startsWith('Optional<')) return true;
+    if (javaType.startsWith('Optional<')) {return true;}
 
     // Check for @Nullable annotation on the field
     const fieldPattern = new RegExp(`@Nullable[^;]*${fieldName}\\s*[;=]`);
@@ -443,15 +443,15 @@ export class SpringDtoExtractor {
    */
   private isNullableField(classBody: string, fieldName: string, javaType: string): boolean {
     // Check for Optional type
-    if (javaType.startsWith('Optional<')) return true;
+    if (javaType.startsWith('Optional<')) {return true;}
 
     // Check for @Nullable annotation
     const fieldPattern = new RegExp(`@Nullable[^;]*${fieldName}\\s*[;=]`);
-    if (fieldPattern.test(classBody)) return true;
+    if (fieldPattern.test(classBody)) {return true;}
 
     // Check for @NotNull annotation (means NOT nullable)
     const notNullPattern = new RegExp(`@NotNull[^;]*${fieldName}\\s*[;=]`);
-    if (notNullPattern.test(classBody)) return false;
+    if (notNullPattern.test(classBody)) {return false;}
 
     // Default: reference types are potentially nullable
     return !this.isPrimitiveType(javaType);

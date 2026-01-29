@@ -5,10 +5,11 @@
  * from frontend code. Supports fetch, axios, and react-query patterns.
  */
 
-import type { ContractField, HttpMethod, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
 import { BaseDetector } from '../base/base-detector.js';
+
 import type { ExtractedApiCall, FrontendExtractionResult } from './types.js';
+import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { ContractField, HttpMethod, Language } from 'driftdetect-core';
 
 // ============================================================================
 // API Call Pattern Matchers
@@ -44,7 +45,7 @@ const REACT_QUERY_PATTERNS = [
  * Handles nested types, generics, and extends/intersection
  */
 function extractTypeFields(content: string, typeName: string, visited: Set<string> = new Set()): ContractField[] {
-  if (visited.has(typeName)) return []; // Prevent circular refs
+  if (visited.has(typeName)) {return [];} // Prevent circular refs
   visited.add(typeName);
   
   const fields: ContractField[] = [];
@@ -84,7 +85,7 @@ function extractTypeFields(content: string, typeName: string, visited: Set<strin
   );
   
   match = typePattern.exec(content);
-  if (match && match[1]) {
+  if (match?.[1]) {
     const typeBody = match[1].trim();
     
     // Handle intersection types (Type1 & Type2)
@@ -134,16 +135,16 @@ function parseTypeBody(body: string, fullContent: string, visited: Set<string>):
   
   for (const line of lines) {
     const trimmed = line.trim();
-    if (!trimmed || trimmed.startsWith('//')) continue;
+    if (!trimmed || trimmed.startsWith('//')) {continue;}
     
     // Match: fieldName?: Type or fieldName: Type
     const fieldMatch = trimmed.match(/^(\w+)(\?)?:\s*(.+)$/);
-    if (!fieldMatch) continue;
+    if (!fieldMatch) {continue;}
     
     const name = fieldMatch[1];
     const optional = fieldMatch[2] === '?';
     let typeStr = fieldMatch[3];
-    if (!name || !typeStr) continue;
+    if (!name || !typeStr) {continue;}
     
     typeStr = typeStr.trim();
     
@@ -189,14 +190,14 @@ function parseTypeBody(body: string, fullContent: string, visited: Set<string>):
  * Extract nested object body handling balanced braces
  */
 function extractNestedBody(typeStr: string): string | null {
-  if (!typeStr.startsWith('{')) return null;
+  if (!typeStr.startsWith('{')) {return null;}
   
   let depth = 0;
   let start = -1;
   
   for (let i = 0; i < typeStr.length; i++) {
     if (typeStr[i] === '{') {
-      if (depth === 0) start = i + 1;
+      if (depth === 0) {start = i + 1;}
       depth++;
     } else if (typeStr[i] === '}') {
       depth--;
@@ -220,13 +221,13 @@ function normalizeTypeString(typeStr: string): string {
   
   // Handle Array<T>
   const arrayMatch = typeStr.match(/^Array<(.+)>$/);
-  if (arrayMatch && arrayMatch[1]) {
+  if (arrayMatch?.[1]) {
     return `${normalizeTypeString(arrayMatch[1])}[]`;
   }
   
   // Handle Promise<T>
   const promiseMatch = typeStr.match(/^Promise<(.+)>$/);
-  if (promiseMatch && promiseMatch[1]) {
+  if (promiseMatch?.[1]) {
     return normalizeTypeString(promiseMatch[1]);
   }
   
@@ -253,31 +254,31 @@ function findResponseType(content: string, line: number): string | undefined {
   // Look backwards for type annotations
   for (let i = line - 1; i >= Math.max(0, line - 10); i--) {
     const lineContent = lines[i];
-    if (!lineContent) continue;
+    if (!lineContent) {continue;}
     
     const constMatch = lineContent.match(/const\s+\w+\s*:\s*(\w+)/);
-    if (constMatch && constMatch[1]) return constMatch[1];
+    if (constMatch?.[1]) {return constMatch[1];}
     
     const thenMatch = lineContent.match(/\.then\s*\(\s*\([^)]*\)\s*:\s*(\w+)/);
-    if (thenMatch && thenMatch[1]) return thenMatch[1];
+    if (thenMatch?.[1]) {return thenMatch[1];}
     
     const genericMatch = lineContent.match(/fetch\s*<\s*(\w+)\s*>/);
-    if (genericMatch && genericMatch[1]) return genericMatch[1];
+    if (genericMatch?.[1]) {return genericMatch[1];}
     
     const axiosGenericMatch = lineContent.match(/axios\.\w+\s*<\s*(\w+)\s*>/);
-    if (axiosGenericMatch && axiosGenericMatch[1]) return axiosGenericMatch[1];
+    if (axiosGenericMatch?.[1]) {return axiosGenericMatch[1];}
   }
   
   // Look forward for type assertions
   for (let i = line; i < Math.min(lines.length, line + 5); i++) {
     const lineContent = lines[i];
-    if (!lineContent) continue;
+    if (!lineContent) {continue;}
     
     const asMatch = lineContent.match(/as\s+(\w+)/);
-    if (asMatch && asMatch[1]) return asMatch[1];
+    if (asMatch?.[1]) {return asMatch[1];}
     
     const jsonAsMatch = lineContent.match(/\.json\(\)\s+as\s+(\w+)/);
-    if (jsonAsMatch && jsonAsMatch[1]) return jsonAsMatch[1];
+    if (jsonAsMatch?.[1]) {return jsonAsMatch[1];}
   }
   
   return undefined;
@@ -294,17 +295,17 @@ function findFunctionReturnType(content: string, line: number): ContractField[] 
   // Look backwards to find the function declaration
   for (let i = line - 1; i >= Math.max(0, line - 20); i--) {
     const lineContent = lines[i];
-    if (!lineContent) continue;
+    if (!lineContent) {continue;}
     
     // Match: async function name(...): Promise<{ ... }> or (): Promise<{ ... }> =>
     const promiseMatch = lineContent.match(/:\s*Promise\s*<\s*\{([^}]+)\}/);
-    if (promiseMatch && promiseMatch[1]) {
+    if (promiseMatch?.[1]) {
       return extractInlineTypeFields(promiseMatch[1]);
     }
     
     // Match named type: ): Promise<TypeName>
     const namedPromiseMatch = lineContent.match(/:\s*Promise\s*<\s*(\w+)\s*>/);
-    if (namedPromiseMatch && namedPromiseMatch[1]) {
+    if (namedPromiseMatch?.[1]) {
       const typeName = namedPromiseMatch[1];
       // Look up the type definition in the file
       const typeFields = extractTypeFields(content, typeName);
@@ -314,8 +315,8 @@ function findFunctionReturnType(content: string, line: number): ContractField[] 
     }
     
     // Stop if we hit another function or class
-    if (lineContent.match(/^(?:export\s+)?(?:async\s+)?function\s/) && i < line - 1) break;
-    if (lineContent.match(/^(?:export\s+)?class\s/)) break;
+    if (lineContent.match(/^(?:export\s+)?(?:async\s+)?function\s/) && i < line - 1) {break;}
+    if (lineContent.match(/^(?:export\s+)?class\s/)) {break;}
   }
   
   return [];
@@ -335,7 +336,7 @@ function extractInlineTypeFields(typeBody: string): ContractField[] {
     const name = match[1];
     const optional = match[2] === '?';
     let type = match[3];
-    if (!name || !type) continue;
+    if (!name || !type) {continue;}
     
     type = type.trim();
     const nullable = type.includes('| null') || type.includes('null |');
@@ -379,7 +380,7 @@ function extractRequestFields(content: string, line: number): { requestType: str
   // Look at the API call line and surrounding context
   for (let i = Math.max(0, line - 3); i < Math.min(lines.length, line + 5); i++) {
     const lineContent = lines[i];
-    if (!lineContent) continue;
+    if (!lineContent) {continue;}
     
     // Pattern 1: axios.post<ResponseType>(url, requestData) - look for typed request
     // Pattern 2: fetch(url, { body: JSON.stringify(data) })
@@ -387,7 +388,7 @@ function extractRequestFields(content: string, line: number): { requestType: str
     
     // Look for body: JSON.stringify(variable) or body: variable
     const bodyMatch = lineContent.match(/body\s*:\s*(?:JSON\.stringify\s*\(\s*)?(\w+)/);
-    if (bodyMatch && bodyMatch[1]) {
+    if (bodyMatch?.[1]) {
       const varName = bodyMatch[1];
       // Try to find the type of this variable
       const varType = findVariableType(content, varName, i);
@@ -401,7 +402,7 @@ function extractRequestFields(content: string, line: number): { requestType: str
     
     // Look for second argument in axios calls: axios.post(url, data)
     const axiosDataMatch = lineContent.match(/axios\.\w+\s*(?:<[^>]+>)?\s*\([^,]+,\s*(\w+)/);
-    if (axiosDataMatch && axiosDataMatch[1]) {
+    if (axiosDataMatch?.[1]) {
       const varName = axiosDataMatch[1];
       const varType = findVariableType(content, varName, i);
       if (varType) {
@@ -414,7 +415,7 @@ function extractRequestFields(content: string, line: number): { requestType: str
     
     // Look for inline object: { field1, field2 } or { field1: value1 }
     const inlineObjMatch = lineContent.match(/(?:body|data)\s*:\s*\{([^}]+)\}/);
-    if (inlineObjMatch && inlineObjMatch[1]) {
+    if (inlineObjMatch?.[1]) {
       const fields = extractInlineObjectFields(inlineObjMatch[1]);
       if (fields.length > 0) {
         return { requestType: undefined, fields };
@@ -434,17 +435,17 @@ function findVariableType(content: string, varName: string, nearLine: number): s
   // Look backwards for variable declaration
   for (let i = nearLine; i >= Math.max(0, nearLine - 30); i--) {
     const lineContent = lines[i];
-    if (!lineContent) continue;
+    if (!lineContent) {continue;}
     
     // Pattern: const varName: TypeName = ...
     const typedDeclMatch = lineContent.match(new RegExp(`(?:const|let|var)\\s+${varName}\\s*:\\s*(\\w+)`));
-    if (typedDeclMatch && typedDeclMatch[1]) {
+    if (typedDeclMatch?.[1]) {
       return typedDeclMatch[1];
     }
     
     // Pattern: const varName = value as TypeName
     const asMatch = lineContent.match(new RegExp(`(?:const|let|var)\\s+${varName}\\s*=.*\\s+as\\s+(\\w+)`));
-    if (asMatch && asMatch[1]) {
+    if (asMatch?.[1]) {
       return asMatch[1];
     }
   }
@@ -452,11 +453,11 @@ function findVariableType(content: string, varName: string, nearLine: number): s
   // Look for function parameter type
   for (let i = nearLine; i >= Math.max(0, nearLine - 50); i--) {
     const lineContent = lines[i];
-    if (!lineContent) continue;
+    if (!lineContent) {continue;}
     
     // Pattern: function name(varName: TypeName) or (varName: TypeName) =>
     const paramMatch = lineContent.match(new RegExp(`${varName}\\s*:\\s*(\\w+)`));
-    if (paramMatch && paramMatch[1]) {
+    if (paramMatch?.[1]) {
       return paramMatch[1];
     }
   }
@@ -474,11 +475,11 @@ function extractInlineObjectFields(objContent: string): ContractField[] {
   const parts = objContent.split(',');
   for (const part of parts) {
     const trimmed = part.trim();
-    if (!trimmed) continue;
+    if (!trimmed) {continue;}
     
     // Shorthand: just the field name
     const shorthandMatch = trimmed.match(/^(\w+)$/);
-    if (shorthandMatch && shorthandMatch[1]) {
+    if (shorthandMatch?.[1]) {
       fields.push({
         name: shorthandMatch[1],
         type: 'unknown',
@@ -490,7 +491,7 @@ function extractInlineObjectFields(objContent: string): ContractField[] {
     
     // Key-value: field: value
     const kvMatch = trimmed.match(/^(\w+)\s*:/);
-    if (kvMatch && kvMatch[1]) {
+    if (kvMatch?.[1]) {
       fields.push({
         name: kvMatch[1],
         type: 'unknown',
@@ -574,12 +575,12 @@ export class FrontendTypeDetector extends BaseDetector {
       
       while ((match = pattern.exec(content)) !== null) {
         const path = match[1];
-        if (!path) continue;
+        if (!path) {continue;}
         
         const method = (match[2]?.toUpperCase() || 'GET') as HttpMethod;
         const line = content.substring(0, match.index).split('\n').length;
         
-        if (!path.startsWith('/api') && !path.startsWith('http')) continue;
+        if (!path.startsWith('/api') && !path.startsWith('http')) {continue;}
         
         const { responseType, fields: responseFields } = extractResponseFields(content, line);
         const { requestType, fields: requestFields } = ['POST', 'PUT', 'PATCH'].includes(method)
@@ -623,11 +624,11 @@ export class FrontendTypeDetector extends BaseDetector {
           method = (match[2]?.toUpperCase() || 'GET') as HttpMethod;
         }
         
-        if (!path) continue;
+        if (!path) {continue;}
         
         const line = content.substring(0, match.index).split('\n').length;
         
-        if (!path.startsWith('/api') && !path.startsWith('http')) continue;
+        if (!path.startsWith('/api') && !path.startsWith('http')) {continue;}
         
         const { responseType, fields: responseFields } = extractResponseFields(content, line);
         const { requestType, fields: requestFields } = ['POST', 'PUT', 'PATCH'].includes(method)
@@ -670,11 +671,11 @@ export class FrontendTypeDetector extends BaseDetector {
           path = match[1] || '';
         }
         
-        if (!path) continue;
+        if (!path) {continue;}
         
         const line = content.substring(0, match.index).split('\n').length;
         
-        if (!path.startsWith('/api') && !path.startsWith('http')) continue;
+        if (!path.startsWith('/api') && !path.startsWith('http')) {continue;}
         
         const { responseType, fields: responseFields } = extractResponseFields(content, line);
         const { requestType, fields: requestFields } = ['POST', 'PUT', 'PATCH'].includes(method)
@@ -710,11 +711,11 @@ export class FrontendTypeDetector extends BaseDetector {
         const method = (match[2]?.toUpperCase() || 'GET') as HttpMethod;
         const path = match[3] || '';
         
-        if (!path) continue;
+        if (!path) {continue;}
         
         const line = content.substring(0, match.index).split('\n').length;
         
-        if (!path.startsWith('/api') && !path.startsWith('http')) continue;
+        if (!path.startsWith('/api') && !path.startsWith('http')) {continue;}
         
         const { responseType, fields: responseFields } = extractResponseFields(content, line);
         const { requestType, fields: requestFields } = ['POST', 'PUT', 'PATCH'].includes(method)

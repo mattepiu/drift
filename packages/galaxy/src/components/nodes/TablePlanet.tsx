@@ -5,11 +5,13 @@
  * Size reflects importance, color reflects sensitivity level.
  */
 
-import { useRef, useMemo, useState, useCallback } from 'react';
-import { useFrame } from '@react-three/fiber';
 import { Sphere, Html } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useRef, useMemo, useState, useCallback } from 'react';
 import * as THREE from 'three';
-import type { TableNode } from '../../types/index.js';
+
+import { useGalaxySound } from '../../audio/index.js';
+import { TABLE_SIZE, ANIMATION_CONFIG, LABEL_CONFIG } from '../../constants/index.js';
 import { useGalaxyStore } from '../../store/index.js';
 import {
   getSensitivityThreeColor,
@@ -17,8 +19,8 @@ import {
   getClusterThreeColor,
 } from '../../utils/color-utils.js';
 import { calculateTableSize, toThreeVector } from '../../utils/geometry-utils.js';
-import { TABLE_SIZE, ANIMATION_CONFIG, LABEL_CONFIG } from '../../constants/index.js';
-import { useGalaxySound } from '../../audio/index.js';
+
+import type { TableNode } from '../../types/index.js';
 
 // ============================================================================
 // Types
@@ -109,7 +111,7 @@ export function TablePlanet({
   
   // Animation
   useFrame((state, delta) => {
-    if (!meshRef.current) return;
+    if (!meshRef.current) {return;}
     
     // Idle rotation
     meshRef.current.rotation.y += ANIMATION_CONFIG.IDLE_ROTATION * display.animationSpeed;

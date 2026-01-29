@@ -145,13 +145,13 @@ export {
 } from './setup-teardown.js';
 
 // Import factory functions for createAllTestingDetectors
-import { createTestFileNamingDetector } from './file-naming.js';
 import { createTestCoLocationDetector } from './co-location.js';
-import { createTestStructureDetector } from './test-structure.js';
-import { createMockPatternsDetector } from './mock-patterns.js';
-import { createFixturePatternsDetector } from './fixture-patterns.js';
 import { createDescribeNamingDetector } from './describe-naming.js';
+import { createTestFileNamingDetector } from './file-naming.js';
+import { createFixturePatternsDetector } from './fixture-patterns.js';
+import { createMockPatternsDetector } from './mock-patterns.js';
 import { createSetupTeardownDetector } from './setup-teardown.js';
+import { createTestStructureDetector } from './test-structure.js';
 
 // Convenience factory for all testing detectors
 export function createAllTestingDetectors() {

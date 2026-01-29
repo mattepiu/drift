@@ -7,9 +7,14 @@
  * @module contracts/laravel/laravel-endpoint-detector
  */
 
-import type { ContractField, HttpMethod, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import { ControllerExtractor } from './extractors/controller-extractor.js';
+import { FormRequestExtractor } from './extractors/form-request-extractor.js';
+import { ResourceExtractor } from './extractors/resource-extractor.js';
+import { RouteExtractor } from './extractors/route-extractor.js';
+import { toContractFields, validationRulesToContractFields } from './types.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import type { ExtractedEndpoint, BackendExtractionResult } from '../types.js';
 import type {
   LaravelRouteInfo,
@@ -18,11 +23,7 @@ import type {
   LaravelFormRequestInfo,
   LaravelExtractionResult,
 } from './types.js';
-import { toContractFields, validationRulesToContractFields } from './types.js';
-import { RouteExtractor } from './extractors/route-extractor.js';
-import { ControllerExtractor } from './extractors/controller-extractor.js';
-import { ResourceExtractor } from './extractors/resource-extractor.js';
-import { FormRequestExtractor } from './extractors/form-request-extractor.js';
+import type { ContractField, HttpMethod, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Laravel Endpoint Detector
@@ -142,10 +143,10 @@ export class LaravelEndpointDetector extends BaseDetector {
     const hasFormRequests = formRequests.length > 0;
 
     let confidence = 0;
-    if (hasRoutes) confidence += 0.3;
-    if (hasControllers) confidence += 0.3;
-    if (hasResources) confidence += 0.2;
-    if (hasFormRequests) confidence += 0.2;
+    if (hasRoutes) {confidence += 0.3;}
+    if (hasControllers) {confidence += 0.3;}
+    if (hasResources) {confidence += 0.2;}
+    if (hasFormRequests) {confidence += 0.2;}
 
     return {
       routes,

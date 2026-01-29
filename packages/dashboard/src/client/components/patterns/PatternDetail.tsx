@@ -5,10 +5,12 @@
  */
 
 import { useState } from 'react';
-import { usePattern, useApprovePattern, useIgnorePattern, useDeletePattern } from '../../hooks';
-import type { PatternWithLocations, SemanticLocation } from '../../types';
+
 import { STATUS_CONFIG, CATEGORY_CONFIG, DISPLAY_LIMITS } from './constants';
 import { formatPercentage, getConfidenceColor, truncatePath } from './utils';
+import { usePattern, useApprovePattern, useIgnorePattern, useDeletePattern } from '../../hooks';
+
+import type { PatternWithLocations, SemanticLocation } from '../../types';
 
 // ============================================================================
 // Location Item
@@ -213,7 +215,7 @@ export function PatternDetail({ patternId }: PatternDetailProps) {
   const [copySuccess, setCopySuccess] = useState(false);
 
   const copyForAI = async () => {
-    if (!pattern) return;
+    if (!pattern) {return;}
     
     setIsCopying(true);
     setCopySuccess(false);

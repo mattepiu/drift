@@ -9,12 +9,15 @@
  * @requirements 27.7 - THE LSP_Server SHALL respond to diagnostics within 200ms of file change
  */
 
-import type { Connection, Diagnostic, TextDocuments } from 'vscode-languageserver';
 import { DiagnosticSeverity } from 'vscode-languageserver';
-import type { TextDocument } from 'vscode-languageserver-textdocument';
-import type { Violation, Severity } from 'driftdetect-core';
-import type { ViolationInfo } from '../types/lsp-types.js';
+
 import { CoreScanner, PatternStoreAdapter, type CoreIntegrationConfig } from '../integration/index.js';
+
+import type { ViolationInfo } from '../types/lsp-types.js';
+import type { Violation, Severity } from 'driftdetect-core';
+import type { Connection, Diagnostic, TextDocuments } from 'vscode-languageserver';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
+
 
 // ============================================================================
 // Types

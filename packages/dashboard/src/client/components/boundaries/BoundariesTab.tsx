@@ -5,11 +5,11 @@
  */
 
 import { useState, useMemo } from 'react';
-import type { ViewMode, BoundaryFilters, TableInfo, SensitiveField, BoundaryViolation } from './types';
-import { BoundaryStats } from './BoundaryStats';
+
+import { BoundaryDetail, BoundaryDetailEmpty } from './BoundaryDetail';
 import { BoundaryFiltersComponent } from './BoundaryFilters';
 import { BoundaryList } from './BoundaryList';
-import { BoundaryDetail, BoundaryDetailEmpty } from './BoundaryDetail';
+import { BoundaryStats } from './BoundaryStats';
 import { RuleEditor, type BoundaryRulesConfig } from './RuleEditor';
 import {
   calculateMetrics,
@@ -18,6 +18,8 @@ import {
   sortTables,
   groupByFile,
 } from './utils';
+
+import type { ViewMode, BoundaryFilters, TableInfo, SensitiveField, BoundaryViolation } from './types';
 
 // ============================================================================
 // Mock Data (will be replaced with real API calls)

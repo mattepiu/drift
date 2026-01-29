@@ -4,9 +4,10 @@
  * Enterprise-grade statistics dashboard for violation overview.
  */
 
-import type { ViolationStatistics } from './types';
 import { SEVERITY_ORDER, SEVERITY_CONFIG, CATEGORY_CONFIG } from './constants';
 import { getFileName } from './utils';
+
+import type { ViolationStatistics } from './types';
 
 // ============================================================================
 // Stat Card
@@ -54,7 +55,7 @@ function SeverityBreakdown({ bySeverity, total }: SeverityBreakdownProps) {
         {SEVERITY_ORDER.map(severity => {
           const count = bySeverity[severity] || 0;
           const percentage = total > 0 ? (count / total) * 100 : 0;
-          if (percentage === 0) return null;
+          if (percentage === 0) {return null;}
           
           const config = SEVERITY_CONFIG[severity];
           return (

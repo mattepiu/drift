@@ -7,9 +7,9 @@
  * @requirements Phase 5 - Dashboard auto-refresh when watch mode updates patterns
  */
 
+import { EventEmitter } from 'node:events';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
-import { EventEmitter } from 'node:events';
 
 // ============================================================================
 // Types
@@ -125,7 +125,7 @@ export class PatternWatcher extends EventEmitter {
 
     try {
       const watcher = fs.watch(dirPath, (eventType, filename) => {
-        if (!filename || !filename.endsWith('.json')) {
+        if (!filename?.endsWith('.json')) {
           return;
         }
 

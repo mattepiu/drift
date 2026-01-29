@@ -7,8 +7,9 @@
  * @requirements 7.3 - THE Structural_Detector SHALL detect co-location patterns (tests next to source vs separate)
  */
 
-import type { PatternMatch, Violation, QuickFix, Language, Range } from 'driftdetect-core';
 import { StructuralDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language, Range } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -261,7 +262,7 @@ export function extractTestBaseName(testFile: string): string {
   const fileName = normalizedPath.split('/').pop() || '';
   
   // Remove test suffixes
-  let baseName = fileName
+  const baseName = fileName
     .replace(/\.test\.[jt]sx?$/, '')
     .replace(/\.spec\.[jt]sx?$/, '')
     .replace(/_test\.[jt]sx?$/, '')
@@ -278,7 +279,7 @@ export function extractStyleBaseName(styleFile: string): string {
   const fileName = normalizedPath.split('/').pop() || '';
   
   // Remove style suffixes
-  let baseName = fileName
+  const baseName = fileName
     .replace(/\.module\.css$/, '')
     .replace(/\.module\.scss$/, '')
     .replace(/\.module\.sass$/, '')

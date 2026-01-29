@@ -11,7 +11,6 @@
  * 4. Renders via Three.js/React Three Fiber
  */
 
-import React, { useEffect, useState, useCallback } from 'react';
 import {
   GalaxyCanvas,
   useGalaxyStore,
@@ -22,6 +21,8 @@ import {
   StatsOverlay,
   computeGalaxyLayout,
 } from 'driftdetect-galaxy';
+import React, { useEffect, useState, useCallback } from 'react';
+
 import type { RawGalaxyData } from 'driftdetect-galaxy';
 
 // ============================================================================

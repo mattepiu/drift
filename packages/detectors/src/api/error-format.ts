@@ -20,8 +20,9 @@
  * @requirements 10.4 - THE API_Detector SHALL detect error response format consistency
  */
 
-import type { Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -182,11 +183,11 @@ function isInsideComment(content: string, index: number): boolean {
   if (currentLine.includes('//')) {
     const commentStart = currentLine.indexOf('//');
     const positionInLine = index - lastNewline - 1;
-    if (positionInLine > commentStart) return true;
+    if (positionInLine > commentStart) {return true;}
   }
   const lastBlockCommentStart = beforeIndex.lastIndexOf('/*');
   const lastBlockCommentEnd = beforeIndex.lastIndexOf('*/');
-  if (lastBlockCommentStart > lastBlockCommentEnd) return true;
+  if (lastBlockCommentStart > lastBlockCommentEnd) {return true;}
   return false;
 }
 
@@ -205,7 +206,7 @@ export function extractFieldNames(objectContent: string): string[] {
   const fieldPattern = /([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g;
   let match;
   while ((match = fieldPattern.exec(objectContent)) !== null) {
-    if (match[1]) fields.push(match[1]);
+    if (match[1]) {fields.push(match[1]);}
   }
   return fields;
 }
@@ -216,7 +217,7 @@ export function detectErrorFormat(fields: string[]): ErrorFormat {
   
   // Check for Problem Details (RFC 7807)
   const problemDetailsMatches = PROBLEM_DETAILS_FIELDS.filter(f => lowerFields.includes(f.toLowerCase()));
-  if (problemDetailsMatches.length >= 3) return 'problem-details';
+  if (problemDetailsMatches.length >= 3) {return 'problem-details';}
   
   // Check for JSON:API error format
   const jsonApiMatches = JSON_API_ERROR_FIELDS.filter(f => lowerFields.includes(f.toLowerCase()));
@@ -240,10 +241,10 @@ export function detectErrorFormat(fields: string[]): ErrorFormat {
   }
   
   // Simple format (just message or error string)
-  if (hasMessage && fields.length <= 2) return 'simple';
+  if (hasMessage && fields.length <= 2) {return 'simple';}
   
   // Custom format
-  if (fields.length >= 2) return 'custom';
+  if (fields.length >= 2) {return 'custom';}
   
   return 'simple';
 }
@@ -251,14 +252,14 @@ export function detectErrorFormat(fields: string[]): ErrorFormat {
 /** Detect error code naming convention */
 export function detectErrorCodeConvention(code: string): string | null {
   for (const [convention, pattern] of Object.entries(ERROR_CODE_PATTERNS)) {
-    if (pattern.test(code)) return convention;
+    if (pattern.test(code)) {return convention;}
   }
   return null;
 }
 
 /** Check if a string looks like an error code */
 export function isErrorCode(value: string): boolean {
-  if (value.length < 3 || value.length > 50) return false;
+  if (value.length < 3 || value.length > 50) {return false;}
   return Object.values(ERROR_CODE_PATTERNS).some(pattern => pattern.test(value));
 }
 
@@ -276,7 +277,7 @@ export function detectErrorObjects(content: string, file: string): ErrorFormatPa
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       const objectContent = match[1] || match[0];
       const fields = extractFieldNames(objectContent);
@@ -311,7 +312,7 @@ export function detectErrorClasses(content: string, file: string): ErrorFormatPa
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       const className = match[1];
       
@@ -357,7 +358,7 @@ export function detectErrorThrows(content: string, file: string): ErrorFormatPat
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       const errorClass = match[1];
       const isGenericError = errorClass === 'Error' || match[0].includes('new Error(');
@@ -394,7 +395,7 @@ export function detectErrorResponses(content: string, file: string): ErrorFormat
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       const objectContent = match[1] || match[0];
       const fields = extractFieldNames(objectContent);
@@ -477,7 +478,7 @@ export function detectMissingFieldViolations(
   const violations: ErrorFormatViolationInfo[] = [];
   
   for (const pattern of patterns) {
-    if (pattern.type !== 'error-object' && pattern.type !== 'error-response') continue;
+    if (pattern.type !== 'error-object' && pattern.type !== 'error-response') {continue;}
     const fields = pattern.fields || [];
     const lowerFields = fields.map(f => f.toLowerCase());
     
@@ -539,7 +540,7 @@ export function detectRawErrorStringViolations(
     const regex = new RegExp(pattern.source, pattern.flags);
     let match;
     while ((match = regex.exec(content)) !== null) {
-      if (isInsideComment(content, match.index)) continue;
+      if (isInsideComment(content, match.index)) {continue;}
       const { line, column } = getPositionFromIndex(content, match.index);
       
       violations.push({
@@ -709,8 +710,8 @@ export function analyzeErrorFormat(content: string, file: string): ErrorFormatAn
   const errorCodeSet = new Set<string>();
   const errorClassSet = new Set<string>();
   for (const pattern of allPatterns) {
-    if (pattern.errorCode) errorCodeSet.add(pattern.errorCode);
-    if (pattern.errorClass) errorClassSet.add(pattern.errorClass);
+    if (pattern.errorCode) {errorCodeSet.add(pattern.errorCode);}
+    if (pattern.errorClass) {errorClassSet.add(pattern.errorClass);}
   }
   
   // Calculate confidence

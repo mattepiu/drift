@@ -12,7 +12,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -20,6 +19,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -116,16 +117,16 @@ function getPosition(content: string, index: number): { line: number; column: nu
 function detectRetryStrategy(content: string): RetryStrategy {
   // Check in order of specificity
   for (const pattern of RETRY_LIBRARY_PATTERNS) {
-    if (pattern.test(content)) return 'retry-library';
+    if (pattern.test(content)) {return 'retry-library';}
   }
   for (const pattern of CIRCUIT_BREAKER_PATTERNS) {
-    if (pattern.test(content)) return 'circuit-breaker';
+    if (pattern.test(content)) {return 'circuit-breaker';}
   }
   for (const pattern of EXPONENTIAL_BACKOFF_PATTERNS) {
-    if (pattern.test(content)) return 'exponential-backoff';
+    if (pattern.test(content)) {return 'exponential-backoff';}
   }
   for (const pattern of LINEAR_RETRY_PATTERNS) {
-    if (pattern.test(content)) return 'linear';
+    if (pattern.test(content)) {return 'linear';}
   }
   return 'none';
 }

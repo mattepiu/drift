@@ -5,10 +5,11 @@
  * Creates the space atmosphere for the galaxy visualization.
  */
 
-import { useRef, useMemo } from 'react';
-import { useFrame } from '@react-three/fiber';
 import { Points, PointMaterial } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useRef, useMemo } from 'react';
 import * as THREE from 'three';
+
 import { PARTICLE_CONFIG, GALAXY_LAYOUT } from '../../constants/index.js';
 
 // ============================================================================
@@ -93,7 +94,7 @@ export function StarField({
   
   // Twinkling animation
   useFrame((state) => {
-    if (!twinkle || !pointsRef.current) return;
+    if (!twinkle || !pointsRef.current) {return;}
     
     const geometry = pointsRef.current.geometry;
     const sizeAttr = geometry.getAttribute('size') as THREE.BufferAttribute;

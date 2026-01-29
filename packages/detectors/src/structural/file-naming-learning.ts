@@ -10,7 +10,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -18,6 +17,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -49,16 +50,16 @@ function detectNamingConvention(filename: string): NamingConvention {
   // Remove extension
   const name = filename.replace(/\.[^.]+$/, '');
   
-  if (/^[A-Z][a-zA-Z0-9]*$/.test(name)) return 'PascalCase';
-  if (/^[a-z][a-zA-Z0-9]*$/.test(name)) return 'camelCase';
-  if (/^[a-z][a-z0-9-]*$/.test(name)) return 'kebab-case';
-  if (/^[a-z][a-z0-9_]*$/.test(name)) return 'snake_case';
-  if (/^[A-Z][A-Z0-9_]*$/.test(name)) return 'SCREAMING_SNAKE_CASE';
+  if (/^[A-Z][a-zA-Z0-9]*$/.test(name)) {return 'PascalCase';}
+  if (/^[a-z][a-zA-Z0-9]*$/.test(name)) {return 'camelCase';}
+  if (/^[a-z][a-z0-9-]*$/.test(name)) {return 'kebab-case';}
+  if (/^[a-z][a-z0-9_]*$/.test(name)) {return 'snake_case';}
+  if (/^[A-Z][A-Z0-9_]*$/.test(name)) {return 'SCREAMING_SNAKE_CASE';}
   
   // Default based on first character
-  if (/^[A-Z]/.test(name)) return 'PascalCase';
-  if (name.includes('-')) return 'kebab-case';
-  if (name.includes('_')) return 'snake_case';
+  if (/^[A-Z]/.test(name)) {return 'PascalCase';}
+  if (name.includes('-')) {return 'kebab-case';}
+  if (name.includes('_')) {return 'snake_case';}
   return 'camelCase';
 }
 
@@ -66,12 +67,12 @@ function getFileType(filePath: string): 'component' | 'utility' | 'hook' | 'serv
   const filename = filePath.split('/').pop() || '';
   const lowerPath = filePath.toLowerCase();
   
-  if (filename === 'index.ts' || filename === 'index.tsx' || filename === 'index.js') return 'index';
-  if (/\.test\.[jt]sx?$/.test(filename) || /\.spec\.[jt]sx?$/.test(filename)) return 'test';
-  if (/^use[A-Z]/.test(filename) || lowerPath.includes('/hooks/')) return 'hook';
-  if (lowerPath.includes('/services/') || /Service\.[jt]sx?$/.test(filename)) return 'service';
-  if (lowerPath.includes('/components/') || /\.[jt]sx$/.test(filename)) return 'component';
-  if (lowerPath.includes('/utils/') || lowerPath.includes('/helpers/') || lowerPath.includes('/lib/')) return 'utility';
+  if (filename === 'index.ts' || filename === 'index.tsx' || filename === 'index.js') {return 'index';}
+  if (/\.test\.[jt]sx?$/.test(filename) || /\.spec\.[jt]sx?$/.test(filename)) {return 'test';}
+  if (/^use[A-Z]/.test(filename) || lowerPath.includes('/hooks/')) {return 'hook';}
+  if (lowerPath.includes('/services/') || /Service\.[jt]sx?$/.test(filename)) {return 'service';}
+  if (lowerPath.includes('/components/') || /\.[jt]sx$/.test(filename)) {return 'component';}
+  if (lowerPath.includes('/utils/') || lowerPath.includes('/helpers/') || lowerPath.includes('/lib/')) {return 'utility';}
   
   return 'other';
 }

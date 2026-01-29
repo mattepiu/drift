@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -45,10 +46,10 @@ interface RepositoryPatternInfo {
 // ============================================================================
 
 function detectSuffix(name: string): RepositoryNamingSuffix | null {
-  if (name.endsWith('Repository')) return 'Repository';
-  if (name.endsWith('Repo')) return 'Repo';
-  if (name.endsWith('Store')) return 'Store';
-  if (name.endsWith('DAO')) return 'DAO';
+  if (name.endsWith('Repository')) {return 'Repository';}
+  if (name.endsWith('Repo')) {return 'Repo';}
+  if (name.endsWith('Store')) {return 'Store';}
+  if (name.endsWith('DAO')) {return 'DAO';}
   return null;
 }
 
@@ -111,7 +112,7 @@ export class RepositoryPatternLearningDetector extends LearningDetector<Reposito
     distributions: Map<keyof RepositoryPatternConventions, ValueDistribution>
   ): void {
     const patterns = extractRepositoryPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const suffixDist = distributions.get('namingSuffix')!;
 

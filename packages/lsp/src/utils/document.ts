@@ -4,8 +4,8 @@
  * Helper functions for working with LSP text documents.
  */
 
-import type { TextDocument } from 'vscode-languageserver-textdocument';
 import type { Position, Range } from 'vscode-languageserver';
+import type { TextDocument } from 'vscode-languageserver-textdocument';
 
 /**
  * Get the text at a specific range in a document

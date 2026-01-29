@@ -19,7 +19,8 @@ import {
   type VariantScope,
 } from 'driftdetect-core';
 
-import type { ViolationInfo, PatternInfo } from '../types/lsp-types.js';
+import { DEFAULT_CORE_INTEGRATION_CONFIG, patternToInfo } from './types.js';
+
 import type {
   ApproveResult,
   IgnoreResult,
@@ -27,7 +28,7 @@ import type {
   CreateVariantInput,
   CoreIntegrationConfig,
 } from './types.js';
-import { DEFAULT_CORE_INTEGRATION_CONFIG, patternToInfo } from './types.js';
+import type { ViolationInfo, PatternInfo } from '../types/lsp-types.js';
 
 /**
  * Logger interface

@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -43,10 +44,10 @@ const EXAMPLE_PATTERNS = {
 };
 
 function detectExampleStyle(content: string, filePath: string): ExampleStyle | null {
-  if (EXAMPLE_PATTERNS.storybook.test(filePath)) return 'storybook';
-  if (EXAMPLE_PATTERNS.jsdocExample.test(content)) return 'jsdoc-example';
-  if (EXAMPLE_PATTERNS.readme.test(content)) return 'readme';
-  if (EXAMPLE_PATTERNS.doctest.test(content)) return 'doctest';
+  if (EXAMPLE_PATTERNS.storybook.test(filePath)) {return 'storybook';}
+  if (EXAMPLE_PATTERNS.jsdocExample.test(content)) {return 'jsdoc-example';}
+  if (EXAMPLE_PATTERNS.readme.test(content)) {return 'readme';}
+  if (EXAMPLE_PATTERNS.doctest.test(content)) {return 'doctest';}
   return null;
 }
 

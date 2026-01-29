@@ -8,8 +8,9 @@
  * @requirements 8.1 - THE Component_Detector SHALL detect component file structure patterns (single file vs split)
  */
 
-import type { PatternMatch, Violation, QuickFix, Language, Range } from 'driftdetect-core';
 import { StructuralDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language, Range } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -167,7 +168,7 @@ export function getComponentFileType(fileName: string): ComponentFileType {
   
   for (const type of checkOrder) {
     const patterns = COMPONENT_FILE_PATTERNS[type];
-    if (!patterns) continue;
+    if (!patterns) {continue;}
     
     for (const pattern of patterns) {
       if (pattern.test(lowerFileName) || pattern.test(fileName)) {
@@ -311,11 +312,11 @@ export function findRelatedFiles(
   
   return allFiles.filter(f => {
     const normalizedFile = f.replace(/\\/g, '/');
-    if (normalizedFile === normalizedPath) return false;
+    if (normalizedFile === normalizedPath) {return false;}
     
     // Same directory
     const fileDir = normalizedFile.split('/').slice(0, -1).join('/');
-    if (fileDir !== directory) return false;
+    if (fileDir !== directory) {return false;}
     
     // Check if file name contains the component name
     const fileName = normalizedFile.split('/').pop() || '';
@@ -355,7 +356,7 @@ export function detectComponents(files: string[]): DetectedComponent[] {
     const folderFiles = getComponentFolderFiles(folder, files);
     const componentFiles = folderFiles.filter(f => isComponentFile(f));
     
-    if (componentFiles.length === 0) continue;
+    if (componentFiles.length === 0) {continue;}
     
     const folderName = folder.split('/').pop() || '';
     
@@ -369,7 +370,7 @@ export function detectComponents(files: string[]): DetectedComponent[] {
       mainFile = componentFiles[0];
     }
     
-    if (!mainFile) continue;
+    if (!mainFile) {continue;}
     
     const componentFileInfos: ComponentFileInfo[] = folderFiles.map(f => ({
       path: f,
@@ -396,11 +397,11 @@ export function detectComponents(files: string[]): DetectedComponent[] {
   // Process standalone component files
   for (const file of files) {
     const normalizedFile = file.replace(/\\/g, '/');
-    if (processedFiles.has(normalizedFile)) continue;
-    if (!isComponentFile(file)) continue;
+    if (processedFiles.has(normalizedFile)) {continue;}
+    if (!isComponentFile(file)) {continue;}
     
     const componentName = extractComponentName(file);
-    if (!componentName || !/^[A-Z]/.test(componentName)) continue;
+    if (!componentName || !/^[A-Z]/.test(componentName)) {continue;}
     
     const relatedFiles = findRelatedFiles(componentName, file, files);
     const structureType = determineStructureType(file, relatedFiles);
@@ -572,7 +573,7 @@ export class ComponentStructureDetector extends StructuralDetector {
   generateQuickFix(violation: Violation): QuickFix | null {
     // Extract target structure from the violation message
     const match = violation.message.match(/restructure to '([^']+)'/);
-    if (!match || !match[1]) {
+    if (!match?.[1]) {
       return null;
     }
 

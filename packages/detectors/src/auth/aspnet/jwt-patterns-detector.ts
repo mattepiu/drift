@@ -9,9 +9,10 @@
  * - JWT configuration in Startup/Program
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -187,7 +188,7 @@ export class JwtPatternsDetector extends BaseDetector {
       // Detect claims extraction
       if (line.includes('User.Claims') || line.includes('FindFirst') || line.includes('ClaimTypes')) {
         const claimMatch = line.match(/ClaimTypes\.(\w+)/);
-        if (claimMatch && claimMatch[1]) {
+        if (claimMatch?.[1]) {
           claimsExtracted.push(claimMatch[1]);
         }
         patterns.push({
@@ -278,7 +279,7 @@ export class JwtPatternsDetector extends BaseDetector {
   }
 
   private findLineWithPattern(content: string, pattern: string): number {
-    if (!pattern) return 1;
+    if (!pattern) {return 1;}
     const lines = content.split('\n');
     for (let i = 0; i < lines.length; i++) {
       if (lines[i]?.includes(pattern)) {

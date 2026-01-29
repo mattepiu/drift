@@ -13,6 +13,7 @@
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
+
 import type {
   DataAccessMap,
   DataAccessPoint,
@@ -332,19 +333,19 @@ function extractRoutePath(decorators: string[]): string | null {
   for (const dec of decorators) {
     // Express/Flask style: @app.route('/path')
     const routeMatch = dec.match(/route\s*\(\s*['"]([^'"]+)['"]/i);
-    if (routeMatch?.[1]) return routeMatch[1];
+    if (routeMatch?.[1]) {return routeMatch[1];}
     
     // FastAPI style: @router.get('/path')
     const fastApiMatch = dec.match(/(?:get|post|put|patch|delete)\s*\(\s*['"]([^'"]+)['"]/i);
-    if (fastApiMatch?.[1]) return fastApiMatch[1];
+    if (fastApiMatch?.[1]) {return fastApiMatch[1];}
     
     // Spring style: @GetMapping("/path")
     const springMatch = dec.match(/(?:Get|Post|Put|Patch|Delete)?Mapping\s*\(\s*(?:value\s*=\s*)?['"]([^'"]+)['"]/i);
-    if (springMatch?.[1]) return springMatch[1];
+    if (springMatch?.[1]) {return springMatch[1];}
     
     // ASP.NET style: [HttpGet("path")]
     const aspMatch = dec.match(/Http(?:Get|Post|Put|Patch|Delete)\s*\(\s*['"]([^'"]+)['"]/i);
-    if (aspMatch?.[1]) return aspMatch[1];
+    if (aspMatch?.[1]) {return aspMatch[1];}
   }
   
   return null;
@@ -556,7 +557,7 @@ export class GalaxyDataTransformer {
 
     // Add known fields from table info
     for (const fieldName of tableInfo.fields) {
-      if (fieldSet.has(fieldName)) continue;
+      if (fieldSet.has(fieldName)) {continue;}
       fieldSet.add(fieldName);
 
       const sensitiveField = sensitiveFields.find(
@@ -628,10 +629,10 @@ export class GalaxyDataTransformer {
 
     for (const entryPointId of callGraph.entryPoints) {
       const func = callGraph.functions[entryPointId];
-      if (!func) continue;
+      if (!func) {continue;}
 
       const routePath = extractRoutePath(func.decorators);
-      if (!routePath) continue; // Skip non-HTTP entry points
+      if (!routePath) {continue;} // Skip non-HTTP entry points
 
       const method = detectHttpMethod(func.decorators, func.name);
       const authLevel = detectAuthLevel(func.decorators, func.name);
@@ -675,11 +676,11 @@ export class GalaxyDataTransformer {
     const visited = new Set<string>();
 
     const traverse = (funcId: string, depth: number) => {
-      if (depth > 10 || visited.has(funcId)) return;
+      if (depth > 10 || visited.has(funcId)) {return;}
       visited.add(funcId);
 
       const f = callGraph.functions[funcId];
-      if (!f) return;
+      if (!f) {return;}
 
       // Add directly accessed tables
       for (const access of f.dataAccess) {
@@ -712,7 +713,7 @@ export class GalaxyDataTransformer {
 
     for (const tableName of tableNames) {
       const tableInfo = accessMap.tables[tableName];
-      if (!tableInfo) continue;
+      if (!tableInfo) {continue;}
 
       for (const sf of tableInfo.sensitiveFields) {
         const sensitivity = mapSensitivityType(sf.sensitivityType);
@@ -746,9 +747,9 @@ export class GalaxyDataTransformer {
 
         // Determine operation from HTTP method
         let operation: GalaxyOperation = 'read';
-        if (ep.method === 'POST') operation = 'write';
-        else if (ep.method === 'PUT' || ep.method === 'PATCH') operation = 'write';
-        else if (ep.method === 'DELETE') operation = 'delete';
+        if (ep.method === 'POST') {operation = 'write';}
+        else if (ep.method === 'PUT' || ep.method === 'PATCH') {operation = 'write';}
+        else if (ep.method === 'DELETE') {operation = 'delete';}
 
         paths.push({
           id: `path-${++pathId}`,
@@ -768,7 +769,7 @@ export class GalaxyDataTransformer {
     // Also create paths from direct access points if no call graph
     if (!callGraph) {
       for (const accessPoint of Object.values(accessMap.accessPoints)) {
-        if (accessPoint.table === 'unknown') continue;
+        if (accessPoint.table === 'unknown') {continue;}
 
         const tableInfo = accessMap.tables[accessPoint.table];
         const sensitivity = tableInfo

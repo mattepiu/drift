@@ -13,8 +13,9 @@
  * @requirements 9.2 - THE Styling_Detector SHALL detect spacing scale adherence (p-4 vs arbitrary values)
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -283,7 +284,7 @@ export function isOnRemScale(value: number): boolean {
  * Find the nearest value on the 4px scale
  */
 export function findNearest4pxValue(value: number): number {
-  let nearest: number = SPACING_SCALE_4PX[0]!;
+  let nearest: number = SPACING_SCALE_4PX[0];
   let minDiff = Math.abs(value - nearest);
 
   for (const scaleValue of SPACING_SCALE_4PX) {
@@ -301,7 +302,7 @@ export function findNearest4pxValue(value: number): number {
  * Find the nearest value on the 8px scale
  */
 export function findNearest8pxValue(value: number): number {
-  let nearest: number = SPACING_SCALE_8PX[0]!;
+  let nearest: number = SPACING_SCALE_8PX[0];
   let minDiff = Math.abs(value - nearest);
 
   for (const scaleValue of SPACING_SCALE_8PX) {
@@ -319,7 +320,7 @@ export function findNearest8pxValue(value: number): number {
  * Find the nearest value on the rem scale
  */
 export function findNearestRemValue(value: number): number {
-  let nearest: number = SPACING_SCALE_REM[0]!;
+  let nearest: number = SPACING_SCALE_REM[0];
   let minDiff = Math.abs(value - nearest);
 
   for (const scaleValue of SPACING_SCALE_REM) {
@@ -501,13 +502,13 @@ function isInsideComment(content: string, index: number): boolean {
 function extractCSSProperty(line: string): string | undefined {
   // Match CSS property: property-name: value
   const cssMatch = line.match(/([a-zA-Z-]+)\s*:/);
-  if (cssMatch && cssMatch[1]) {
+  if (cssMatch?.[1]) {
     return cssMatch[1];
   }
 
   // Match JS object property: propertyName: value
   const jsMatch = line.match(/([a-zA-Z]+)\s*:/);
-  if (jsMatch && jsMatch[1]) {
+  if (jsMatch?.[1]) {
     // Convert camelCase to kebab-case
     return jsMatch[1].replace(/([A-Z])/g, '-$1').toLowerCase();
   }
@@ -965,7 +966,7 @@ export class SpacingScaleDetector extends RegexDetector {
 
     // Extract the value from the message
     const valueMatch = violation.message.match(/['"]([^'"]+)['"]/);
-    if (!valueMatch || !valueMatch[1]) {
+    if (!valueMatch?.[1]) {
       return null;
     }
 

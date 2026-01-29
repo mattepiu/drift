@@ -12,9 +12,10 @@
  * @requirements 18.5 - Utility type patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -659,9 +660,9 @@ export function analyzeUtilityTypes(
   const usesBrandedTypes = patterns.some((p) => p.type === 'branded-type');
 
   let confidence = 0.7;
-  if (patterns.length > 0) confidence += 0.15;
-  if (builtInCount > 0) confidence += 0.05;
-  if (violations.length === 0) confidence += 0.05;
+  if (patterns.length > 0) {confidence += 0.15;}
+  if (builtInCount > 0) {confidence += 0.05;}
+  if (violations.length === 0) {confidence += 0.05;}
   confidence = Math.min(confidence, 0.95);
 
   return {

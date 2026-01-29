@@ -6,13 +6,9 @@
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import type { CIBenchManifest, BenchmarkCategory } from '../schema/manifest.js';
-import type { PatternGroundTruth } from '../schema/patterns.js';
-import type { CallGraphGroundTruth } from '../schema/callgraph.js';
-import type { ImpactGroundTruth } from '../schema/impact.js';
-import type { DataFlowGroundTruth } from '../schema/dataflow.js';
-import type { ConventionGroundTruth } from '../schema/conventions.js';
-import type { AgenticGroundTruth } from '../schema/agentic.js';
+
+import { evaluatePatterns, evaluateCallGraph, calculateOverallScore } from './scorer.js';
+
 import type { 
   EvaluationResult, 
   ToolOutput, 
@@ -20,7 +16,14 @@ import type {
   EvaluationDetails,
   EvaluationSummary,
 } from './types.js';
-import { evaluatePatterns, evaluateCallGraph, calculateOverallScore } from './scorer.js';
+import type { AgenticGroundTruth } from '../schema/agentic.js';
+import type { CallGraphGroundTruth } from '../schema/callgraph.js';
+import type { ConventionGroundTruth } from '../schema/conventions.js';
+import type { DataFlowGroundTruth } from '../schema/dataflow.js';
+import type { ImpactGroundTruth } from '../schema/impact.js';
+import type { CIBenchManifest, BenchmarkCategory } from '../schema/manifest.js';
+import type { PatternGroundTruth } from '../schema/patterns.js';
+
 
 // ============================================================================
 // Ground Truth Loader

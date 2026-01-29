@@ -4,7 +4,8 @@
  * Data transformation, aggregation, and helper functions.
  */
 
-import type { Violation, Severity } from '../../types';
+import { SEVERITY_ORDER, SEVERITY_CONFIG, CATEGORY_CONFIG, CATEGORY_ORDER, DISPLAY_LIMITS } from './constants';
+
 import type { 
   ViolationMetrics, 
   ViolationStatistics, 
@@ -14,7 +15,7 @@ import type {
   SeverityGroup,
   SortConfig,
 } from './types';
-import { SEVERITY_ORDER, SEVERITY_CONFIG, CATEGORY_CONFIG, CATEGORY_ORDER, DISPLAY_LIMITS } from './constants';
+import type { Violation, Severity } from '../../types';
 
 // ============================================================================
 // Metrics Calculation
@@ -383,7 +384,7 @@ export function groupByFile(violations: Violation[]): FileGroup[] {
     .sort((a, b) => {
       // Sort by max severity, then by count
       const severityDiff = getSeverityPriority(b.metrics.maxSeverity) - getSeverityPriority(a.metrics.maxSeverity);
-      if (severityDiff !== 0) return severityDiff;
+      if (severityDiff !== 0) {return severityDiff;}
       return b.metrics.total - a.metrics.total;
     });
 }
@@ -574,7 +575,7 @@ export function getCategoryConfig(category: string) {
 // ============================================================================
 
 export function formatFilePath(path: string, maxLength = 50): string {
-  if (path.length <= maxLength) return path;
+  if (path.length <= maxLength) {return path;}
   const parts = path.split('/');
   const filename = parts.pop() || '';
   if (filename.length >= maxLength - 3) {

@@ -18,7 +18,12 @@
 
 import * as fs from 'node:fs/promises';
 import * as path from 'node:path';
-import type {
+
+import { createDataLake } from 'driftdetect-core';
+import type { 
+  DataLake, 
+  StatusView, 
+  TrendsView,
   PatternFile,
   PatternStatus,
   PatternCategory,
@@ -27,7 +32,6 @@ import type {
   StoredPattern,
   Severity,
 } from 'driftdetect-core';
-import { createDataLake, type DataLake, type StatusView, type TrendsView } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -439,7 +443,7 @@ export class DriftDataReader {
    * Initialize the data lake (lazy initialization)
    */
   private async initializeLake(): Promise<boolean> {
-    if (this.lakeInitialized) return true;
+    if (this.lakeInitialized) {return true;}
     try {
       await this.dataLake.initialize();
       this.lakeInitialized = true;
@@ -544,7 +548,7 @@ export class DriftDataReader {
         name: p.name,
         category: p.category,
         subcategory: p.subcategory,
-        status: p.status as PatternStatus,
+        status: p.status,
         description: '', // PatternSummary doesn't include description
         confidence: {
           score: p.confidence,
@@ -1183,7 +1187,7 @@ export class DriftDataReader {
 
     for (const [filePath, info] of fileInfo) {
       const parts = filePath.split('/').filter(Boolean);
-      if (parts.length === 0) continue;
+      if (parts.length === 0) {continue;}
       
       let currentPath = '';
 
@@ -1228,7 +1232,7 @@ export class DriftDataReader {
         if (parts.length > 1) {
           const parentPath = parts.slice(0, -1).join('/');
           const parent = nodeMap.get(parentPath);
-          if (parent && parent.children) {
+          if (parent?.children) {
             parent.children.push(node);
             // Aggregate counts to parent
             if (parent.patternCount !== undefined && node.patternCount !== undefined) {
@@ -1255,7 +1259,7 @@ export class DriftDataReader {
         if (parts.length > 1) {
           const parentPath = parts.slice(0, -1).join('/');
           const parent = nodeMap.get(parentPath);
-          if (parent && parent.children) {
+          if (parent?.children) {
             // Check if not already added
             if (!parent.children.some(c => c.path === node.path)) {
               parent.children.push(node);
@@ -1772,14 +1776,14 @@ export class DriftDataReader {
     contracts: DashboardContract[],
     query?: { status?: string; method?: string; hasMismatches?: boolean; search?: string }
   ): DashboardContract[] {
-    if (!query) return contracts;
+    if (!query) {return contracts;}
 
     return contracts.filter((contract) => {
-      if (query.status && contract.status !== query.status) return false;
-      if (query.method && contract.method !== query.method) return false;
+      if (query.status && contract.status !== query.status) {return false;}
+      if (query.method && contract.method !== query.method) {return false;}
       if (query.hasMismatches !== undefined) {
         const hasMismatches = contract.mismatchCount > 0;
-        if (query.hasMismatches !== hasMismatches) return false;
+        if (query.hasMismatches !== hasMismatches) {return false;}
       }
       if (query.search && !contract.endpoint.toLowerCase().includes(query.search.toLowerCase())) {
         return false;
@@ -1966,7 +1970,7 @@ export class DriftDataReader {
 
     for (const currentPattern of current.patterns) {
       const prevPattern = previousMap.get(currentPattern.patternId);
-      if (!prevPattern) continue;
+      if (!prevPattern) {continue;}
 
       // Check confidence change
       const confidenceChange = currentPattern.confidence - prevPattern.confidence;

@@ -4,8 +4,8 @@
  * Displays constants, enums, and related issues.
  */
 
-import React, { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
+import React, { useState } from 'react';
 
 // ============================================================================
 // Types
@@ -85,8 +85,8 @@ function useConstantsList(category?: string, language?: string) {
     queryKey: ['constants', 'list', category, language],
     queryFn: async () => {
       const params = new URLSearchParams({ action: 'list', limit: '50' });
-      if (category) params.set('category', category);
-      if (language) params.set('language', language);
+      if (category) {params.set('category', category);}
+      if (language) {params.set('language', language);}
       const res = await fetch(`/api/constants?${params}`);
       const data = await res.json();
       return data.data;

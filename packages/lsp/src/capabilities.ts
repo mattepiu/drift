@@ -16,6 +16,7 @@ import {
   TextDocumentSyncKind,
   CodeActionKind,
 } from 'vscode-languageserver';
+
 import type { ServerCapabilities, InitializeResult } from 'vscode-languageserver';
 
 // ============================================================================

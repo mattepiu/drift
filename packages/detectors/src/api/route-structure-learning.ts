@@ -12,7 +12,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -20,6 +19,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -87,9 +88,9 @@ function detectCasing(segment: string): UrlCasingConvention {
     return 'lowercase';
   }
   
-  if (segment.includes('-')) return 'kebab-case';
-  if (segment.includes('_')) return 'snake_case';
-  if (/[A-Z]/.test(segment) && /[a-z]/.test(segment)) return 'camelCase';
+  if (segment.includes('-')) {return 'kebab-case';}
+  if (segment.includes('_')) {return 'snake_case';}
+  if (/[A-Z]/.test(segment) && /[a-z]/.test(segment)) {return 'camelCase';}
   return 'lowercase';
 }
 
@@ -99,9 +100,9 @@ function detectCasing(segment: string): UrlCasingConvention {
 function isPlural(word: string): boolean {
   const normalized = word.toLowerCase().replace(/[-_]/g, '');
   // Common plural endings
-  if (normalized.endsWith('ies')) return true;
-  if (normalized.endsWith('es') && !normalized.endsWith('ss')) return true;
-  if (normalized.endsWith('s') && !normalized.endsWith('ss') && !normalized.endsWith('us')) return true;
+  if (normalized.endsWith('ies')) {return true;}
+  if (normalized.endsWith('es') && !normalized.endsWith('ss')) {return true;}
+  if (normalized.endsWith('s') && !normalized.endsWith('ss') && !normalized.endsWith('us')) {return true;}
   return false;
 }
 
@@ -113,9 +114,9 @@ function calculateNestingDepth(routePath: string): number {
   let depth = 0;
   for (const segment of segments) {
     // Skip version prefixes and 'api'
-    if (/^v\d+$/.test(segment) || segment === 'api') continue;
+    if (/^v\d+$/.test(segment) || segment === 'api') {continue;}
     // Skip parameters
-    if (segment.startsWith(':') || segment.startsWith('[') || segment.startsWith('{')) continue;
+    if (segment.startsWith(':') || segment.startsWith('[') || segment.startsWith('{')) {continue;}
     depth++;
   }
   return depth;
@@ -155,7 +156,7 @@ function extractRoutes(content: string, file: string): RouteInfo[] {
       
       // Extract path (could be in different capture groups)
       const path = match[2] || match[1];
-      if (!path || !path.startsWith('/')) continue;
+      if (!path?.startsWith('/')) {continue;}
       
       // Skip if it doesn't look like an API route
       if (!path.includes('/api/') && !path.startsWith('/v') && !path.includes(':') && !path.includes('[')) {
@@ -224,7 +225,7 @@ export class RouteStructureLearningDetector extends LearningDetector<RouteConven
   ): void {
     const routes = extractRoutes(context.content, context.file);
     
-    if (routes.length === 0) return;
+    if (routes.length === 0) {return;}
     
     const casingDist = distributions.get('urlCasing')!;
     const namingDist = distributions.get('resourceNaming')!;
@@ -253,8 +254,8 @@ export class RouteStructureLearningDetector extends LearningDetector<RouteConven
       // Analyze each segment
       for (const segment of segments) {
         // Skip special segments
-        if (segment.startsWith(':') || segment.startsWith('[') || segment.startsWith('{')) continue;
-        if (/^v\d+$/.test(segment) || segment === 'api') continue;
+        if (segment.startsWith(':') || segment.startsWith('[') || segment.startsWith('{')) {continue;}
+        if (/^v\d+$/.test(segment) || segment === 'api') {continue;}
         
         // Track casing
         const casing = detectCasing(segment);
@@ -338,8 +339,8 @@ export class RouteStructureLearningDetector extends LearningDetector<RouteConven
       // Check each segment
       for (const segment of segments) {
         // Skip special segments
-        if (segment.startsWith(':') || segment.startsWith('[') || segment.startsWith('{')) continue;
-        if (/^v\d+$/.test(segment) || segment === 'api') continue;
+        if (segment.startsWith(':') || segment.startsWith('[') || segment.startsWith('{')) {continue;}
+        if (/^v\d+$/.test(segment) || segment === 'api') {continue;}
         
         // Check casing
         if (learnedCasing && learnedCasing !== 'lowercase') {

@@ -4,9 +4,10 @@
  * Advanced filtering and search for contracts.
  */
 
-import type { ContractFilters as ContractFiltersType, ContractStatus, HttpMethod } from '../../types';
-import type { ViewMode, SortConfig, SortField } from './types';
 import { METHOD_ORDER, METHOD_CONFIG, STATUS_CONFIG, VIEW_MODE_CONFIG } from './constants';
+
+import type { ViewMode, SortConfig, SortField } from './types';
+import type { ContractFilters as ContractFiltersType, ContractStatus, HttpMethod } from '../../types';
 
 interface ContractFiltersProps {
   filters: ContractFiltersType;

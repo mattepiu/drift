@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -42,9 +43,9 @@ const REF_PATTERNS = {
 };
 
 function detectRefForwardingStyle(content: string): RefForwardingStyle | null {
-  if (REF_PATTERNS.forwardRef.test(content)) return 'forwardRef';
-  if (REF_PATTERNS.callbackRef.test(content)) return 'callback-ref';
-  if (REF_PATTERNS.refProp.test(content)) return 'ref-prop';
+  if (REF_PATTERNS.forwardRef.test(content)) {return 'forwardRef';}
+  if (REF_PATTERNS.callbackRef.test(content)) {return 'callback-ref';}
+  if (REF_PATTERNS.refProp.test(content)) {return 'ref-prop';}
   return null;
 }
 
@@ -73,7 +74,7 @@ export class RefForwardingLearningDetector extends LearningDetector<RefForwardin
     const imperativeDist = distributions.get('usesImperativeHandle')!;
     const typesDist = distributions.get('typesRefs')!;
     
-    if (style) styleDist.add(style, context.file);
+    if (style) {styleDist.add(style, context.file);}
     
     const usesImperative = /useImperativeHandle/.test(context.content);
     const typesRefs = /Ref<|RefObject<|ForwardedRef</.test(context.content);

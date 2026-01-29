@@ -124,7 +124,7 @@ drift constants secrets --severity high
 
 ## Finding Magic Numbers
 
-> **Note:** Magic number detection requires configuration in drift config. The `drift constants magic` command shows magic values that have been detected during scanning.
+> **Note:** Magic number detection is done through the `drift constants list` command with search filters. Look for numeric constants that should be named.
 
 ```bash
 drift constants list --search "MAX_"

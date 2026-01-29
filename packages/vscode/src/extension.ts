@@ -15,7 +15,8 @@ import { createActivationController, type ActivationController } from './activat
  */
 export function getVersion(): string {
   const extension = vscode.extensions.getExtension('driftdetect.driftdetect-vscode');
-  return extension?.packageJSON?.version ?? '0.0.0';
+  const packageJSON = extension?.packageJSON as { version?: string } | undefined;
+  return packageJSON?.version ?? '0.0.0';
 }
 
 // For backwards compatibility

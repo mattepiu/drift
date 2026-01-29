@@ -16,12 +16,13 @@
  * - Specification pattern
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Context Validation Patterns
@@ -174,10 +175,10 @@ export class RepositoryPatternSemanticDetector extends SemanticDetector {
     // Require positive repository context for ambiguous keywords
     if (repoContextScore === 0 && nonRepoContextScore === 0) {
       // No clear context - check for common C# repository patterns
-      if (/interface\s+I\w*Repository/i.test(lineContent)) return true;
-      if (/class\s+\w*Repository/i.test(lineContent)) return true;
-      if (/:\s*I\w*Repository/i.test(lineContent)) return true;
-      if (/IRepository<\w+>/i.test(lineContent)) return true;
+      if (/interface\s+I\w*Repository/i.test(lineContent)) {return true;}
+      if (/class\s+\w*Repository/i.test(lineContent)) {return true;}
+      if (/:\s*I\w*Repository/i.test(lineContent)) {return true;}
+      if (/IRepository<\w+>/i.test(lineContent)) {return true;}
     }
 
     return repoContextScore > nonRepoContextScore;

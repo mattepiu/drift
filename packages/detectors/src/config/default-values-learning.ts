@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -43,10 +44,10 @@ const DEFAULT_PATTERNS = {
 };
 
 function detectDefaultValueStyle(content: string): DefaultValueStyle | null {
-  if (DEFAULT_PATTERNS.nullishCoalescing.test(content)) return 'nullish-coalescing';
-  if (DEFAULT_PATTERNS.logicalOr.test(content)) return 'logical-or';
-  if (DEFAULT_PATTERNS.ternary.test(content)) return 'ternary';
-  if (DEFAULT_PATTERNS.ifStatement.test(content)) return 'if-statement';
+  if (DEFAULT_PATTERNS.nullishCoalescing.test(content)) {return 'nullish-coalescing';}
+  if (DEFAULT_PATTERNS.logicalOr.test(content)) {return 'logical-or';}
+  if (DEFAULT_PATTERNS.ternary.test(content)) {return 'ternary';}
+  if (DEFAULT_PATTERNS.ifStatement.test(content)) {return 'if-statement';}
   return null;
 }
 
@@ -75,7 +76,7 @@ export class DefaultValuesLearningDetector extends LearningDetector<DefaultValue
     const nullishDist = distributions.get('usesNullishCoalescing')!;
     const optionalDist = distributions.get('usesOptionalChaining')!;
     
-    if (style) styleDist.add(style, context.file);
+    if (style) {styleDist.add(style, context.file);}
     
     const usesNullish = /\?\?/.test(context.content);
     const usesOptional = /\?\./.test(context.content);

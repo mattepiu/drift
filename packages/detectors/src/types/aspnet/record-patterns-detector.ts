@@ -8,9 +8,10 @@
  * - Positional records
  */
 
-import type { PatternMatch, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { PatternMatch, Language } from 'driftdetect-core';
 
 export interface RecordPatternInfo {
   type: 'record' | 'record-class' | 'record-struct' | 'with-expression' | 'positional';
@@ -40,7 +41,7 @@ export class RecordPatternsDetector extends BaseDetector {
 
   async detect(context: DetectionContext): Promise<DetectionResult> {
     const { content, file } = context;
-    if (!this.isRelevantFile(content)) return this.createEmptyResult();
+    if (!this.isRelevantFile(content)) {return this.createEmptyResult();}
 
     const analysis = this.analyzeRecordPatterns(content, file);
     const patterns: PatternMatch[] = analysis.patterns.map(p => ({
@@ -73,18 +74,18 @@ export class RecordPatternsDetector extends BaseDetector {
 
       // record struct
       const recordStructMatch = line.match(/(?:public|internal|private)?\s*record\s+struct\s+(\w+)/);
-      if (recordStructMatch && recordStructMatch[1]) {
+      if (recordStructMatch?.[1]) {
         recordStructCount++;
         const params = this.extractParameters(line);
         patterns.push({
           type: 'record-struct', name: recordStructMatch[1], parameters: params, line: lineNum, file
         });
-        if (params.length > 0) usesPositionalRecords = true;
+        if (params.length > 0) {usesPositionalRecords = true;}
       }
       // record class or just record
       else {
         const recordMatch = line.match(/(?:public|internal|private)?\s*record\s+(?:class\s+)?(\w+)/);
-        if (recordMatch && recordMatch[1]) {
+        if (recordMatch?.[1]) {
           recordCount++;
           const isRecordClass = line.includes('record class');
           const params = this.extractParameters(line);
@@ -92,7 +93,7 @@ export class RecordPatternsDetector extends BaseDetector {
             type: isRecordClass ? 'record-class' : 'record',
             name: recordMatch[1], parameters: params, line: lineNum, file
           });
-          if (params.length > 0) usesPositionalRecords = true;
+          if (params.length > 0) {usesPositionalRecords = true;}
         }
       }
 
@@ -111,7 +112,7 @@ export class RecordPatternsDetector extends BaseDetector {
 
   private extractParameters(line: string): string[] {
     const match = line.match(/\(([^)]+)\)/);
-    if (!match) return [];
+    if (!match) {return [];}
     return match[1]?.split(',').map(p => p.trim()).filter(Boolean) || [];
   }
 

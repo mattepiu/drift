@@ -4,8 +4,9 @@
  * Displays summary statistics for data boundaries.
  */
 
-import type { BoundaryMetrics } from './types';
 import { SENSITIVITY_CONFIG, OPERATION_CONFIG } from './constants';
+
+import type { BoundaryMetrics } from './types';
 
 interface BoundaryStatsProps {
   metrics: BoundaryMetrics;

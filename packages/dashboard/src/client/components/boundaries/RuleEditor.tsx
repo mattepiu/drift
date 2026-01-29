@@ -5,8 +5,10 @@
  */
 
 import { useState } from 'react';
-import type { DataOperation } from './types';
+
 import { OPERATION_CONFIG } from './constants';
+
+import type { DataOperation } from './types';
 
 // ============================================================================
 // Types

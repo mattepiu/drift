@@ -19,8 +19,9 @@
  * @requirements 10.2 - THE API_Detector SHALL detect HTTP method usage patterns (POST vs PUT vs PATCH)
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import { RegexDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -632,7 +633,7 @@ export function detectPostForReadViolations(
   const violations: HttpMethodViolationInfo[] = [];
   
   for (const usage of methodUsages) {
-    if (usage.method !== 'POST') continue;
+    if (usage.method !== 'POST') {continue;}
     
     const context = (usage.context || '').toLowerCase();
     const routePath = (usage.routePath || '').toLowerCase();
@@ -686,7 +687,7 @@ export function detectGetForMutationViolations(
   const violations: HttpMethodViolationInfo[] = [];
   
   for (const usage of methodUsages) {
-    if (usage.method !== 'GET') continue;
+    if (usage.method !== 'GET') {continue;}
     
     const context = (usage.context || '').toLowerCase();
     const routePath = (usage.routePath || '').toLowerCase();
@@ -758,7 +759,7 @@ export function detectPutForPartialUpdateViolations(
   const violations: HttpMethodViolationInfo[] = [];
   
   for (const usage of methodUsages) {
-    if (usage.method !== 'PUT') continue;
+    if (usage.method !== 'PUT') {continue;}
     
     const context = (usage.context || '').toLowerCase();
     const routePath = (usage.routePath || '').toLowerCase();
@@ -832,7 +833,7 @@ export function detectInconsistentMethodUsage(
   
   // Check for inconsistencies within each operation type
   for (const [operationType, usages] of operationGroups) {
-    if (usages.length < 2) continue;
+    if (usages.length < 2) {continue;}
     
     const methodCounts: Map<HttpMethod, number> = new Map();
     for (const usage of usages) {

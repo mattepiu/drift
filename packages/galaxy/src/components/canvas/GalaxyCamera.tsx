@@ -5,12 +5,13 @@
  * Handles orbit controls, zoom, and animated transitions.
  */
 
-import { useRef, useEffect } from 'react';
-import { useThree, useFrame } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
+import { useThree, useFrame } from '@react-three/fiber';
+import React, { useRef, useEffect } from 'react';
 import * as THREE from 'three';
-import { useGalaxyStore } from '../../store/index.js';
+
 import { CAMERA_CONFIG } from '../../constants/index.js';
+import { useGalaxyStore } from '../../store/index.js';
 import { toThreeVector } from '../../utils/geometry-utils.js';
 
 // ============================================================================
@@ -34,7 +35,7 @@ export function GalaxyCamera({
   enableControls: _enableControls = true,
   autoRotate = false,
   autoRotateSpeed = 0.5,
-}: GalaxyCameraProps) {
+}: GalaxyCameraProps): React.JSX.Element {
   const controlsRef = useRef<any>(null);
   const { camera } = useThree();
   
@@ -65,7 +66,7 @@ export function GalaxyCamera({
   
   // Smooth camera transitions
   useFrame(() => {
-    if (!controlsRef.current) return;
+    if (!controlsRef.current) {return;}
     
     // Update store with current camera position (for persistence)
     const pos = camera.position;

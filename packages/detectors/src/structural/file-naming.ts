@@ -7,8 +7,9 @@
  * @requirements 7.1 - THE Structural_Detector SHALL detect file naming conventions
  */
 
-import type { PatternMatch, Violation, QuickFix, Language, Range } from 'driftdetect-core';
 import { StructuralDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language, Range } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -66,19 +67,19 @@ export const COMMON_SUFFIXES: SuffixPattern[] = [
 ];
 
 export function detectNamingConvention(name: string): NamingConvention {
-  if (!name || name.length === 0) return 'unknown';
-  if (/^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$/.test(name)) return 'SCREAMING_SNAKE_CASE';
-  if (/^[A-Z][a-zA-Z0-9]*$/.test(name)) return 'PascalCase';
-  if (/^[a-z][a-zA-Z0-9]*$/.test(name) && /[A-Z]/.test(name)) return 'camelCase';
-  if (/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(name)) return 'kebab-case';
-  if (/^[a-z][a-z0-9]*(_[a-z0-9]+)*$/.test(name)) return 'snake_case';
-  if (/^[a-z][a-z0-9]*$/.test(name)) return 'kebab-case';
+  if (!name || name.length === 0) {return 'unknown';}
+  if (/^[A-Z][A-Z0-9]*(_[A-Z0-9]+)*$/.test(name)) {return 'SCREAMING_SNAKE_CASE';}
+  if (/^[A-Z][a-zA-Z0-9]*$/.test(name)) {return 'PascalCase';}
+  if (/^[a-z][a-zA-Z0-9]*$/.test(name) && /[A-Z]/.test(name)) {return 'camelCase';}
+  if (/^[a-z][a-z0-9]*(-[a-z0-9]+)*$/.test(name)) {return 'kebab-case';}
+  if (/^[a-z][a-z0-9]*(_[a-z0-9]+)*$/.test(name)) {return 'snake_case';}
+  if (/^[a-z][a-z0-9]*$/.test(name)) {return 'kebab-case';}
   return 'unknown';
 }
 
 export function convertToConvention(name: string, target: NamingConvention): string {
   const words = splitIntoWords(name);
-  if (words.length === 0) return name;
+  if (words.length === 0) {return name;}
   switch (target) {
     case 'PascalCase': return words.map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('');
     case 'camelCase': return words.map((w, i) => i === 0 ? w.toLowerCase() : w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join('');
@@ -98,13 +99,13 @@ export function splitIntoWords(name: string): string[] {
 
 export function extractBaseName(fileName: string, suffixes: SuffixPattern[] = COMMON_SUFFIXES): { baseName: string; suffix: string | undefined; extension: string } {
   const lastDot = fileName.lastIndexOf('.');
-  if (lastDot === -1) return { baseName: fileName, suffix: undefined, extension: '' };
+  if (lastDot === -1) {return { baseName: fileName, suffix: undefined, extension: '' };}
   const ext = fileName.slice(lastDot);
   const nameNoExt = fileName.slice(0, lastDot);
   for (const { suffix } of suffixes) {
     if (nameNoExt.toLowerCase().endsWith(suffix.toLowerCase())) {
       const base = nameNoExt.slice(0, -suffix.length);
-      if (base.length > 0) return { baseName: base, suffix, extension: ext };
+      if (base.length > 0) {return { baseName: base, suffix, extension: ext };}
     }
   }
   return { baseName: nameNoExt, suffix: undefined, extension: ext };
@@ -145,18 +146,18 @@ export class FileNamingDetector extends StructuralDetector {
     const dominant = this.getDominantConvention(projectAnalysis);
     if (dominant && analysis.convention !== dominant) {
       const v = this.createViolation(context.file, analysis, dominant);
-      if (v) violations.push(v);
+      if (v) {violations.push(v);}
     }
 
     const suffixV = this.checkSuffixPattern(context.file, analysis);
-    if (suffixV) violations.push(suffixV);
+    if (suffixV) {violations.push(suffixV);}
 
     return this.createResult(patterns, violations, this.calcConfidence(projectAnalysis));
   }
 
   generateQuickFix(violation: Violation): QuickFix | null {
     const match = violation.message.match(/renamed to '([^']+)'/);
-    if (!match || !match[1]) return null;
+    if (!match?.[1]) {return null;}
     const suggested = match[1];
     const newPath = violation.file.replace(/[^/\\]+$/, suggested);
     return {
@@ -176,10 +177,10 @@ export class FileNamingDetector extends StructuralDetector {
     const patterns = new Map<NamingConvention, NamingPattern>();
     for (const file of files) {
       const a = analyzeFileName(file);
-      if (a.convention === 'unknown') continue;
+      if (a.convention === 'unknown') {continue;}
       const existing = patterns.get(a.convention);
-      if (existing) { existing.count++; if (existing.examples.length < 5) existing.examples.push(file); }
-      else patterns.set(a.convention, { convention: a.convention, extension: a.extension, suffix: a.suffix, count: 1, examples: [file] });
+      if (existing) { existing.count++; if (existing.examples.length < 5) {existing.examples.push(file);} }
+      else {patterns.set(a.convention, { convention: a.convention, extension: a.extension, suffix: a.suffix, count: 1, examples: [file] });}
     }
     return patterns;
   }
@@ -200,7 +201,7 @@ export class FileNamingDetector extends StructuralDetector {
 
   private createViolation(file: string, analysis: FileNamingAnalysis, dominant: NamingConvention): Violation | null {
     const fileName = file.split(/[/\\]/).pop() ?? '';
-    if (this.isSpecialFile(fileName)) return null;
+    if (this.isSpecialFile(fileName)) {return null;}
     
     // PascalCase is the standard convention for React components (.tsx/.jsx files)
     // Don't flag PascalCase as a violation for these file types
@@ -242,9 +243,9 @@ export class FileNamingDetector extends StructuralDetector {
   }
 
   private checkSuffixPattern(file: string, analysis: FileNamingAnalysis): Violation | null {
-    if (!analysis.suffix) return null;
+    if (!analysis.suffix) {return null;}
     const sp = COMMON_SUFFIXES.find((s) => s.suffix.toLowerCase() === analysis.suffix?.toLowerCase());
-    if (!sp?.expectedConvention || analysis.convention === sp.expectedConvention || analysis.convention === 'unknown') return null;
+    if (!sp?.expectedConvention || analysis.convention === sp.expectedConvention || analysis.convention === 'unknown') {return null;}
     const suggestedBase = convertToConvention(analysis.baseName, sp.expectedConvention);
     const suggested = `${suggestedBase}${analysis.suffix}${analysis.extension}`;
     const range: Range = { start: { line: 1, character: 1 }, end: { line: 1, character: 1 } };
@@ -272,9 +273,9 @@ export class FileNamingDetector extends StructuralDetector {
 
   private calcConfidence(patterns: Map<NamingConvention, NamingPattern>): number {
     const total = Array.from(patterns.values()).reduce((s, p) => s + p.count, 0);
-    if (total === 0) return 0.5;
+    if (total === 0) {return 0.5;}
     let max = 0;
-    for (const p of patterns.values()) if (p.count > max) max = p.count;
+    for (const p of patterns.values()) {if (p.count > max) {max = p.count;}}
     return Math.min(max / total + 0.2, 1.0);
   }
 }

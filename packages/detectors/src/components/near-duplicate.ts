@@ -12,8 +12,9 @@
  * @requirements 8.4 - THE Component_Detector SHALL detect near-duplicate components that should be abstracted
  */
 
-import type { PatternMatch, Violation, QuickFix, Language, Range, ASTNode, AST } from 'driftdetect-core';
 import { ASTDetector, type DetectionContext, type DetectionResult } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language, Range, ASTNode, AST } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -363,7 +364,7 @@ export function extractComponentName(node: ASTNode, content: string): string | u
   const line = lines[node.startPosition.row];
   if (line) {
     const match = line.match(/(?:const|let|var|export\s+(?:const|let|var)?)\s+([A-Z][a-zA-Z0-9]*)\s*[=:]/);
-    if (match && match[1]) {
+    if (match?.[1]) {
       return match[1];
     }
   }
@@ -379,17 +380,17 @@ export function extractProps(node: ASTNode, _content: string): PropFeature[] {
   
   // Extract from destructuring pattern: ({ prop1, prop2 = 'default', ...rest })
   const destructuringMatch = nodeText.match(/\(\s*\{\s*([^}]+)\s*\}/);
-  if (destructuringMatch && destructuringMatch[1]) {
+  if (destructuringMatch?.[1]) {
     const propsStr = destructuringMatch[1];
     const propParts = propsStr.split(',');
     
     for (const part of propParts) {
       const trimmed = part.trim();
-      if (trimmed.startsWith('...')) continue; // Skip rest spread
+      if (trimmed.startsWith('...')) {continue;} // Skip rest spread
       
       // Match: propName, propName = default, propName: type
       const propMatch = trimmed.match(/^([a-zA-Z_$][a-zA-Z0-9_$]*)\s*(?:=\s*([^,]+))?/);
-      if (propMatch && propMatch[1]) {
+      if (propMatch?.[1]) {
         const propName = propMatch[1];
         const hasDefault = !!propMatch[2];
         
@@ -502,7 +503,7 @@ export function extractHooks(node: ASTNode): HookFeature[] {
       // Try to extract dependencies for effect-like hooks
       if (['useEffect', 'useCallback', 'useMemo', 'useLayoutEffect'].includes(hookName)) {
         const depMatch = nodeText.match(new RegExp(`${hookName}\\s*\\([^)]*,\\s*\\[([^\\]]*)\\]`));
-        if (depMatch && depMatch[1]) {
+        if (depMatch?.[1]) {
           feature.dependencies = depMatch[1].split(',').map(d => d.trim()).filter(d => d.length > 0);
         }
       }
@@ -1170,7 +1171,7 @@ export function analyzeNearDuplicates(
       const comp1 = components[i];
       const comp2 = components[j];
       
-      if (!comp1 || !comp2) continue;
+      if (!comp1 || !comp2) {continue;}
       
       const pair = compareComponentsSemanticly(comp1, comp2, config);
       if (pair) {
@@ -1254,10 +1255,10 @@ function buildAbstractionGroups(
  * Find features shared across all components
  */
 function findSharedFeatures(components: SemanticFeatures[]): string[] {
-  if (components.length === 0) return [];
+  if (components.length === 0) {return [];}
   
   const firstComp = components[0];
-  if (!firstComp) return [];
+  if (!firstComp) {return [];}
   
   const sharedProps = firstComp.props
     .filter(p => components.every(c => c.props.some(cp => cp.name === p.name)))
@@ -1375,7 +1376,7 @@ export class NearDuplicateDetector extends ASTDetector {
   generateQuickFix(violation: Violation): QuickFix | null {
     // Extract component names from the violation message
     const match = violation.message.match(/Components '([^']+)' and '([^']+)'/);
-    if (!match || !match[1] || !match[2]) {
+    if (!match?.[1] || !match[2]) {
       return null;
     }
 
@@ -1479,7 +1480,7 @@ export class NearDuplicateDetector extends ASTDetector {
       let match;
       while ((match = pattern.exec(content)) !== null) {
         const name = match[1];
-        if (!name) continue;
+        if (!name) {continue;}
         
         const sourceCode = match[0];
         const beforeMatch = content.slice(0, match.index);

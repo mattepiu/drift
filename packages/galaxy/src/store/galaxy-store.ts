@@ -7,6 +7,9 @@
 
 import { create } from 'zustand';
 import { subscribeWithSelector } from 'zustand/middleware';
+
+import { CAMERA_CONFIG } from '../constants/index.js';
+
 import type {
   GalaxyData,
   SelectionState,
@@ -19,7 +22,6 @@ import type {
   DataOperation,
   GalaxyEvent,
 } from '../types/index.js';
-import { CAMERA_CONFIG } from '../constants/index.js';
 
 // ============================================================================
 // Store State Interface
@@ -159,12 +161,12 @@ export const useGalaxyStore = create<GalaxyStore>()(
     searchResults: [],
 
     // Data actions
-    setGalaxyData: (data) => set({ galaxyData: data, isLoading: false, error: null }),
-    setLoading: (loading) => set({ isLoading: loading }),
-    setError: (error) => set({ error, isLoading: false }),
+    setGalaxyData: (data) => { set({ galaxyData: data, isLoading: false, error: null }); },
+    setLoading: (loading) => { set({ isLoading: loading }); },
+    setError: (error) => { set({ error, isLoading: false }); },
 
     // Selection actions
-    selectTable: (id) => set((state) => ({
+    selectTable: (id) => { set((state) => ({
       selection: {
         ...state.selection,
         selectedTable: id,
@@ -172,13 +174,13 @@ export const useGalaxyStore = create<GalaxyStore>()(
       },
       isPanelOpen: id !== null,
       activePanel: id !== null ? 'details' : state.activePanel,
-    })),
+    })); },
 
-    selectField: (id) => set((state) => ({
+    selectField: (id) => { set((state) => ({
       selection: { ...state.selection, selectedField: id },
-    })),
+    })); },
 
-    selectEntryPoint: (id) => set((state) => ({
+    selectEntryPoint: (id) => { set((state) => ({
       selection: {
         ...state.selection,
         selectedEntryPoint: id,
@@ -187,43 +189,43 @@ export const useGalaxyStore = create<GalaxyStore>()(
       },
       isPanelOpen: id !== null,
       activePanel: id !== null ? 'details' : state.activePanel,
-    })),
+    })); },
 
-    selectPath: (id) => set((state) => ({
+    selectPath: (id) => { set((state) => ({
       selection: { ...state.selection, selectedPath: id },
-    })),
+    })); },
 
-    setHovered: (id, type) => set((state) => ({
+    setHovered: (id, type) => { set((state) => ({
       selection: { ...state.selection, hoveredNode: id, hoveredType: type },
-    })),
+    })); },
 
-    clearSelection: () => set({
+    clearSelection: () => { set({
       selection: initialSelection,
       isPanelOpen: false,
       activePanel: null,
-    }),
+    }); },
 
     // Camera actions
-    setCameraPosition: (position) => set((state) => ({
+    setCameraPosition: (position) => { set((state) => ({
       camera: { ...state.camera, position },
-    })),
+    })); },
 
-    setCameraTarget: (target) => set((state) => ({
+    setCameraTarget: (target) => { set((state) => ({
       camera: { ...state.camera, target },
-    })),
+    })); },
 
-    setZoom: (zoom) => set((state) => ({
+    setZoom: (zoom) => { set((state) => ({
       camera: {
         ...state.camera,
         zoom: Math.max(CAMERA_CONFIG.MIN_ZOOM, Math.min(CAMERA_CONFIG.MAX_ZOOM, zoom)),
       },
-    })),
+    })); },
 
-    resetCamera: () => set({ camera: initialCamera }),
+    resetCamera: () => { set({ camera: initialCamera }); },
 
     focusOnNode: (id) => {
       const { galaxyData } = get();
-      if (!galaxyData) return;
+      if (!galaxyData) {return;}
 
       // Find the node position
       const table = galaxyData.tables.find((t) => t.id === id);
@@ -246,38 +248,38 @@ export const useGalaxyStore = create<GalaxyStore>()(
     },
 
     // View actions
-    setViewMode: (mode) => set({ viewMode: mode }),
+    setViewMode: (mode) => { set({ viewMode: mode }); },
 
-    setFilters: (filters) => set((state) => ({
+    setFilters: (filters) => { set((state) => ({
       filters: { ...state.filters, ...filters },
-    })),
+    })); },
 
-    setDisplay: (settings) => set((state) => ({
+    setDisplay: (settings) => { set((state) => ({
       display: { ...state.display, ...settings },
-    })),
+    })); },
 
-    resetFilters: () => set({ filters: initialFilters }),
+    resetFilters: () => { set({ filters: initialFilters }); },
 
     // Event actions
-    addEvent: (event) => set((state) => ({
+    addEvent: (event) => { set((state) => ({
       recentEvents: [event, ...state.recentEvents].slice(0, 100), // Keep last 100
-    })),
+    })); },
 
-    clearEvents: () => set({ recentEvents: [] }),
+    clearEvents: () => { set({ recentEvents: [] }); },
 
-    setLiveMode: (enabled) => set({ isLiveMode: enabled }),
+    setLiveMode: (enabled) => { set({ isLiveMode: enabled }); },
 
     // UI actions
-    togglePanel: (panel) => set((state) => ({
+    togglePanel: (panel) => { set((state) => ({
       isPanelOpen: state.activePanel === panel ? !state.isPanelOpen : true,
       activePanel: panel,
-    })),
+    })); },
 
-    closePanel: () => set({ isPanelOpen: false, activePanel: null }),
+    closePanel: () => { set({ isPanelOpen: false, activePanel: null }); },
 
-    setSearchQuery: (query) => set({ searchQuery: query }),
+    setSearchQuery: (query) => { set({ searchQuery: query }); },
 
-    setSearchResults: (results) => set({ searchResults: results }),
+    setSearchResults: (results) => { set({ searchResults: results }); },
   }))
 );
 
@@ -290,7 +292,7 @@ export const useGalaxyStore = create<GalaxyStore>()(
  */
 export const useSelectedTable = () => {
   return useGalaxyStore((state) => {
-    if (!state.selection.selectedTable || !state.galaxyData) return null;
+    if (!state.selection.selectedTable || !state.galaxyData) {return null;}
     return state.galaxyData.tables.find((t) => t.id === state.selection.selectedTable) || null;
   });
 };
@@ -300,7 +302,7 @@ export const useSelectedTable = () => {
  */
 export const useSelectedEntryPoint = () => {
   return useGalaxyStore((state) => {
-    if (!state.selection.selectedEntryPoint || !state.galaxyData) return null;
+    if (!state.selection.selectedEntryPoint || !state.galaxyData) {return null;}
     return state.galaxyData.entryPoints.find((e) => e.id === state.selection.selectedEntryPoint) || null;
   });
 };
@@ -310,7 +312,7 @@ export const useSelectedEntryPoint = () => {
  */
 export const useSelectedTablePaths = () => {
   return useGalaxyStore((state) => {
-    if (!state.selection.selectedTable || !state.galaxyData) return [];
+    if (!state.selection.selectedTable || !state.galaxyData) {return [];}
     return state.galaxyData.dataPaths.filter(
       (p) => p.targetTableId === state.selection.selectedTable
     );
@@ -322,7 +324,7 @@ export const useSelectedTablePaths = () => {
  */
 export const useFilteredTables = () => {
   return useGalaxyStore((state) => {
-    if (!state.galaxyData) return [];
+    if (!state.galaxyData) {return [];}
     
     let tables = state.galaxyData.tables;
     const { filters } = state;
@@ -357,7 +359,7 @@ export const useFilteredTables = () => {
  */
 export const useFilteredPaths = () => {
   return useGalaxyStore((state) => {
-    if (!state.galaxyData) return [];
+    if (!state.galaxyData) {return [];}
     
     let paths = state.galaxyData.dataPaths;
     const { filters } = state;
@@ -381,7 +383,7 @@ export const useFilteredPaths = () => {
  */
 export const useFilteredEntryPoints = () => {
   return useGalaxyStore((state) => {
-    if (!state.galaxyData) return [];
+    if (!state.galaxyData) {return [];}
     
     let entryPoints = state.galaxyData.entryPoints;
     const { filters } = state;

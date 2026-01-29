@@ -5,12 +5,13 @@
  * Supports Python (FastAPI, Flask, Django) and TypeScript (Express).
  */
 
-import type { ContractField, HttpMethod, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
 import { BaseDetector } from '../base/base-detector.js';
-import type { ExtractedEndpoint, BackendExtractionResult } from './types.js';
-import { DjangoEndpointDetector } from './django/django-endpoint-detector.js';
 import { AspNetEndpointDetector } from './aspnet/aspnet-endpoint-detector.js';
+import { DjangoEndpointDetector } from './django/django-endpoint-detector.js';
+
+import type { ExtractedEndpoint, BackendExtractionResult } from './types.js';
+import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { ContractField, HttpMethod, Language } from 'driftdetect-core';
 
 // ============================================================================
 // FastAPI Pattern Matchers
@@ -59,7 +60,7 @@ function extractPydanticModelFields(content: string, modelName: string): Contrac
   // Find the class definition: class ModelName(BaseModel):
   const classPattern = new RegExp(`class\\s+${modelName}\\s*\\([^)]*\\)\\s*:`, 'g');
   const classMatch = classPattern.exec(content);
-  if (!classMatch) return fields;
+  if (!classMatch) {return fields;}
   
   const classStart = classMatch.index + classMatch[0].length;
   const lines = content.substring(classStart).split('\n');
@@ -67,15 +68,15 @@ function extractPydanticModelFields(content: string, modelName: string): Contrac
   // Parse fields until we hit another class or unindented line
   for (let i = 0; i < lines.length && i < 30; i++) {
     const line = lines[i];
-    if (!line) continue;
+    if (!line) {continue;}
     
     // Stop at next class definition or unindented non-empty line
-    if (i > 0 && line.match(/^[^\s]/) && line.trim()) break;
-    if (line.match(/^class\s+/)) break;
+    if (i > 0 && line.match(/^[^\s]/) && line.trim()) {break;}
+    if (line.match(/^class\s+/)) {break;}
     
     // Match field definitions: field_name: Type or field_name: Optional[Type] = default
     const fieldMatch = line.match(/^\s+(\w+)\s*:\s*(?:Optional\[)?(\w+)(?:\])?\s*(?:=.*)?$/);
-    if (fieldMatch && fieldMatch[1] && fieldMatch[2]) {
+    if (fieldMatch?.[1] && fieldMatch[2]) {
       const fieldName = fieldMatch[1];
       const fieldType = fieldMatch[2];
       const isOptional = line.includes('Optional[') || line.includes('= None') || line.includes('= Field(');
@@ -123,7 +124,7 @@ function extractResponseModel(content: string, decoratorLine: number): string | 
   const decoratorContent = lines.slice(decoratorLine - 1, decoratorLine + 2).join(' ');
   
   const responseModelMatch = decoratorContent.match(/response_model\s*=\s*(\w+)/);
-  return responseModelMatch && responseModelMatch[1] ? responseModelMatch[1] : null;
+  return responseModelMatch?.[1] ? responseModelMatch[1] : null;
 }
 
 function extractPythonResponseFields(content: string, line: number): ContractField[] {
@@ -145,14 +146,14 @@ function extractPythonResponseFields(content: string, line: number): ContractFie
   
   for (let i = line; i < endLine; i++) {
     const lineContent = lines[i];
-    if (!lineContent) continue;
+    if (!lineContent) {continue;}
     
     // Stop at next function/class definition
-    if (i > line && lineContent.match(/^(?:def|class|@)\s/)) break;
+    if (i > line && lineContent.match(/^(?:def|class|@)\s/)) {break;}
     
     // Pattern 1: return {...} - direct dict return
     const dictMatch = lineContent.match(/return\s*\{([^}]+)\}/);
-    if (dictMatch && dictMatch[1]) {
+    if (dictMatch?.[1]) {
       extractDictFields(dictMatch[1], i + 1, fields);
       foundFields = true;
       continue;
@@ -160,7 +161,7 @@ function extractPythonResponseFields(content: string, line: number): ContractFie
     
     // Pattern 2: return JSONResponse({...}) or jsonify({...}) - wrapper with dict
     const wrapperDictMatch = lineContent.match(/return\s+(\w+)\s*\(\s*\{([^}]+)\}/);
-    if (wrapperDictMatch && wrapperDictMatch[1] && wrapperDictMatch[2]) {
+    if (wrapperDictMatch?.[1] && wrapperDictMatch[2]) {
       const wrapperName = wrapperDictMatch[1];
       if (RESPONSE_WRAPPERS.has(wrapperName)) {
         extractDictFields(wrapperDictMatch[2], i + 1, fields);
@@ -172,7 +173,7 @@ function extractPythonResponseFields(content: string, line: number): ContractFie
     // Pattern 3: return SomeModel(...) - Pydantic model return (without response_model)
     if (!foundFields && !responseModel) {
       const modelMatch = lineContent.match(/return\s+(\w+)\s*\(/);
-      if (modelMatch && modelMatch[1]) {
+      if (modelMatch?.[1]) {
         const modelName = modelMatch[1];
         if (!RESPONSE_WRAPPERS.has(modelName)) {
           // Try to extract fields from the model definition
@@ -218,11 +219,11 @@ function extractPythonRequestFields(content: string, line: number): ContractFiel
   // Find the function definition (should be right after the decorator)
   for (let i = line; i < Math.min(line + 5, lines.length); i++) {
     const lineContent = lines[i];
-    if (!lineContent) continue;
+    if (!lineContent) {continue;}
     
     // Match function definition: def func_name(params):
     const funcMatch = lineContent.match(/def\s+\w+\s*\(([^)]+)\)/);
-    if (!funcMatch || !funcMatch[1]) continue;
+    if (!funcMatch?.[1]) {continue;}
     
     const params = funcMatch[1];
     
@@ -235,7 +236,7 @@ function extractPythonRequestFields(content: string, line: number): ContractFiel
     for (const match of paramMatches) {
       const paramName = match[1];
       const typeName = match[2];
-      if (!paramName || !typeName) continue;
+      if (!paramName || !typeName) {continue;}
       
       // Skip common non-body parameters
       if (['Request', 'Response', 'BackgroundTasks', 'Depends', 'str', 'int', 'float', 'bool'].includes(typeName)) {
@@ -270,14 +271,14 @@ function extractExpressRequestFields(content: string, line: number): ContractFie
   
   for (let i = line; i < endLine; i++) {
     const lineContent = lines[i];
-    if (!lineContent) continue;
+    if (!lineContent) {continue;}
     
     // Stop at next route definition
-    if (i > line && lineContent.match(/(?:app|router)\.(get|post|put|patch|delete)\s*\(/)) break;
+    if (i > line && lineContent.match(/(?:app|router)\.(get|post|put|patch|delete)\s*\(/)) {break;}
     
     // Pattern 1: const { field1, field2 } = req.body
     const destructureMatch = lineContent.match(/(?:const|let|var)\s*\{([^}]+)\}\s*=\s*req\.body/);
-    if (destructureMatch && destructureMatch[1]) {
+    if (destructureMatch?.[1]) {
       const fieldNames = destructureMatch[1].split(',').map(f => f.trim().split(':')[0]?.trim()).filter(Boolean);
       for (const name of fieldNames) {
         if (name && !seenFields.has(name)) {
@@ -336,10 +337,10 @@ function extractExpressResponseFields(content: string, line: number): ContractFi
   
   for (let i = line; i < endLine; i++) {
     const lineContent = lines[i];
-    if (!lineContent) continue;
+    if (!lineContent) {continue;}
     
     const jsonMatch = lineContent.match(/res\.(?:json|send)\s*\(\s*\{([^}]+)\}/);
-    if (jsonMatch && jsonMatch[1]) {
+    if (jsonMatch?.[1]) {
       const objContent = jsonMatch[1];
       const keyMatches = objContent.matchAll(/(\w+)\s*:/g);
       for (const match of keyMatches) {
@@ -493,7 +494,7 @@ export class BackendEndpointDetector extends BaseDetector {
       while ((match = pattern.exec(content)) !== null) {
         const method = (match[1]?.toUpperCase() || 'GET') as HttpMethod;
         const path = match[2] || match[1] || '';
-        if (!path) continue;
+        if (!path) {continue;}
         
         const line = content.substring(0, match.index).split('\n').length;
         
@@ -537,7 +538,7 @@ export class BackendEndpointDetector extends BaseDetector {
       while ((match = pattern.exec(content)) !== null) {
         const method = (match[1]?.toUpperCase() || 'GET') as HttpMethod;
         const path = match[2] || '';
-        if (!path) continue;
+        if (!path) {continue;}
         
         const line = content.substring(0, match.index).split('\n').length;
         

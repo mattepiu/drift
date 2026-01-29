@@ -11,7 +11,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -19,6 +18,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -62,10 +63,10 @@ interface ImportPatternInfo {
  * Categorize import source
  */
 function categorizeImport(source: string, isTypeOnly: boolean): ImportType {
-  if (isTypeOnly) return 'type';
-  if (source.startsWith('.')) return 'relative';
-  if (source.startsWith('@/') || source.startsWith('~/')) return 'internal';
-  if (/^(node:|fs|path|http|https|crypto|util|os|stream|events|buffer|child_process)/.test(source)) return 'builtin';
+  if (isTypeOnly) {return 'type';}
+  if (source.startsWith('.')) {return 'relative';}
+  if (source.startsWith('@/') || source.startsWith('~/')) {return 'internal';}
+  if (/^(node:|fs|path|http|https|crypto|util|os|stream|events|buffer|child_process)/.test(source)) {return 'builtin';}
   return 'external';
 }
 
@@ -158,7 +159,7 @@ export class ImportOrderingLearningDetector extends LearningDetector<ImportOrder
     distributions: Map<keyof ImportOrderingConventions, ValueDistribution>
   ): void {
     const imports = extractImportPatterns(context.content, context.file);
-    if (imports.length < 2) return;
+    if (imports.length < 2) {return;}
 
     const groupOrderDist = distributions.get('groupOrder')!;
     const blankLinesDist = distributions.get('usesBlankLines')!;

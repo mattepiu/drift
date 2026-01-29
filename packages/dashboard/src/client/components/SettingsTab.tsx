@@ -5,7 +5,9 @@
  */
 
 import React, { useState } from 'react';
+
 import { useConfig, useUpdateConfig } from '../hooks';
+
 import type { DetectorConfig, PatternCategory, Severity } from '../types';
 
 function DetectorToggle({
@@ -211,7 +213,7 @@ export function SettingsTab(): React.ReactElement {
   // Group detectors by category
   const detectorsByCategory = config.detectors.reduce((acc, detector) => {
     const category = detector.category;
-    if (!acc[category]) acc[category] = [];
+    if (!acc[category]) {acc[category] = [];}
     acc[category].push(detector);
     return acc;
   }, {} as Record<PatternCategory, DetectorConfig[]>);

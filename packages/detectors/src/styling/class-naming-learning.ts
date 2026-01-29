@@ -10,7 +10,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -18,6 +17,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -154,7 +155,7 @@ export class ClassNamingLearningDetector extends LearningDetector<ClassNamingCon
     distributions: Map<keyof ClassNamingConventions, ValueDistribution>
   ): void {
     const patterns = extractAllPatterns(context.content);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const conventionDist = distributions.get('namingConvention')!;
     const bemDist = distributions.get('usesBEM')!;
@@ -168,9 +169,9 @@ export class ClassNamingLearningDetector extends LearningDetector<ClassNamingCon
     for (const pattern of patterns) {
       conventionDist.add(pattern.convention, context.file);
 
-      if (pattern.convention === 'bem') hasBEM = true;
-      if (pattern.convention === 'utility-first') hasUtility = true;
-      if (pattern.convention === 'css-modules') hasModules = true;
+      if (pattern.convention === 'bem') {hasBEM = true;}
+      if (pattern.convention === 'utility-first') {hasUtility = true;}
+      if (pattern.convention === 'css-modules') {hasModules = true;}
     }
 
     bemDist.add(hasBEM, context.file);

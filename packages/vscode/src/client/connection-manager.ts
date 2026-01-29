@@ -149,7 +149,7 @@ export class ConnectionManager implements vscode.Disposable {
 
     // Handle client errors
     this.client.onDidChangeState((event: StateChangeEvent) => {
-      this.logger.debug(`Client state changed: ${event.oldState} -> ${event.newState}`);
+      this.logger.debug(`Client state changed: ${String(event.oldState)} -> ${String(event.newState)}`);
     });
   }
 
@@ -168,7 +168,7 @@ export class ConnectionManager implements vscode.Disposable {
       await this.delay(100);
     }
 
-    throw new Error(`Server initialization timed out after ${timeout}ms`);
+    throw new Error(`Server initialization timed out after ${String(timeout)}ms`);
   }
 
   private async handleConnectionError(error: unknown): Promise<void> {
@@ -183,7 +183,7 @@ export class ConnectionManager implements vscode.Disposable {
 
     if (this.restartCount >= CONNECTION_CONFIG.maxRestarts) {
       this.setState('failed');
-      this.logger.error(`Max restart attempts (${CONNECTION_CONFIG.maxRestarts}) reached`);
+      this.logger.error(`Max restart attempts (${String(CONNECTION_CONFIG.maxRestarts)}) reached`);
       return;
     }
 
@@ -191,7 +191,7 @@ export class ConnectionManager implements vscode.Disposable {
     this.restartCount++;
 
     this.logger.info(
-      `Reconnecting in ${delay}ms (attempt ${this.restartCount}/${CONNECTION_CONFIG.maxRestarts})`
+      `Reconnecting in ${String(delay)}ms (attempt ${String(this.restartCount)}/${String(CONNECTION_CONFIG.maxRestarts)})`
     );
 
     this.setState('reconnecting');
@@ -208,11 +208,13 @@ export class ConnectionManager implements vscode.Disposable {
   private startHealthCheck(): void {
     this.stopHealthCheck();
 
-    this.healthCheckTimer = setInterval(async () => {
-      if (!await this.isHealthy()) {
-        this.logger.warn('Health check failed, reconnecting...');
-        await this.reconnect();
-      }
+    this.healthCheckTimer = setInterval(() => {
+      void this.isHealthy().then(healthy => {
+        if (!healthy) {
+          this.logger.warn('Health check failed, reconnecting...');
+          void this.reconnect();
+        }
+      });
     }, CONNECTION_CONFIG.healthCheckInterval);
   }
 

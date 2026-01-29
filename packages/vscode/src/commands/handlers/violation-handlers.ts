@@ -43,7 +43,7 @@ export function createViolationHandlers(
       const uri = ctx.args[1] as string | undefined;
       const line = ctx.args[2] as number | undefined;
 
-      if (!violationId || !uri || line === undefined) {
+      if (violationId === null || violationId === '' || uri === null || uri === '' || line === undefined) {
         // Try to get from current editor position
         const editor = vscode.window.activeTextEditor;
         if (!editor) {
@@ -63,8 +63,11 @@ export function createViolationHandlers(
         }
 
         // Extract violation ID from diagnostic data
-        const data = (driftDiagnostic as any).data;
-        if (!data?.violationId) {
+        interface DiagnosticData {
+          violationId?: string;
+        }
+        const data = (driftDiagnostic as vscode.Diagnostic & { data?: DiagnosticData }).data;
+        if (data?.violationId === null || data?.violationId === undefined) {
           await notifications.warning('Cannot identify violation.');
           return;
         }

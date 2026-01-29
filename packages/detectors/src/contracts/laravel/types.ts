@@ -332,17 +332,17 @@ export const API_RESOURCE_ACTIONS: Record<string, LaravelHttpMethod> = {
 export function inferTypeFromRules(rules: string[]): string | null {
   for (const rule of rules) {
     const lower = rule.toLowerCase();
-    if (lower === 'string' || lower.startsWith('string:')) return 'string';
-    if (lower === 'integer' || lower === 'int') return 'number';
-    if (lower === 'numeric' || lower === 'decimal') return 'number';
-    if (lower === 'boolean' || lower === 'bool') return 'boolean';
-    if (lower === 'array') return 'array';
-    if (lower === 'date' || lower.startsWith('date_format')) return 'string';
-    if (lower === 'email') return 'string';
-    if (lower === 'url') return 'string';
-    if (lower === 'uuid') return 'string';
-    if (lower === 'json') return 'object';
-    if (lower === 'file' || lower === 'image') return 'file';
+    if (lower === 'string' || lower.startsWith('string:')) {return 'string';}
+    if (lower === 'integer' || lower === 'int') {return 'number';}
+    if (lower === 'numeric' || lower === 'decimal') {return 'number';}
+    if (lower === 'boolean' || lower === 'bool') {return 'boolean';}
+    if (lower === 'array') {return 'array';}
+    if (lower === 'date' || lower.startsWith('date_format')) {return 'string';}
+    if (lower === 'email') {return 'string';}
+    if (lower === 'url') {return 'string';}
+    if (lower === 'uuid') {return 'string';}
+    if (lower === 'json') {return 'object';}
+    if (lower === 'file' || lower === 'image') {return 'file';}
   }
   return null;
 }

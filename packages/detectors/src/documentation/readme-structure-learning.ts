@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -46,7 +47,7 @@ const SECTION_PATTERNS: Array<{ pattern: RegExp; section: ReadmeSection }> = [
 function detectReadmeSections(content: string): ReadmeSection[] {
   const sections: ReadmeSection[] = [];
   for (const { pattern, section } of SECTION_PATTERNS) {
-    if (pattern.test(content)) sections.push(section);
+    if (pattern.test(content)) {sections.push(section);}
   }
   return sections;
 }
@@ -71,7 +72,7 @@ export class ReadmeStructureLearningDetector extends LearningDetector<ReadmeStru
     context: DetectionContext,
     distributions: Map<keyof ReadmeStructureConventions, ValueDistribution>
   ): void {
-    if (!/README\.md$/i.test(context.file)) return;
+    if (!/README\.md$/i.test(context.file)) {return;}
     
     const sections = detectReadmeSections(context.content);
     const badgeDist = distributions.get('usesBadges')!;

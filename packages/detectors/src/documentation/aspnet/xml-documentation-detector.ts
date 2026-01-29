@@ -8,9 +8,10 @@
  * - Documentation coverage
  */
 
-import type { PatternMatch, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { PatternMatch, Language } from 'driftdetect-core';
 
 export interface XmlDocPatternInfo {
   type: 'summary' | 'param' | 'returns' | 'exception' | 'inheritdoc' | 'remarks' | 'example';
@@ -42,7 +43,7 @@ export class XmlDocumentationDetector extends BaseDetector {
 
   async detect(context: DetectionContext): Promise<DetectionResult> {
     const { content, file } = context;
-    if (!this.isRelevantFile(content)) return this.createEmptyResult();
+    if (!this.isRelevantFile(content)) {return this.createEmptyResult();}
 
     const analysis = this.analyzeXmlDocumentation(content, file);
     const patterns: PatternMatch[] = analysis.patterns.map(p => ({

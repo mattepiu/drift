@@ -3,8 +3,8 @@
  * @requirements 28.8
  */
 
-import type { ServerContext } from '../server/types.js';
 import type { CommandResult } from '../handlers/commands.js';
+import type { ServerContext } from '../server/types.js';
 
 /**
  * Execute show patterns command

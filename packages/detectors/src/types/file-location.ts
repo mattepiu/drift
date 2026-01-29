@@ -11,9 +11,10 @@
  * @requirements 18.1 - Type file location patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -249,8 +250,8 @@ export function detectTypeOnlyModule(
   const lines = content.split('\n');
 
   for (const line of lines) {
-    if (/^export\s+(?:type|interface)\s+/.test(line)) typeExports++;
-    if (/^export\s+(?:const|let|var|function|class)\s+/.test(line)) valueExports++;
+    if (/^export\s+(?:type|interface)\s+/.test(line)) {typeExports++;}
+    if (/^export\s+(?:const|let|var|function|class)\s+/.test(line)) {valueExports++;}
   }
 
   if (typeExports > 0 && typeExports > valueExports * 2) {
@@ -289,7 +290,7 @@ export function detectDeclarationFile(
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]!;
     for (const pattern of DECLARATION_FILE_PATTERNS) {
-      if (pattern.source === '\\.d\\.ts$') continue;
+      if (pattern.source === '\\.d\\.ts$') {continue;}
       const regex = new RegExp(pattern.source, pattern.flags);
       let match;
       while ((match = regex.exec(line)) !== null) {
@@ -375,11 +376,11 @@ export function detectScatteredTypesViolations(
   const results: FileLocationViolationInfo[] = [];
 
   // Skip if this is already a types file
-  if (isTypeFile(filePath)) return results;
+  if (isTypeFile(filePath)) {return results;}
 
   // Skip if file has few type definitions
   const typeDefCount = (content.match(/(?:type|interface)\s+\w+/g) || []).length;
-  if (typeDefCount < 3) return results;
+  if (typeDefCount < 3) {return results;}
 
   const lines = content.split('\n');
   for (let i = 0; i < lines.length; i++) {
@@ -475,9 +476,9 @@ export function analyzeFileLocation(
   ];
 
   let confidence = 0.7;
-  if (hasCentralizedTypes || hasCoLocatedTypes) confidence += 0.15;
-  if (patterns.some((p) => p.type === 'barrel-export')) confidence += 0.1;
-  if (violations.length === 0) confidence += 0.05;
+  if (hasCentralizedTypes || hasCoLocatedTypes) {confidence += 0.15;}
+  if (patterns.some((p) => p.type === 'barrel-export')) {confidence += 0.1;}
+  if (violations.length === 0) {confidence += 0.05;}
   confidence = Math.min(confidence, 0.95);
 
   return {

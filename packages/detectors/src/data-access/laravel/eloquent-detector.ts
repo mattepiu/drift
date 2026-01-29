@@ -7,12 +7,13 @@
  * @module data-access/laravel/eloquent-detector
  */
 
-import type { Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
-import { BaseDetector } from '../../base/base-detector.js';
-import type { LaravelDataAccessAnalysis } from './types.js';
 import { EloquentModelExtractor } from './extractors/eloquent-model-extractor.js';
 import { QueryBuilderExtractor } from './extractors/query-builder-extractor.js';
+import { BaseDetector } from '../../base/base-detector.js';
+
+import type { LaravelDataAccessAnalysis } from './types.js';
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { Language } from 'driftdetect-core';
 
 // ============================================================================
 // Laravel Eloquent Detector

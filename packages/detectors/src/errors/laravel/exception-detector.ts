@@ -6,12 +6,15 @@
  * @module errors/laravel/exception-detector
  */
 
-import type { Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
-import { BaseDetector } from '../../base/base-detector.js';
-import type { LaravelErrorAnalysis } from './types.js';
-import { ExceptionHandlerExtractor } from './extractors/exception-handler-extractor.js';
 import { CustomExceptionExtractor } from './extractors/custom-exception-extractor.js';
+import { ExceptionHandlerExtractor } from './extractors/exception-handler-extractor.js';
+import { BaseDetector } from '../../base/base-detector.js';
+
+import type { LaravelErrorAnalysis } from './types.js';
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { Language } from 'driftdetect-core';
+
+
 
 export class LaravelExceptionDetector extends BaseDetector {
   readonly id = 'errors/laravel-exceptions';

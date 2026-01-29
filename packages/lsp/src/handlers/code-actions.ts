@@ -7,6 +7,11 @@
  * @requirements 27.4 - THE LSP_Server SHALL provide code actions for quick fixes
  */
 
+import { CodeActionKind } from 'vscode-languageserver';
+
+import { DRIFT_COMMANDS } from '../capabilities.js';
+
+import type { DiagnosticsHandler, ViolationDiagnostic } from './diagnostics.js';
 import type {
   Connection,
   TextDocuments,
@@ -14,10 +19,8 @@ import type {
   CodeActionParams,
   Range,
 } from 'vscode-languageserver';
-import { CodeActionKind } from 'vscode-languageserver';
 import type { TextDocument } from 'vscode-languageserver-textdocument';
-import type { DiagnosticsHandler, ViolationDiagnostic } from './diagnostics.js';
-import { DRIFT_COMMANDS } from '../capabilities.js';
+
 
 // ============================================================================
 // Types

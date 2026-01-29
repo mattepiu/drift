@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -44,9 +45,9 @@ const VALIDATION_PATTERNS: Array<{ pattern: RegExp; library: ValidationLibrary }
 
 function detectValidationLibrary(content: string): ValidationLibrary | null {
   for (const { pattern, library } of VALIDATION_PATTERNS) {
-    if (pattern.test(content)) return library;
+    if (pattern.test(content)) {return library;}
   }
-  if (/typeof\s+\w+\s*===|instanceof|\.length\s*[<>=]/.test(content)) return 'manual';
+  if (/typeof\s+\w+\s*===|instanceof|\.length\s*[<>=]/.test(content)) {return 'manual';}
   return null;
 }
 
@@ -74,7 +75,7 @@ export class ValidationPatternsLearningDetector extends LearningDetector<Validat
     const libraryDist = distributions.get('validationLibrary')!;
     const inferenceDist = distributions.get('usesSchemaInference')!;
     
-    if (library) libraryDist.add(library, context.file);
+    if (library) {libraryDist.add(library, context.file);}
     
     const usesInference = /z\.infer|InferType|yup\.InferType/.test(context.content);
     inferenceDist.add(usesInference, context.file);

@@ -11,7 +11,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -19,6 +18,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -65,9 +66,9 @@ interface ExceptionPatternInfo {
  * Detect suffix from class name
  */
 function detectSuffix(className: string): ErrorClassSuffix {
-  if (className.endsWith('Error')) return 'Error';
-  if (className.endsWith('Exception')) return 'Exception';
-  if (className.endsWith('Fault')) return 'Fault';
+  if (className.endsWith('Error')) {return 'Error';}
+  if (className.endsWith('Exception')) {return 'Exception';}
+  if (className.endsWith('Fault')) {return 'Fault';}
   return 'none';
 }
 
@@ -183,7 +184,7 @@ export class ExceptionHierarchyLearningDetector extends LearningDetector<Excepti
   ): void {
     const patterns = extractExceptionPatterns(context.content, context.file);
 
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const baseClassDist = distributions.get('baseErrorClass')!;
     const suffixDist = distributions.get('classSuffix')!;

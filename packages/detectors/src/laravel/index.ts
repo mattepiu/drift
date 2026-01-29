@@ -7,11 +7,23 @@
 
 // Auth patterns
 import {
+  LaravelAPISemanticDetector,
+  createLaravelAPISemanticDetector,
+} from '../api/laravel/api-semantic.js';
+import {
+  LaravelAsyncSemanticDetector,
+  createLaravelAsyncSemanticDetector,
+} from '../async/laravel/async-semantic.js';
+import {
   LaravelAuthSemanticDetector,
   createLaravelAuthSemanticDetector,
 } from '../auth/laravel/auth-semantic.js';
 
 // Data Access patterns (Eloquent)
+import {
+  LaravelConfigSemanticDetector,
+  createLaravelConfigSemanticDetector,
+} from '../config/laravel/config-semantic.js';
 import {
   LaravelEloquentSemanticDetector,
   createLaravelEloquentSemanticDetector,
@@ -36,47 +48,35 @@ import {
 } from '../logging/laravel/logging-semantic.js';
 
 // Testing patterns
-import {
-  LaravelTestingSemanticDetector,
-  createLaravelTestingSemanticDetector,
-} from '../testing/laravel/testing-semantic.js';
 
 
 // Security patterns
+import {
+  LaravelPerformanceSemanticDetector,
+  createLaravelPerformanceSemanticDetector,
+} from '../performance/laravel/performance-semantic.js';
 import {
   LaravelSecuritySemanticDetector,
   createLaravelSecuritySemanticDetector,
 } from '../security/laravel/security-semantic.js';
 
 // Config patterns
-import {
-  LaravelConfigSemanticDetector,
-  createLaravelConfigSemanticDetector,
-} from '../config/laravel/config-semantic.js';
 
 // Performance patterns
-import {
-  LaravelPerformanceSemanticDetector,
-  createLaravelPerformanceSemanticDetector,
-} from '../performance/laravel/performance-semantic.js';
 
 // Structural/DI patterns
 import {
   LaravelStructuralSemanticDetector,
   createLaravelStructuralSemanticDetector,
 } from '../structural/laravel/structural-semantic.js';
+import {
+  LaravelTestingSemanticDetector,
+  createLaravelTestingSemanticDetector,
+} from '../testing/laravel/testing-semantic.js';
 
 // API patterns
-import {
-  LaravelAPISemanticDetector,
-  createLaravelAPISemanticDetector,
-} from '../api/laravel/api-semantic.js';
 
 // Async patterns (Jobs, Events, Queues)
-import {
-  LaravelAsyncSemanticDetector,
-  createLaravelAsyncSemanticDetector,
-} from '../async/laravel/async-semantic.js';
 
 // Validation patterns
 import {

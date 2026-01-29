@@ -16,12 +16,13 @@
  * - Options validation
  */
 
-import type { Violation, Language } from 'driftdetect-core';
 import {
   SemanticDetector,
   type SemanticMatch,
   type UsagePattern,
 } from '../../base/semantic-detector.js';
+
+import type { Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Context Validation Patterns
@@ -166,12 +167,12 @@ export class OptionsPatternSemanticDetector extends SemanticDetector {
     // Require positive Options context for ambiguous keywords
     if (optionsContextScore === 0 && nonOptionsContextScore === 0) {
       // No clear context - check for common C# Options patterns
-      if (/IOptions<\w+>/i.test(lineContent)) return true;
-      if (/IOptionsSnapshot<\w+>/i.test(lineContent)) return true;
-      if (/IOptionsMonitor<\w+>/i.test(lineContent)) return true;
-      if (/\.Configure<\w+>/i.test(lineContent)) return true;
-      if (/class\s+\w+Options\s*[:{]/i.test(lineContent)) return true;
-      if (/class\s+\w+Settings\s*[:{]/i.test(lineContent)) return true;
+      if (/IOptions<\w+>/i.test(lineContent)) {return true;}
+      if (/IOptionsSnapshot<\w+>/i.test(lineContent)) {return true;}
+      if (/IOptionsMonitor<\w+>/i.test(lineContent)) {return true;}
+      if (/\.Configure<\w+>/i.test(lineContent)) {return true;}
+      if (/class\s+\w+Options\s*[:{]/i.test(lineContent)) {return true;}
+      if (/class\s+\w+Settings\s*[:{]/i.test(lineContent)) {return true;}
     }
 
     return optionsContextScore > nonOptionsContextScore;

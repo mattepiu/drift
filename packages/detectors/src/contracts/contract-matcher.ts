@@ -7,6 +7,8 @@
  */
 
 import * as crypto from 'node:crypto';
+
+import type { ExtractedEndpoint, ExtractedApiCall } from './types.js';
 import type {
   Contract,
   ContractField,
@@ -16,7 +18,6 @@ import type {
   ContractConfidence,
   HttpMethod,
 } from 'driftdetect-core';
-import type { ExtractedEndpoint, ExtractedApiCall } from './types.js';
 
 // ============================================================================
 // Types
@@ -110,7 +111,7 @@ function getResourceName(path: string): string | null {
   const segments = getMeaningfulSegments(path);
   for (let i = segments.length - 1; i >= 0; i--) {
     const seg = segments[i];
-    if (seg && seg !== ':param') return seg;
+    if (seg && seg !== ':param') {return seg;}
   }
   return null;
 }
@@ -121,7 +122,7 @@ function getResourceName(path: string): string | null {
 // ============================================================================
 
 function jaccardSimilarity<T>(set1: Set<T>, set2: Set<T>): number {
-  if (set1.size === 0 && set2.size === 0) return 1.0;
+  if (set1.size === 0 && set2.size === 0) {return 1.0;}
   const intersection = new Set([...set1].filter(x => set2.has(x)));
   const union = new Set([...set1, ...set2]);
   return intersection.size / union.size;
@@ -136,7 +137,7 @@ function calculateSegmentNamesSimilarity(backendPath: string, frontendPath: stri
 function calculateSegmentCountSimilarity(backendPath: string, frontendPath: string): number {
   const backendCount = getMeaningfulSegments(backendPath).length;
   const frontendCount = getMeaningfulSegments(frontendPath).length;
-  if (backendCount === 0 && frontendCount === 0) return 1.0;
+  if (backendCount === 0 && frontendCount === 0) {return 1.0;}
   const maxCount = Math.max(backendCount, frontendCount);
   return 1 - (Math.abs(backendCount - frontendCount) / maxCount);
 }
@@ -144,14 +145,14 @@ function calculateSegmentCountSimilarity(backendPath: string, frontendPath: stri
 function calculateSuffixMatchSimilarity(backendPath: string, frontendPath: string): number {
   const backendSegs = getMeaningfulSegments(backendPath);
   const frontendSegs = getMeaningfulSegments(frontendPath);
-  if (backendSegs.length === 0 || backendSegs.length > frontendSegs.length) return 0;
+  if (backendSegs.length === 0 || backendSegs.length > frontendSegs.length) {return 0;}
   const offset = frontendSegs.length - backendSegs.length;
   let matches = 0;
   for (let i = 0; i < backendSegs.length; i++) {
     const bSeg = backendSegs[i];
     const fSeg = frontendSegs[offset + i];
-    if (bSeg === fSeg) matches++;
-    else if (bSeg === ':param' || fSeg === ':param') matches += 0.7;
+    if (bSeg === fSeg) {matches++;}
+    else if (bSeg === ':param' || fSeg === ':param') {matches += 0.7;}
   }
   return matches / backendSegs.length;
 }
@@ -159,12 +160,12 @@ function calculateSuffixMatchSimilarity(backendPath: string, frontendPath: strin
 function calculateResourceNameSimilarity(backendPath: string, frontendPath: string): number {
   const backendResource = getResourceName(backendPath);
   const frontendResource = getResourceName(frontendPath);
-  if (!backendResource && !frontendResource) return 1.0;
-  if (!backendResource || !frontendResource) return 0;
-  if (backendResource === frontendResource) return 1.0;
+  if (!backendResource && !frontendResource) {return 1.0;}
+  if (!backendResource || !frontendResource) {return 0;}
+  if (backendResource === frontendResource) {return 1.0;}
   const shorter = backendResource.length < frontendResource.length ? backendResource : frontendResource;
   const longer = backendResource.length < frontendResource.length ? frontendResource : backendResource;
-  if (longer.startsWith(shorter) || longer.endsWith(shorter)) return 0.8;
+  if (longer.startsWith(shorter) || longer.endsWith(shorter)) {return 0.8;}
   return 0;
 }
 
@@ -177,7 +178,7 @@ function calculateParameterPositionsSimilarity(backendPath: string, frontendPath
   const frontendParamPositions = new Set(
     frontendSegs.map((s, i) => s === ':param' ? i / frontendSegs.length : -1).filter(p => p >= 0)
   );
-  if (backendParamPositions.size === 0 && frontendParamPositions.size === 0) return 1.0;
+  if (backendParamPositions.size === 0 && frontendParamPositions.size === 0) {return 1.0;}
   let matches = 0;
   const total = Math.max(backendParamPositions.size, frontendParamPositions.size);
   for (const bPos of backendParamPositions) {
@@ -334,7 +335,7 @@ function typesCompatible(backendType: string, frontendType: string): boolean {
   const normalize = (t: string) => t.toLowerCase().replace(/\s/g, '');
   const bt = normalize(backendType);
   const ft = normalize(frontendType);
-  if (bt === ft) return true;
+  if (bt === ft) {return true;}
   
   const mappings: Record<string, string[]> = {
     'string': ['str', 'text'],
@@ -347,7 +348,7 @@ function typesCompatible(backendType: string, frontendType: string): boolean {
   
   for (const [canonical, aliases] of Object.entries(mappings)) {
     const allTypes = [canonical, ...aliases];
-    if (allTypes.includes(bt) && allTypes.includes(ft)) return true;
+    if (allTypes.includes(bt) && allTypes.includes(ft)) {return true;}
   }
   return false;
 }
@@ -371,7 +372,7 @@ export class ContractMatcher {
 
     const frontendByMethod = new Map<string, ExtractedApiCall[]>();
     for (const call of frontendApiCalls) {
-      if (!frontendByMethod.has(call.method)) frontendByMethod.set(call.method, []);
+      if (!frontendByMethod.has(call.method)) {frontendByMethod.set(call.method, []);}
       frontendByMethod.get(call.method)!.push(call);
     }
 
@@ -380,7 +381,7 @@ export class ContractMatcher {
       const matches: { call: ExtractedApiCall; similarity: number; breakdown: PathSimilarityBreakdown }[] = [];
       
       for (const call of sameMethods) {
-        if (matchedFrontend.has(call)) continue;
+        if (matchedFrontend.has(call)) {continue;}
         const { score, breakdown } = pathSimilarity(endpoint.path, call.path, this.config.weights);
         if (score >= this.config.minSimilarity) {
           matches.push({ call, similarity: score, breakdown });
@@ -391,7 +392,7 @@ export class ContractMatcher {
       
       if (matches.length > 0) {
         const bestMatch = matches[0];
-        if (!bestMatch) continue;
+        if (!bestMatch) {continue;}
         const goodMatches = matches.filter(m => m.similarity >= bestMatch.similarity - 0.1);
         
         matchedBackend.add(endpoint);
@@ -497,10 +498,10 @@ export class ContractMatcher {
     }
     
     let level: ContractConfidence['level'];
-    if (score >= 0.85) level = 'high';
-    else if (score >= 0.65) level = 'medium';
-    else if (score >= 0.45) level = 'low';
-    else level = 'uncertain';
+    if (score >= 0.85) {level = 'high';}
+    else if (score >= 0.65) {level = 'medium';}
+    else if (score >= 0.45) {level = 'low';}
+    else {level = 'uncertain';}
     
     return { score, level, matchConfidence, fieldExtractionConfidence };
   }

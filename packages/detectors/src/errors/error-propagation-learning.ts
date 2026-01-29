@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -79,9 +80,9 @@ function detectChainPreservation(content: string): ChainPreservation | null {
   const hasCause = /cause:\s*(?:err|error|e)|,\s*\{\s*cause/.test(content);
   const hasStack = /\.stack\s*=|stack:\s*(?:err|error|e)\.stack/.test(content);
   
-  if (hasCause && hasStack) return 'both';
-  if (hasCause) return 'cause';
-  if (hasStack) return 'stack';
+  if (hasCause && hasStack) {return 'both';}
+  if (hasCause) {return 'cause';}
+  if (hasStack) {return 'stack';}
   return null;
 }
 
@@ -117,7 +118,7 @@ export class ErrorPropagationLearningDetector extends LearningDetector<ErrorProp
       styleDist.add(pattern.style, context.file);
     }
     
-    if (chainPreservation) chainDist.add(chainPreservation, context.file);
+    if (chainPreservation) {chainDist.add(chainPreservation, context.file);}
     
     const addsContext = /message:.*\+|`.*\$\{.*error|context:|metadata:/i.test(context.content);
     const usesErrorCodes = /code:\s*['"][A-Z_]+['"]|errorCode|ERROR_CODE/i.test(context.content);

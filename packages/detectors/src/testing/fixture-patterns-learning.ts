@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -121,10 +122,10 @@ export class FixturePatternsLearningDetector extends LearningDetector<FixturePat
     context: DetectionContext,
     distributions: Map<keyof FixturePatternsConventions, ValueDistribution>
   ): void {
-    if (!context.isTestFile) return;
+    if (!context.isTestFile) {return;}
 
     const patterns = extractFixturePatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const styleDist = distributions.get('style')!;
     const factoryDist = distributions.get('usesFactoryFunctions')!;
@@ -135,8 +136,8 @@ export class FixturePatternsLearningDetector extends LearningDetector<FixturePat
 
     for (const pattern of patterns) {
       styleDist.add(pattern.style, context.file);
-      if (pattern.style === 'factory') hasFactory = true;
-      if (pattern.style === 'faker') hasFaker = true;
+      if (pattern.style === 'factory') {hasFactory = true;}
+      if (pattern.style === 'faker') {hasFaker = true;}
     }
 
     factoryDist.add(hasFactory, context.file);

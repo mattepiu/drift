@@ -3,9 +3,10 @@
  * @requirements 21.3 - TODO patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 export type TodoPatternType = 'todo' | 'fixme' | 'hack' | 'xxx' | 'bug' | 'note' | 'optimize' | 'review';
 export type TodoViolationType = 'stale-todo' | 'unassigned-todo';
@@ -54,13 +55,13 @@ export function detectOptimize(content: string, filePath: string): TodoPatternIn
 export function detectReview(content: string, filePath: string): TodoPatternInfo[] { return detectPatterns(content, filePath, REVIEW_PATTERNS, 'review'); }
 
 export function analyzeTodoPatterns(content: string, filePath: string): TodoAnalysis {
-  if (shouldExcludeFile(filePath)) return { patterns: [], violations: [], todoCount: 0, fixmeCount: 0, hackCount: 0, confidence: 1.0 };
+  if (shouldExcludeFile(filePath)) {return { patterns: [], violations: [], todoCount: 0, fixmeCount: 0, hackCount: 0, confidence: 1.0 };}
   const patterns: TodoPatternInfo[] = [...detectTodo(content, filePath), ...detectFixme(content, filePath), ...detectHack(content, filePath), ...detectXxx(content, filePath), ...detectBug(content, filePath), ...detectNote(content, filePath), ...detectOptimize(content, filePath), ...detectReview(content, filePath)];
   const violations: TodoViolationInfo[] = [];
   const todoCount = patterns.filter((p) => p.type === 'todo').length;
   const fixmeCount = patterns.filter((p) => p.type === 'fixme').length;
   const hackCount = patterns.filter((p) => p.type === 'hack').length;
-  let confidence = 0.7; if (patterns.length > 0) confidence += 0.2; confidence = Math.min(confidence, 0.95);
+  let confidence = 0.7; if (patterns.length > 0) {confidence += 0.2;} confidence = Math.min(confidence, 0.95);
   return { patterns, violations, todoCount, fixmeCount, hackCount, confidence };
 }
 
@@ -73,9 +74,9 @@ export class TodoPatternsDetector extends RegexDetector {
   readonly supportedLanguages: Language[] = ['typescript', 'javascript', 'python'];
 
   async detect(context: DetectionContext): Promise<DetectionResult> {
-    if (!this.supportsLanguage(context.language)) return this.createEmptyResult();
+    if (!this.supportsLanguage(context.language)) {return this.createEmptyResult();}
     const analysis = analyzeTodoPatterns(context.content, context.file);
-    if (analysis.patterns.length === 0 && analysis.violations.length === 0) return this.createEmptyResult();
+    if (analysis.patterns.length === 0 && analysis.violations.length === 0) {return this.createEmptyResult();}
     
     // Convert internal violations to standard Violation format
     const violations = this.convertViolationInfos(

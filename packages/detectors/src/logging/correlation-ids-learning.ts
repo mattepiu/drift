@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -113,7 +114,7 @@ export class CorrelationIdsLearningDetector extends LearningDetector<Correlation
     distributions: Map<keyof CorrelationIdsConventions, ValueDistribution>
   ): void {
     const ids = extractCorrelationIds(context.content, context.file);
-    if (ids.length === 0) return;
+    if (ids.length === 0) {return;}
 
     const nameDist = distributions.get('idName')!;
     const headerDist = distributions.get('headerName')!;

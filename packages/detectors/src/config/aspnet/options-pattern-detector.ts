@@ -8,9 +8,10 @@
  * - Options validation
  */
 
-import type { PatternMatch, Language } from 'driftdetect-core';
-import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
 import { BaseDetector } from '../../base/base-detector.js';
+
+import type { DetectionContext, DetectionResult } from '../../base/base-detector.js';
+import type { PatternMatch, Language } from 'driftdetect-core';
 
 export interface OptionsPatternInfo {
   type: 'options' | 'options-snapshot' | 'options-monitor' | 'configure' | 'validation';
@@ -40,7 +41,7 @@ export class OptionsPatternDetector extends BaseDetector {
 
   async detect(context: DetectionContext): Promise<DetectionResult> {
     const { content, file } = context;
-    if (!this.isRelevantFile(content)) return this.createEmptyResult();
+    if (!this.isRelevantFile(content)) {return this.createEmptyResult();}
 
     const analysis = this.analyzeOptionsPattern(content, file);
     const patterns: PatternMatch[] = analysis.patterns.map(p => ({
@@ -74,14 +75,14 @@ export class OptionsPatternDetector extends BaseDetector {
 
       // IOptions<T>
       const optionsMatch = line.match(/IOptions<(\w+)>/);
-      if (optionsMatch && optionsMatch[1]) {
+      if (optionsMatch?.[1]) {
         optionsTypes.add(optionsMatch[1]);
         patterns.push({ type: 'options', name: 'IOptions', optionsType: optionsMatch[1], line: lineNum, file });
       }
 
       // IOptionsSnapshot<T>
       const snapshotMatch = line.match(/IOptionsSnapshot<(\w+)>/);
-      if (snapshotMatch && snapshotMatch[1]) {
+      if (snapshotMatch?.[1]) {
         usesSnapshot = true;
         optionsTypes.add(snapshotMatch[1]);
         patterns.push({ type: 'options-snapshot', name: 'IOptionsSnapshot', optionsType: snapshotMatch[1], line: lineNum, file });
@@ -89,7 +90,7 @@ export class OptionsPatternDetector extends BaseDetector {
 
       // IOptionsMonitor<T>
       const monitorMatch = line.match(/IOptionsMonitor<(\w+)>/);
-      if (monitorMatch && monitorMatch[1]) {
+      if (monitorMatch?.[1]) {
         usesMonitor = true;
         optionsTypes.add(monitorMatch[1]);
         patterns.push({ type: 'options-monitor', name: 'IOptionsMonitor', optionsType: monitorMatch[1], line: lineNum, file });
@@ -97,7 +98,7 @@ export class OptionsPatternDetector extends BaseDetector {
 
       // Configure<T>
       const configureMatch = line.match(/\.Configure<(\w+)>/);
-      if (configureMatch && configureMatch[1]) {
+      if (configureMatch?.[1]) {
         optionsTypes.add(configureMatch[1]);
         patterns.push({ type: 'configure', name: 'Configure', optionsType: configureMatch[1], line: lineNum, file });
       }

@@ -5,18 +5,20 @@
  * Sensitive fields glow brighter and are larger.
  */
 
-import { useRef, useMemo } from 'react';
-import { useFrame } from '@react-three/fiber';
 import { Sphere, Html } from '@react-three/drei';
+import { useFrame } from '@react-three/fiber';
+import { useRef, useMemo } from 'react';
 import * as THREE from 'three';
-import type { FieldNode, Vector3D } from '../../types/index.js';
+
+import { FIELD_SIZE, ANIMATION_CONFIG, LABEL_CONFIG } from '../../constants/index.js';
 import { useGalaxyStore } from '../../store/index.js';
 import {
   getSensitivityThreeColor,
   getSensitivityEmissive,
 } from '../../utils/color-utils.js';
 import { calculateFieldSize, getOrbitPosition } from '../../utils/geometry-utils.js';
-import { FIELD_SIZE, ANIMATION_CONFIG, LABEL_CONFIG } from '../../constants/index.js';
+
+import type { FieldNode, Vector3D } from '../../types/index.js';
 
 // ============================================================================
 // Types
@@ -95,7 +97,7 @@ export function FieldMoon({
   
   // Animation - orbit around parent
   useFrame((state, delta) => {
-    if (!meshRef.current) return;
+    if (!meshRef.current) {return;}
     
     // Update orbit angle
     orbitAngleRef.current += FIELD_SIZE.ORBIT_SPEED * delta * display.animationSpeed;
@@ -131,7 +133,7 @@ export function FieldMoon({
     (field.sensitivity === 'critical' || field.sensitivity === 'high');
   
   // Don't render if fields are hidden
-  if (!display.showFields) return null;
+  if (!display.showFields) {return null;}
   
   return (
     <group>

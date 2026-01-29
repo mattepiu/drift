@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -79,10 +80,10 @@ function extractHealthChecks(content: string, file: string): HealthCheckInfo[] {
 }
 
 function detectResponseFormat(content: string): ResponseFormat | null {
-  if (/status:\s*['"]ok['"].*dependencies:/s.test(content)) return 'detailed';
-  if (/\{\s*['"]status['"]:\s*['"](?:ok|healthy)['"]/.test(content)) return 'json';
-  if (/res\.send\(['"](?:OK|healthy|pong)['"]\)/.test(content)) return 'text';
-  if (/status:\s*['"](?:ok|healthy)['"]/.test(content)) return 'simple';
+  if (/status:\s*['"]ok['"].*dependencies:/s.test(content)) {return 'detailed';}
+  if (/\{\s*['"]status['"]:\s*['"](?:ok|healthy)['"]/.test(content)) {return 'json';}
+  if (/res\.send\(['"](?:OK|healthy|pong)['"]\)/.test(content)) {return 'text';}
+  if (/status:\s*['"](?:ok|healthy)['"]/.test(content)) {return 'simple';}
   return null;
 }
 

@@ -22,12 +22,12 @@ export { AltTextDetector, createAltTextDetector, analyzeAltText, shouldExcludeFi
 export type { AltTextPatternType, AltTextViolationType, AltTextPatternInfo, AltTextViolationInfo, AltTextAnalysis } from './alt-text.js';
 
 // Factory Function
-import { SemanticHtmlDetector } from './semantic-html.js';
+import { AltTextDetector } from './alt-text.js';
 import { AriaRolesDetector } from './aria-roles.js';
-import { KeyboardNavDetector } from './keyboard-nav.js';
 import { FocusManagementDetector } from './focus-management.js';
 import { HeadingHierarchyDetector } from './heading-hierarchy.js';
-import { AltTextDetector } from './alt-text.js';
+import { KeyboardNavDetector } from './keyboard-nav.js';
+import { SemanticHtmlDetector } from './semantic-html.js';
 
 export type AccessibilityDetector = SemanticHtmlDetector | AriaRolesDetector | KeyboardNavDetector | FocusManagementDetector | HeadingHierarchyDetector | AltTextDetector;
 

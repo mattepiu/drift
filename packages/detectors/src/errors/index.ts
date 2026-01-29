@@ -168,13 +168,13 @@ export {
 } from './error-logging.js';
 
 // Import factory functions for createAllErrorDetectors
-import { createExceptionHierarchyDetector } from './exception-hierarchy.js';
-import { createErrorCodesDetector } from './error-codes.js';
-import { createTryCatchPlacementDetector } from './try-catch-placement.js';
-import { createErrorPropagationDetector } from './error-propagation.js';
 import { createAsyncErrorsDetector } from './async-errors.js';
 import { createCircuitBreakerDetector } from './circuit-breaker.js';
+import { createErrorCodesDetector } from './error-codes.js';
 import { createErrorLoggingDetector } from './error-logging.js';
+import { createErrorPropagationDetector } from './error-propagation.js';
+import { createExceptionHierarchyDetector } from './exception-hierarchy.js';
+import { createTryCatchPlacementDetector } from './try-catch-placement.js';
 
 // Convenience factory for all error detectors
 export function createAllErrorDetectors() {

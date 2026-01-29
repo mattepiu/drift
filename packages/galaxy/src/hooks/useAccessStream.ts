@@ -5,7 +5,9 @@
  */
 
 import { useEffect, useCallback, useRef } from 'react';
+
 import { useGalaxyStore } from '../store/index.js';
+
 import type { AccessEvent, GalaxyEvent } from '../types/index.js';
 
 // ============================================================================
@@ -44,7 +46,7 @@ export function useAccessStream(options: UseAccessStreamOptions = {}) {
   
   // Connect to WebSocket
   const connect = useCallback(() => {
-    if (wsRef.current?.readyState === WebSocket.OPEN) return;
+    if (wsRef.current?.readyState === WebSocket.OPEN) {return;}
     
     try {
       const ws = new WebSocket(url);

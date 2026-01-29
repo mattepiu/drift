@@ -12,7 +12,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -20,6 +19,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -106,7 +107,7 @@ function extractFieldNames(objectContent: string): string[] {
   const fieldPattern = /([a-zA-Z_$][a-zA-Z0-9_$]*)\s*:/g;
   let match;
   while ((match = fieldPattern.exec(objectContent)) !== null) {
-    if (match[1]) fields.push(match[1]);
+    if (match[1]) {fields.push(match[1]);}
   }
   return fields;
 }
@@ -116,7 +117,7 @@ function detectErrorFormat(fields: string[]): ErrorFormat {
 
   // Check for Problem Details (RFC 7807)
   const problemMatches = PROBLEM_DETAILS_FIELDS.filter(f => lowerFields.includes(f));
-  if (problemMatches.length >= 3) return 'problem-details';
+  if (problemMatches.length >= 3) {return 'problem-details';}
 
   // Check for JSON:API
   const jsonApiMatches = JSON_API_FIELDS.filter(f => lowerFields.includes(f));
@@ -133,16 +134,16 @@ function detectErrorFormat(fields: string[]): ErrorFormat {
   // Check for standard format
   const hasMessage = STANDARD_MESSAGE_FIELDS.some(f => lowerFields.includes(f.toLowerCase()));
   const hasCode = STANDARD_CODE_FIELDS.some(f => lowerFields.includes(f.toLowerCase()));
-  if (hasMessage && hasCode) return 'standard';
-  if (hasMessage && fields.length <= 2) return 'simple';
-  if (fields.length >= 2) return 'custom';
+  if (hasMessage && hasCode) {return 'standard';}
+  if (hasMessage && fields.length <= 2) {return 'simple';}
+  if (fields.length >= 2) {return 'custom';}
 
   return 'simple';
 }
 
 function detectCodeConvention(code: string): ErrorCodeConvention | null {
   for (const [convention, pattern] of Object.entries(ERROR_CODE_PATTERNS)) {
-    if (pattern.test(code)) return convention as ErrorCodeConvention;
+    if (pattern.test(code)) {return convention as ErrorCodeConvention;}
   }
   return null;
 }
@@ -213,7 +214,7 @@ export class ErrorFormatLearningDetector extends LearningDetector<ErrorConventio
     distributions: Map<keyof ErrorConventions, ValueDistribution>
   ): void {
     const patterns = extractErrorPatterns(context.content, context.file);
-    if (patterns.length === 0) return;
+    if (patterns.length === 0) {return;}
 
     const formatDist = distributions.get('errorFormat')!;
     const codeDist = distributions.get('errorCodeConvention')!;

@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -43,9 +44,9 @@ const REQUIRED_PATTERNS = {
 };
 
 function detectRequiredMarking(content: string): RequiredMarking | null {
-  if (REQUIRED_PATTERNS.validation.test(content)) return 'validation';
-  if (REQUIRED_PATTERNS.runtimeCheck.test(content)) return 'runtime-check';
-  if (REQUIRED_PATTERNS.assertion.test(content)) return 'assertion';
+  if (REQUIRED_PATTERNS.validation.test(content)) {return 'validation';}
+  if (REQUIRED_PATTERNS.runtimeCheck.test(content)) {return 'runtime-check';}
+  if (REQUIRED_PATTERNS.assertion.test(content)) {return 'assertion';}
   return null;
 }
 
@@ -74,7 +75,7 @@ export class RequiredOptionalLearningDetector extends LearningDetector<RequiredO
     const throwsDist = distributions.get('throwsOnMissing')!;
     const defaultDist = distributions.get('usesDefaultForOptional')!;
     
-    if (marking) markingDist.add(marking, context.file);
+    if (marking) {markingDist.add(marking, context.file);}
     
     const throwsOnMissing = /throw.*required|throw.*missing|throw.*undefined/i.test(context.content);
     const usesDefault = /\?\?|default:|defaultValue|fallback/i.test(context.content);

@@ -9,7 +9,6 @@
  * @requirements DRIFT-CORE - Learn patterns from user's code, not enforce arbitrary rules
  */
 
-import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 import {
   LearningDetector,
   ValueDistribution,
@@ -17,6 +16,8 @@ import {
   type DetectionResult,
   type LearningResult,
 } from '../base/index.js';
+
+import type { PatternMatch, Violation, QuickFix, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -65,7 +66,7 @@ function extractUtilityTypes(content: string, file: string): UtilityTypeInfo[] {
     const column = match.index - lastNewline;
 
     let category: UtilityTypeCategory = 'custom';
-    if (BUILTIN_UTILITIES.has(name)) category = 'builtin';
+    if (BUILTIN_UTILITIES.has(name)) {category = 'builtin';}
 
     results.push({
       name,
@@ -100,7 +101,7 @@ export class UtilityTypesLearningDetector extends LearningDetector<UtilityTypesC
     distributions: Map<keyof UtilityTypesConventions, ValueDistribution>
   ): void {
     const types = extractUtilityTypes(context.content, context.file);
-    if (types.length === 0) return;
+    if (types.length === 0) {return;}
 
     const categoryDist = distributions.get('preferredCategory')!;
     const partialDist = distributions.get('usesPartial')!;
@@ -113,9 +114,9 @@ export class UtilityTypesLearningDetector extends LearningDetector<UtilityTypesC
 
     for (const type of types) {
       categoryDist.add(type.category, context.file);
-      if (type.name === 'Partial') hasPartial = true;
-      if (type.name === 'Omit') hasOmit = true;
-      if (type.name === 'Pick') hasPick = true;
+      if (type.name === 'Partial') {hasPartial = true;}
+      if (type.name === 'Omit') {hasOmit = true;}
+      if (type.name === 'Pick') {hasPick = true;}
     }
 
     partialDist.add(hasPartial, context.file);

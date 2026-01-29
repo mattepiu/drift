@@ -14,9 +14,10 @@
  * @requirements 18.4 - Generic type patterns
  */
 
-import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 import { RegexDetector } from '../base/regex-detector.js';
+
 import type { DetectionContext, DetectionResult } from '../base/base-detector.js';
+import type { Violation, QuickFix, PatternCategory, Language } from 'driftdetect-core';
 
 // ============================================================================
 // Types
@@ -199,11 +200,11 @@ function parseTypeParams(typeParamStr: string): string[] {
   let current = '';
   
   for (const char of typeParamStr) {
-    if (char === '<') depth++;
-    else if (char === '>') depth--;
+    if (char === '<') {depth++;}
+    else if (char === '>') {depth--;}
     else if (char === ',' && depth === 0) {
       const param = current.trim().split(/\s+/)[0];
-      if (param) params.push(param);
+      if (param) {params.push(param);}
       current = '';
       continue;
     }
@@ -211,7 +212,7 @@ function parseTypeParams(typeParamStr: string): string[] {
   }
   
   const lastParam = current.trim().split(/\s+/)[0];
-  if (lastParam) params.push(lastParam);
+  if (lastParam) {params.push(lastParam);}
   
   return params;
 }
@@ -746,10 +747,10 @@ export function analyzeGenericPatterns(
   const usesDefaults = patterns.some((p) => p.type === 'default-generic');
 
   let confidence = 0.7;
-  if (patterns.length > 0) confidence += 0.15;
-  if (usesConstraints) confidence += 0.05;
-  if (usesDefaults) confidence += 0.05;
-  if (violations.length === 0) confidence += 0.05;
+  if (patterns.length > 0) {confidence += 0.15;}
+  if (usesConstraints) {confidence += 0.05;}
+  if (usesDefaults) {confidence += 0.05;}
+  if (violations.length === 0) {confidence += 0.05;}
   confidence = Math.min(confidence, 0.95);
 
   return {

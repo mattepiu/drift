@@ -4,8 +4,9 @@
  * Filter controls for boundary data.
  */
 
-import type { ViewMode, BoundaryFilters, SensitivityType, DataOperation } from './types';
 import { VIEW_MODE_CONFIG, SENSITIVITY_CONFIG, OPERATION_CONFIG } from './constants';
+
+import type { ViewMode, BoundaryFilters, SensitivityType, DataOperation } from './types';
 
 interface BoundaryFiltersProps {
   viewMode: ViewMode;
