@@ -1,6 +1,6 @@
 {
   "name": "driftdetect-dashboard",
-  "version": "0.9.38",
+  "version": "0.9.39",
   "description": "Local web dashboard for Drift architectural drift detection",
   "license": "Apache-2.0",
   "repository": {
