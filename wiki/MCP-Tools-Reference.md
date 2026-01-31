@@ -1000,6 +1000,238 @@ Available categories for filtering:
 
 ---
 
+## Memory Tools (Cortex V2)
+
+Cortex V2 introduces intelligent memory tools for learning, retrieval, and causal understanding.
+
+### `drift_why`
+
+Get causal narrative explaining WHY something exists.
+
+```json
+{
+  "intent": "understand_code",
+  "focus": "authentication",
+  "maxDepth": 3
+}
+```
+
+**Returns:** Human-readable narrative tracing causal chains.
+
+### `drift_memory_status`
+
+Health overview with recommendations.
+
+```json
+{}
+```
+
+**Returns:**
+```json
+{
+  "summary": "Memory system healthy. 47 memories, 0.78 avg confidence",
+  "data": {
+    "totalMemories": 47,
+    "byType": { "tribal_knowledge": 20, "pattern_rationale": 15, ... },
+    "averageConfidence": 0.78,
+    "validationBacklog": 5,
+    "healthScore": 85
+  },
+  "recommendations": [
+    "5 memories need validation",
+    "Consider consolidating similar memories"
+  ]
+}
+```
+
+### `drift_memory_for_context`
+
+Get memories for current context with token efficiency.
+
+```json
+{
+  "intent": "add_feature",
+  "focus": "authentication",
+  "maxTokens": 2000,
+  "compressionLevel": 2,
+  "sessionId": "session_abc123"
+}
+```
+
+**Compression levels:** `0` (IDs only), `1` (one-liners), `2` (with examples), `3` (full detail)
+
+### `drift_memory_search`
+
+Search with session deduplication.
+
+```json
+{
+  "query": "password hashing",
+  "types": ["tribal_knowledge", "pattern_rationale"],
+  "minConfidence": 0.5,
+  "sessionId": "session_abc123",
+  "limit": 10
+}
+```
+
+### `drift_memory_add`
+
+Add memory with automatic causal inference.
+
+```json
+{
+  "type": "tribal_knowledge",
+  "content": "Always use bcrypt for password hashing",
+  "source": "security_audit",
+  "context": {
+    "file": "src/auth/password.ts",
+    "relatedMemories": ["mem_security_audit"]
+  }
+}
+```
+
+### `drift_memory_learn`
+
+Learn from corrections (full learning pipeline).
+
+```json
+{
+  "original": "Use MD5 for hashing",
+  "correction": "MD5 is insecure. Use bcrypt.",
+  "correctCode": "const hash = await bcrypt.hash(password, 10);",
+  "context": {
+    "file": "src/auth.ts",
+    "intent": "fix_bug"
+  }
+}
+```
+
+**Returns:** Created memories, extracted principles, updated confidence.
+
+### `drift_memory_feedback`
+
+Confirm, reject, or modify memories.
+
+```json
+{
+  "memoryId": "mem_abc123",
+  "action": "confirmed"
+}
+```
+
+**Actions:** `confirmed`, `rejected`, `modified`
+
+For modifications:
+```json
+{
+  "memoryId": "mem_abc123",
+  "action": "modified",
+  "newContent": "Updated guidance..."
+}
+```
+
+### `drift_memory_health`
+
+Comprehensive health report.
+
+```json
+{
+  "includeRecommendations": true,
+  "includeMetrics": true
+}
+```
+
+**Returns:** Detailed health metrics, validation backlog, consolidation opportunities.
+
+### `drift_memory_explain`
+
+Get causal explanation for a memory.
+
+```json
+{
+  "memoryId": "mem_abc123",
+  "includeNarrative": true,
+  "maxDepth": 3
+}
+```
+
+**Returns:** Causal chain and human-readable narrative.
+
+### `drift_memory_predict`
+
+Get predicted memories for current context.
+
+```json
+{
+  "activeFile": "src/auth/login.ts",
+  "recentFiles": ["src/auth/logout.ts"],
+  "intent": "add_feature",
+  "limit": 10
+}
+```
+
+**Returns:** Ranked predictions with confidence scores and reasons.
+
+### `drift_memory_conflicts`
+
+Detect conflicting memories.
+
+```json
+{
+  "memoryId": "mem_abc123"
+}
+```
+
+**Or scan all:**
+```json
+{
+  "scanAll": true,
+  "minSeverity": "medium"
+}
+```
+
+### `drift_memory_graph`
+
+Visualize memory relationships.
+
+```json
+{
+  "memoryId": "mem_abc123",
+  "direction": "both",
+  "maxDepth": 3,
+  "format": "mermaid"
+}
+```
+
+**Formats:** `json`, `mermaid`, `dot`
+
+### `drift_memory_validate`
+
+Validate memories and get healing suggestions.
+
+```json
+{
+  "limit": 5,
+  "includePrompts": true
+}
+```
+
+**Returns:** Memories needing validation with suggested prompts.
+
+### `drift_memory_get`
+
+Get memory with optional causal chain.
+
+```json
+{
+  "memoryId": "mem_abc123",
+  "includeCausalChain": true,
+  "chainDepth": 3
+}
+```
+
+---
+
 ## Best Practices for AI Agents
 
 ### 1. Start with `drift_context`

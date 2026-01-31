@@ -9,6 +9,15 @@
 - [MCP Architecture](MCP-Architecture)
 - [AI Navigation Guide](AI-Navigation-Guide)
 
+## 🧠 Cortex Memory System
+- [Cortex V2 Overview](Cortex-V2-Overview)
+- [Memory CLI](Memory-CLI)
+- [Learning System](Cortex-Learning-System)
+- [Token Efficiency](Cortex-Token-Efficiency)
+- [Causal Graphs](Cortex-Causal-Graphs)
+- [Code Generation](Cortex-Code-Generation)
+- [Predictive Retrieval](Cortex-Predictive-Retrieval)
+
 ## 📖 Reference
 - [CLI Reference](CLI-Reference)
 - [Pattern Categories](Pattern-Categories)
@@ -67,8 +76,8 @@
 - 21 Frameworks
 - 16 ORMs
 - 400+ Detectors
-- 50 MCP Tools
-- 45+ CLI Commands
+- 50+ MCP Tools
+- 60+ CLI Commands
 
 ## 🔗 Links
 - [GitHub](https://github.com/dadbodgeoff/drift)

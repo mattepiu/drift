@@ -209,6 +209,80 @@ drift context @drift/core -o context.json
 
 ---
 
+## Memory Commands
+
+### `drift memory`
+
+Manage Cortex V2 memories - institutional knowledge, procedures, patterns, and more.
+
+```bash
+drift memory <subcommand> [options]
+
+Subcommands:
+  init               Initialize the memory system
+  status             Show memory system status and health
+  add <type> <text>  Add a new memory
+  list               List memories
+  show <id>          Show memory details
+  search <query>     Search memories
+  update <id>        Update a memory
+  delete <id>        Delete a memory (soft delete)
+  learn              Learn from a correction
+  feedback <id>      Provide feedback on a memory
+  validate           Validate memories and heal issues
+  consolidate        Consolidate episodic memories
+  warnings           Show active warnings
+  why <focus>        Get context for a task
+  export <output>    Export memories to JSON
+  import <input>     Import memories from JSON
+  health             Get comprehensive health report
+
+Options:
+  -f, --format <format>   Output format (text, json)
+  -v, --verbose           Enable verbose output
+```
+
+**Memory Types:**
+- `tribal` — Institutional knowledge, gotchas, warnings
+- `procedural` — How-to knowledge, step-by-step procedures
+- `semantic` — Consolidated knowledge
+- `pattern_rationale` — Why patterns exist
+- `code_smell` — Patterns to avoid
+- `decision_context` — Human context for decisions
+- `constraint_override` — Approved exceptions
+
+**Examples:**
+
+```bash
+# Initialize memory system
+drift memory init
+
+# Add tribal knowledge
+drift memory add tribal "Always use bcrypt for passwords" --topic Security --importance high
+
+# List all memories
+drift memory list
+
+# Search memories
+drift memory search "authentication"
+
+# Learn from a correction
+drift memory learn --original "Use MD5" --feedback "Use bcrypt instead"
+
+# Get context for a task
+drift memory why "authentication" --intent add_feature
+
+# Check health
+drift memory health
+
+# Export memories
+drift memory export backup.json
+```
+
+→ [Full Memory CLI Reference](Memory-CLI)
+
+---
+
 ## Core Commands
 
 ### `drift init`

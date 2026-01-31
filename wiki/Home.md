@@ -2,7 +2,23 @@
 
 **Make AI write code that actually fits your codebase.**
 
-Drift scans your code, learns your patterns, and gives AI agents deep understanding of your conventions. 50 MCP tools. 45+ CLI commands. 10 languages. Native Rust core.
+Drift scans your code, learns your patterns, and gives AI agents deep understanding of your conventions. 50+ MCP tools. 60+ CLI commands. 10 languages. Native Rust core.
+
+---
+
+## 🚫 Delete Your AGENTS.md
+
+That static `AGENTS.md` file you wrote once and forgot about? It's stale. Replace it with **Cortex** — a living memory system:
+
+```bash
+drift memory init
+drift memory add tribal "Always use bcrypt for passwords" --importance critical
+drift memory add tribal "Services should not call controllers" --topic Architecture
+
+# AI gets context dynamically, learns from corrections, confidence decays on stale knowledge
+```
+
+→ [Learn about Cortex Memory](Cortex-V2-Overview) | [Memory CLI Reference](Memory-CLI)
 
 ---
 
@@ -140,13 +156,14 @@ AI writes code that works but doesn't fit. It ignores your conventions, misses y
 | Feature | Description | Learn More |
 |---------|-------------|------------|
 | **Pattern Detection** | Discovers how YOU write code across 15 categories | [Pattern Categories](Pattern-Categories) |
+| **Cortex Memory** | AI memory system that learns from your codebase | [Cortex V2 Overview](Cortex-V2-Overview) |
 | **Call Graph** | Maps function calls and data flow | [Call Graph Analysis](Call-Graph-Analysis) |
 | **Security Analysis** | Tracks sensitive data access | [Security Analysis](Security-Analysis) |
 | **Test Topology** | Maps tests to code | [Test Topology](Test-Topology) |
 | **Coupling Analysis** | Finds dependency cycles | [Coupling Analysis](Coupling-Analysis) |
 | **Error Handling** | Detects unhandled errors | [Error Handling Analysis](Error-Handling-Analysis) |
 | **Quality Gates** | CI/CD integration | [Quality Gates](Quality-Gates) |
-| **MCP Server** | 50 tools for AI agents | [MCP Tools Reference](MCP-Tools-Reference) |
+| **MCP Server** | 50+ tools for AI agents | [MCP Tools Reference](MCP-Tools-Reference) |
 
 ---
 
@@ -164,6 +181,15 @@ AI writes code that works but doesn't fit. It ignores your conventions, misses y
 - [Detectors Deep Dive](Detectors-Deep-Dive) — 400+ detectors explained
 - [Language Support](Language-Support) — 10 languages, 21 frameworks, 16 ORMs
 - [Skills](Skills) — 72 implementation guides for AI agents
+
+### Cortex Memory System
+- [Cortex V2 Overview](Cortex-V2-Overview) — AI memory system overview
+- [Memory CLI](Memory-CLI) — CLI commands for memory management
+- [Learning System](Cortex-Learning-System) — How Cortex learns from corrections
+- [Token Efficiency](Cortex-Token-Efficiency) — Compression and deduplication
+- [Causal Graphs](Cortex-Causal-Graphs) — Memory relationships and "why" explanations
+- [Code Generation](Cortex-Code-Generation) — Context for AI code generation
+- [Predictive Retrieval](Cortex-Predictive-Retrieval) — Anticipating memory needs
 
 ### Analysis Features
 - [Call Graph Analysis](Call-Graph-Analysis) — Data flow and reachability
