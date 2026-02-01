@@ -468,6 +468,27 @@ export interface JsDataAccessorInfo {
 }
 /** Get all data accessors from SQLite call graph */
 export declare function getCallGraphDataAccessors(rootDir: string): Array<JsDataAccessorInfo>
+/** Caller info returned from call graph queries */
+export interface JsCallerInfo {
+  callerId: string
+  callerName: string
+  callerFile: string
+  line: number
+}
+/**
+ * Get all callers of a function from SQLite call graph
+ *
+ * This queries the calls table to find all functions that call the target.
+ * The target can be either a function ID (file:name:line) or just a function name.
+ */
+export declare function getCallGraphCallers(rootDir: string, target: string): Array<JsCallerInfo>
+/**
+ * Get all callers for all functions in a file from SQLite call graph
+ *
+ * This is more efficient than calling get_call_graph_callers for each function
+ * when analyzing impact of a file change.
+ */
+export declare function getCallGraphFileCallers(rootDir: string, filePath: string): Array<JsCallerInfo>
 /** Detected pattern exposed to JavaScript */
 export interface JsDetectedPattern {
   category: string

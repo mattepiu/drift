@@ -1500,6 +1500,115 @@ pub fn get_call_graph_data_accessors(root_dir: String) -> Result<Vec<JsDataAcces
     Ok(result)
 }
 
+/// Caller info returned from call graph queries
+#[napi(object)]
+pub struct JsCallerInfo {
+    pub caller_id: String,
+    pub caller_name: String,
+    pub caller_file: String,
+    pub line: i64,
+}
+
+/// Get all callers of a function from SQLite call graph
+/// 
+/// This queries the calls table to find all functions that call the target.
+/// The target can be either a function ID (file:name:line) or just a function name.
+#[napi]
+pub fn get_call_graph_callers(root_dir: String, target: String) -> Result<Vec<JsCallerInfo>> {
+    use drift_core::call_graph::CallGraphDb;
+    
+    let root = PathBuf::from(&root_dir);
+    let db_path = root
+        .join(".drift")
+        .join("lake")
+        .join("callgraph")
+        .join("callgraph.db");
+    
+    let db = CallGraphDb::open_readonly(&db_path)
+        .map_err(|e| napi::Error::from_reason(format!("Failed to open call graph database: {}", e)))?;
+    
+    // Try to get callers by resolved ID first, then by name
+    let caller_ids = if target.contains(':') {
+        // Looks like a function ID (file:name:line)
+        db.get_callers(&target)
+            .map_err(|e| napi::Error::from_reason(format!("Failed to get callers: {}", e)))?
+    } else {
+        // Just a function name
+        db.get_callers_by_name(&target)
+            .map_err(|e| napi::Error::from_reason(format!("Failed to get callers by name: {}", e)))?
+    };
+    
+    let mut result = Vec::new();
+    for caller_id in caller_ids {
+        if let Ok(Some(func)) = db.get_function(&caller_id) {
+            // Extract file from function ID (format: "file:name:line")
+            let file = caller_id.rsplit(':').nth(2).unwrap_or(&caller_id).to_string();
+            
+            result.push(JsCallerInfo {
+                caller_id: func.id,
+                caller_name: func.name,
+                caller_file: file,
+                line: func.start_line as i64,
+            });
+        }
+    }
+    
+    Ok(result)
+}
+
+/// Get all callers for all functions in a file from SQLite call graph
+/// 
+/// This is more efficient than calling get_call_graph_callers for each function
+/// when analyzing impact of a file change.
+#[napi]
+pub fn get_call_graph_file_callers(root_dir: String, file_path: String) -> Result<Vec<JsCallerInfo>> {
+    use drift_core::call_graph::CallGraphDb;
+    
+    let root = PathBuf::from(&root_dir);
+    let db_path = root
+        .join(".drift")
+        .join("lake")
+        .join("callgraph")
+        .join("callgraph.db");
+    
+    let db = CallGraphDb::open_readonly(&db_path)
+        .map_err(|e| napi::Error::from_reason(format!("Failed to open call graph database: {}", e)))?;
+    
+    // Get all function IDs in the file
+    let function_ids = db.get_functions_in_file(&file_path)
+        .map_err(|e| napi::Error::from_reason(format!("Failed to get functions in file: {}", e)))?;
+    
+    let mut all_callers = std::collections::HashSet::new();
+    
+    // Get callers for each function
+    for func_id in &function_ids {
+        if let Ok(callers) = db.get_callers(func_id) {
+            for caller_id in callers {
+                // Don't include callers from the same file (internal calls)
+                if !caller_id.starts_with(&file_path) {
+                    all_callers.insert(caller_id);
+                }
+            }
+        }
+    }
+    
+    let mut result = Vec::new();
+    for caller_id in all_callers {
+        if let Ok(Some(func)) = db.get_function(&caller_id) {
+            let file = caller_id.rsplit(':').nth(2).unwrap_or(&caller_id).to_string();
+            
+            result.push(JsCallerInfo {
+                caller_id: func.id,
+                caller_name: func.name,
+                caller_file: file,
+                line: func.start_line as i64,
+            });
+        }
+    }
+    
+    Ok(result)
+}
+
 
 // ============================================================================
 // Unified Analyzer Types

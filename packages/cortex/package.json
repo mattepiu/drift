@@ -1,6 +1,6 @@
 {
   "name": "driftdetect-cortex",
-  "version": "0.9.45",
+  "version": "0.9.46",
   "description": "Drift Cortex - AI memory system that understands code as code, not text. Provides tribal knowledge, pattern rationales, procedural memory, and self-healing validation.",
   "license": "Apache-2.0",
   "repository": {

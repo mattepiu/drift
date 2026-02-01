@@ -310,7 +310,7 @@ if (!nativeBinding) {
   throw new Error(`Failed to load native binding`)
 }
 
-const { scan, parse, supportedLanguages, version, buildCallGraph, buildCallGraphLegacy, scanBoundaries, scanBoundariesSource, analyzeCoupling, analyzeTestTopology, analyzeErrorHandling, analyzeReachability, analyzeInverseReachability, analyzeReachabilitySqlite, analyzeInverseReachabilitySqlite, isCallGraphAvailable, getCallGraphStats, getCallGraphEntryPoints, getCallGraphDataAccessors, analyzeUnified, analyzeConstants, analyzeEnvironment, analyzeWrappers } = nativeBinding
+const { scan, parse, supportedLanguages, version, buildCallGraph, buildCallGraphLegacy, scanBoundaries, scanBoundariesSource, analyzeCoupling, analyzeTestTopology, analyzeErrorHandling, analyzeReachability, analyzeInverseReachability, analyzeReachabilitySqlite, analyzeInverseReachabilitySqlite, isCallGraphAvailable, getCallGraphStats, getCallGraphEntryPoints, getCallGraphDataAccessors, getCallGraphCallers, getCallGraphFileCallers, analyzeUnified, analyzeConstants, analyzeEnvironment, analyzeWrappers } = nativeBinding
 
 module.exports.scan = scan
 module.exports.parse = parse
@@ -331,6 +331,8 @@ module.exports.isCallGraphAvailable = isCallGraphAvailable
 module.exports.getCallGraphStats = getCallGraphStats
 module.exports.getCallGraphEntryPoints = getCallGraphEntryPoints
 module.exports.getCallGraphDataAccessors = getCallGraphDataAccessors
+module.exports.getCallGraphCallers = getCallGraphCallers
+module.exports.getCallGraphFileCallers = getCallGraphFileCallers
 module.exports.analyzeUnified = analyzeUnified
 module.exports.analyzeConstants = analyzeConstants
 module.exports.analyzeEnvironment = analyzeEnvironment

@@ -232,6 +232,36 @@ If responses are too large:
 3. Use `cursor` for pagination
 4. Check `meta.tokenEstimate` - aim for < 2000 tokens per call
 
+## Natural Language Memory Triggers
+
+When users say things like:
+- "Remember that..." / "Remember this..."
+- "Store this for later..."
+- "Don't forget that we..."
+- "Always do X when Y..."
+- "We handle X by doing Y..."
+- "Our convention is..."
+- "Make a note that..."
+
+**Automatically call `drift_memory_add`** with:
+- `content`: What they want remembered
+- `type`: "tribal_knowledge" (conventions), "procedure" (how-to), or "pattern" (code patterns)
+- `tags`: Relevant keywords like ["auth", "database", "api"]
+
+Example:
+```
+User: "Remember that we always use bcrypt with 12 salt rounds for passwords"
+
+→ drift_memory_add content="Always use bcrypt with 12 salt rounds for passwords" type="tribal_knowledge" tags=["auth", "security", "passwords"]
+```
+
+When users say:
+- "What do you know about X?"
+- "What did I tell you about X?"
+- "How do we handle X?"
+
+**Automatically call `drift_why`** or `drift_memory_search` to retrieve relevant memories.
+
 ## Error Recovery
 
 If a tool fails, check `error.recovery.suggestion`:
