@@ -21,19 +21,18 @@ v2-research/
 │   └── configuration.md          # Config file format, .driftignore, .drift/ directory structure
 │
 ├── 01-rust-core/
-│   ├── AUDIT.md                  # ★ Comprehensive documentation audit (gaps, corrections, priorities)
 │   ├── scanner.md                # Parallel file walking, ignore patterns
 │   ├── parsers.md                # Tree-sitter parsing for 10 languages
-│   ├── call-graph.md             # Call graph building, storage, queries
+│   ├── call-graph.md             # Call graph building, storage, queries (→ see 04-call-graph/)
 │   ├── boundaries.md             # Data access detection, sensitive fields, ORM models
-│   ├── reachability.md           # Forward/inverse data flow analysis
+│   ├── reachability.md           # Forward/inverse data flow analysis (→ see 04-call-graph/reachability.md)
 │   ├── unified-analysis.md       # Combined AST + string pattern detection
-│   ├── coupling.md               # Module coupling analysis
-│   ├── constants.md              # ★ Secret detection (21 patterns), magic numbers, inconsistencies
-│   ├── test-topology.md          # ★ Test framework detection, coverage mapping
-│   ├── error-handling.md         # ★ Error boundaries, gap detection, severity
-│   ├── environment.md            # ★ Environment variable extraction, sensitivity classification
-│   ├── wrappers.md               # ★ Framework wrapper detection, primitive registry, confidence scoring
+│   ├── coupling.md               # ★ Module coupling analysis (Rust vs TS comparison, full algorithms)
+│   ├── constants.md              # ★ Secret detection (21 patterns), magic numbers (→ see 05-analyzers/)
+│   ├── test-topology.md          # ★ Test framework detection, coverage mapping (→ see 17-test-topology/)
+│   ├── error-handling.md         # ★ Error boundaries, gap detection (→ see 19-error-handling/)
+│   ├── environment.md            # ★ Environment variable extraction (→ see 05-analyzers/)
+│   ├── wrappers.md               # ★ Framework wrapper detection (→ see 05-analyzers/)
 │   ├── other-analyzers.md        # Summary of test topology, error handling, constants, environment, wrappers
 │   ├── napi-bridge.md            # N-API bridge (27 exported functions, platform support)
 │   └── data-models.md            # Rust struct definitions, enums, performance characteristics
@@ -56,6 +55,7 @@ v2-research/
 │   ├── overview.md               # Architecture, base classes, registry system
 │   ├── categories.md             # All 22 categories with every detector listed
 │   ├── detector-contracts.md     # Interfaces, algorithms (learning, outlier, confidence scoring)
+│   ├── confidence-scoring.md     # ★ Weighted scoring algorithm, factors, thresholds (moved from gap-analysis)
 │   └── patterns/                 # Pattern system deep dive (cortex-style)
 │       ├── overview.md           # Architecture, pipeline, categories, lifecycle
 │       ├── data-model.md         # Pattern JSON schema, all types, full data model
@@ -66,7 +66,7 @@ v2-research/
 │       ├── storage.md            # SQLite schema, JSON shards, indexes, backups
 │       └── pipeline.md           # End-to-end detection pipeline (8 phases)
 │
-├── 04-call-graph/                # ★ Canonical call graph docs (consolidated from 01-rust-core + 22-call-graph)
+├── 04-call-graph/                # ★ Canonical call graph docs (consolidated)
 │   ├── overview.md               # ★ Full system overview: architecture, 9 languages, hybrid extraction, dual storage
 │   ├── extractors.md             # Per-language extractors (8 languages × 3 variants), Rust universal extractor
 │   ├── analysis.md               # GraphBuilder, Reachability, Impact, DeadCode, Coverage, PathFinder
@@ -112,7 +112,8 @@ v2-research/
 │   ├── policy.md                 # PolicyLoader, PolicyEvaluator, 4 aggregation modes, 4 built-in policies
 │   ├── reporters.md              # 5 reporters: text, JSON, SARIF, GitHub, GitLab
 │   ├── store.md                  # SnapshotStore (branch-based), GateRunStore (history)
-│   └── types.md                  # 40+ interfaces, per-gate detail types, custom rule conditions
+│   ├── types.md                  # 40+ interfaces, per-gate detail types, custom rule conditions
+│   └── audit.md                  # ★ Audit engine, health scoring, degradation tracking (moved from gap-analysis)
 │
 ├── 10-cli/
 │   ├── overview.md               # 50+ commands, services, reporters, UI, git integration
@@ -143,6 +144,7 @@ v2-research/
 │   ├── rust-build.md             # Rust workspace: Cargo deps, NAPI exports, cross-platform
 │   ├── docker.md                 # Docker: multi-stage build, compose, MCP server deployment
 │   ├── scripts.md                # Scripts: publish, validate-docs, generation
+│   ├── licensing.md              # ★ Licensing & feature gating (3 tiers, 16 features) (moved from gap-analysis)
 │   └── ci-and-actions.md         # (Legacy summary, points to detailed docs)
 │
 ├── 13-advanced/
@@ -187,11 +189,7 @@ v2-research/
 │
 ├── 16-gap-analysis/
 │   ├── README.md                 # Gaps found: undocumented systems, corrections, priority order
-│   ├── licensing-system.md       # P0: Full licensing & feature gating (3 tiers, 16 features)
-│   ├── workspace-management.md   # P0: Workspace lifecycle (backup, migration, context, projects)
-│   ├── confidence-and-matching.md # P0: Confidence scoring algorithm & pattern matcher
-│   ├── audit-system.md           # P0: Audit engine, health scoring, degradation tracking
-│   └── context-generation.md     # P0: Context generation & 11-language package detection
+│   └── rust-core-audit.md        # ★ Comprehensive Rust core documentation audit (moved from 01-rust-core/AUDIT.md)
 │
 ├── 17-test-topology/
 │   ├── overview.md               # Test topology system: framework detection, coverage mapping, quality scoring
@@ -229,7 +227,8 @@ v2-research/
 │   ├── overview.md               # ★ Context generation system: architecture, pipeline, MCP integration
 │   ├── types.md                  # All type definitions: PackageContext, DetectedPackage, AIContextFormat
 │   ├── package-detector.md       # 11-language monorepo package detection (npm, pnpm, cargo, go, maven, etc.)
-│   └── token-management.md       # Token budgeting, trimming strategy, AI formatting, MCP integration
+│   ├── token-management.md       # Token budgeting, trimming strategy, AI formatting, MCP integration
+│   └── gaps.md                   # ★ Context generation gaps & improvements (moved from gap-analysis)
 │
 ├── 23-pattern-repository/
 │   ├── overview.md               # ★ Pattern Repository: architecture, lifecycle, MCP integration
@@ -255,7 +254,24 @@ v2-research/
 │   ├── scanner-service.md        # ScannerService: worker pool, aggregation, outlier detection, results
 │   └── detector-worker.md        # DetectorWorker: warmup, file processing, metadata preservation
 │
-└── (22-call-graph/ — REMOVED, consolidated into 04-call-graph/)
+└── 26-workspace/                 # ★ Workspace management (renumbered from 22-workspace)
+    └── overview.md               # ★ Workspace lifecycle: backup, migration, context, projects (moved from gap-analysis)
 ```
 
-## Document Count: 165 files across 30 directories
+## Document Count: ~165 files across 26 directories
+
+## Recent Reorganization
+
+The following files were moved to their proper categories:
+
+| Original Location | New Location | Reason |
+|-------------------|--------------|--------|
+| `16-gap-analysis/workspace-management.md` | `26-workspace/overview.md` | This is the canonical workspace docs, not a gap |
+| `16-gap-analysis/audit-system.md` | `09-quality-gates/audit.md` | Audit is part of quality gates |
+| `16-gap-analysis/licensing-system.md` | `12-infrastructure/licensing.md` | Infrastructure concern |
+| `16-gap-analysis/confidence-and-matching.md` | `03-detectors/confidence-scoring.md` | Core detector algorithm |
+| `16-gap-analysis/context-generation.md` | `22-context-generation/gaps.md` | Belongs with context-gen docs |
+| `01-rust-core/AUDIT.md` | `16-gap-analysis/rust-core-audit.md` | Meta-document, not core docs |
+| `22-workspace/` | `26-workspace/` | Fixed numbering conflict with 22-context-generation |
+
+Cross-references added to `01-rust-core/` files pointing to their full system counterparts in topic-specific categories.

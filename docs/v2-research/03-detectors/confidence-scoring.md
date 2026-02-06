@@ -1,12 +1,14 @@
 # Confidence Scoring & Pattern Matching
 
+> **Moved from**: `16-gap-analysis/confidence-and-matching.md` — This is the canonical confidence scoring documentation.
+
 ## Location
 `packages/core/src/matcher/`
 
 ## Files
 - `confidence-scorer.ts` — Weighted confidence calculation
 - `pattern-matcher.ts` — Multi-strategy pattern matching engine
-- `outlier-detector.ts` — Statistical outlier detection (documented in existing docs)
+- `outlier-detector.ts` — Statistical outlier detection (documented in `patterns/outlier-detection.md`)
 - `types.ts` — All matcher types
 
 ## Confidence Scorer

@@ -1,5 +1,7 @@
 # Rust Test Topology Analyzer
 
+> **See also**: [17-test-topology/overview.md](../17-test-topology/overview.md) for the full system overview with per-language extractors (8 languages, 35+ frameworks), minimum test set calculation, and quality scoring.
+
 ## Location
 `crates/drift-core/src/test_topology/`
 

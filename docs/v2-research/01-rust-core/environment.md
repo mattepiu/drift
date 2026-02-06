@@ -1,5 +1,7 @@
 # Rust Environment Analyzer
 
+> **See also**: [05-analyzers/environment-analysis.md](../05-analyzers/environment-analysis.md) for the TypeScript orchestration layer with .env parsing and missing variable detection.
+
 ## Location
 `crates/drift-core/src/environment/`
 

@@ -1,5 +1,7 @@
 # Rust Wrappers Analyzer
 
+> **See also**: [05-analyzers/wrappers-analysis.md](../05-analyzers/wrappers-analysis.md) for the TypeScript orchestration layer with cross-file usage counting and richer clustering.
+
 ## Location
 `crates/drift-core/src/wrappers/`
 

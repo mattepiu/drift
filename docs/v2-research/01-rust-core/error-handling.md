@@ -1,5 +1,7 @@
 # Rust Error Handling Analyzer
 
+> **See also**: [19-error-handling/overview.md](../19-error-handling/overview.md) for the full system overview with error propagation chains, framework boundary detection, and call graph integration.
+
 ## Location
 `crates/drift-core/src/error_handling/`
 

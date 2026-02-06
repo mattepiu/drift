@@ -1,5 +1,7 @@
 # Audit System
 
+> **Moved from**: `16-gap-analysis/audit-system.md` — This is the canonical audit system documentation.
+
 ## Location
 `packages/core/src/audit/`
 

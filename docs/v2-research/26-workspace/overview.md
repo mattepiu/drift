@@ -1,5 +1,7 @@
 # Workspace Management System
 
+> **Moved from**: `16-gap-analysis/workspace-management.md` — This is the canonical workspace management documentation.
+
 ## Location
 `packages/core/src/workspace/`
 

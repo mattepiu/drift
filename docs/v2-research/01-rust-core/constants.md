@@ -1,5 +1,7 @@
 # Rust Constants & Secrets Analyzer
 
+> **See also**: [05-analyzers/constants-analysis.md](../05-analyzers/constants-analysis.md) for the TypeScript orchestration layer with detector coordination and storage integration.
+
 ## Location
 `crates/drift-core/src/constants/`
 

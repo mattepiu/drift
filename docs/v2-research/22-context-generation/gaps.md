@@ -1,4 +1,6 @@
-# Context Generation System
+# Context Generation Gaps & Improvements
+
+> **Moved from**: `16-gap-analysis/context-generation.md` — Gap analysis specific to context generation.
 
 ## Location
 `packages/core/src/context/`

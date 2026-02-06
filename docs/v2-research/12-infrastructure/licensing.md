@@ -1,5 +1,7 @@
 # Licensing & Feature Gating System
 
+> **Moved from**: `16-gap-analysis/licensing-system.md` — This is the canonical licensing documentation.
+
 ## Location
 `packages/core/src/licensing/`
 
