@@ -1,0 +1,25 @@
+mod causal_storage;
+mod compressor;
+mod consolidator;
+mod decay_engine;
+mod embedding;
+mod health_reporter;
+mod learner;
+mod predictor;
+mod retriever;
+mod sanitizer;
+mod storage;
+mod validator;
+
+pub use causal_storage::{CausalEdge, CausalEvidence, ICausalStorage};
+pub use compressor::ICompressor;
+pub use consolidator::IConsolidator;
+pub use decay_engine::IDecayEngine;
+pub use embedding::IEmbeddingProvider;
+pub use health_reporter::IHealthReporter;
+pub use learner::{Correction, ILearner};
+pub use predictor::{IPredictor, PredictionSignals};
+pub use retriever::IRetriever;
+pub use sanitizer::{ISanitizer, Redaction, SanitizedText};
+pub use storage::IMemoryStorage;
+pub use validator::IValidator;
