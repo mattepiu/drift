@@ -48,9 +48,9 @@ fn half_lives_match_spec() {
 }
 
 #[test]
-fn relationship_type_has_13_variants() {
-    assert_eq!(RelationshipType::COUNT, 13);
-    assert_eq!(RelationshipType::ALL.len(), 13);
+fn relationship_type_has_14_variants() {
+    assert_eq!(RelationshipType::COUNT, 14);
+    assert_eq!(RelationshipType::ALL.len(), 14);
 }
 
 #[test]
@@ -174,6 +174,8 @@ fn base_memory_serde_roundtrip() {
         superseded_by: None,
         supersedes: None,
         content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     };
 
     let json = serde_json::to_string(&memory).unwrap();
@@ -235,6 +237,8 @@ fn partial_eq_compares_only_id() {
         superseded_by: None,
         supersedes: None,
         content_hash: "hash-a".into(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     };
 
     let m2 = BaseMemory {
@@ -258,6 +262,8 @@ fn partial_eq_compares_only_id() {
         superseded_by: None,
         supersedes: None,
         content_hash: "hash-b".into(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     };
 
     // PartialEq only compares ID (DDD Entity pattern).
@@ -299,6 +305,8 @@ fn content_eq_matches_identical_content() {
         superseded_by: None,
         supersedes: None,
         content_hash: "same-hash".into(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     };
 
     let m2 = BaseMemory {
@@ -322,6 +330,8 @@ fn content_eq_matches_identical_content() {
         superseded_by: None,
         supersedes: None,
         content_hash: "same-hash".into(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     };
 
     // Different IDs → PartialEq says not equal.

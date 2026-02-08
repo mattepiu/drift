@@ -14,6 +14,7 @@ pub mod relationship_ops;
 pub mod session_ops;
 pub mod snapshot_ops;
 pub mod temporal_ops;
+pub mod multiagent_ops;
 pub mod vector_search;
 pub mod version_ops;
 pub mod view_ops;

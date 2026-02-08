@@ -76,6 +76,8 @@ fn parse_and_seed_memories(storage: &StorageEngine, fixture: &Value) -> Vec<Stri
             archived: false,
             superseded_by: None,
             supersedes: None,
+            namespace: Default::default(),
+            source_agent: Default::default(),
             content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
         };
 

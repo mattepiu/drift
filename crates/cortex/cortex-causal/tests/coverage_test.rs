@@ -46,6 +46,8 @@ fn make_memory(id: &str, tags: Vec<&str>) -> BaseMemory {
         archived: false,
         superseded_by: None,
         supersedes: None,
+        namespace: Default::default(),
+        source_agent: Default::default(),
         content_hash: format!("hash-{id}"),
     }
 }
@@ -367,6 +369,7 @@ fn from_storage_edge_unknown_relation_defaults_to_supports() {
         relation: "unknown_relation".to_string(),
         strength: 0.5,
         evidence: vec![],
+        source_agent: None,
     };
     let weight = sync::from_storage_edge(&edge);
     assert_eq!(weight.relation, CausalRelation::Supports);

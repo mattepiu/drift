@@ -17,6 +17,9 @@ pub struct CloudRequest<T: Serialize> {
     pub timestamp: DateTime<Utc>,
     /// The actual payload.
     pub payload: T,
+    /// Agent ID for multi-agent sync. Defaults to "default" for backward compat.
+    #[serde(default = "default_agent_id")]
+    pub agent_id: String,
 }
 
 /// Envelope for all cloud API responses.
@@ -32,6 +35,14 @@ pub struct CloudResponse<T> {
     pub error: Option<String>,
     /// The response payload.
     pub data: Option<T>,
+    /// Agent ID for multi-agent sync. Defaults to "default" for backward compat.
+    #[serde(default = "default_agent_id")]
+    pub agent_id: String,
+}
+
+/// Default agent ID for backward compatibility.
+fn default_agent_id() -> String {
+    "default".to_string()
 }
 
 /// A batch of memory mutations for push/pull.
@@ -88,6 +99,18 @@ impl<T: Serialize> CloudRequest<T> {
             request_id: uuid::Uuid::new_v4().to_string(),
             timestamp: Utc::now(),
             payload,
+            agent_id: default_agent_id(),
+        }
+    }
+
+    /// Create a new request envelope with a specific agent ID.
+    pub fn new_with_agent(payload: T, agent_id: String) -> Self {
+        Self {
+            version: PROTOCOL_VERSION.to_string(),
+            request_id: uuid::Uuid::new_v4().to_string(),
+            timestamp: Utc::now(),
+            payload,
+            agent_id,
         }
     }
 }
@@ -101,6 +124,7 @@ impl<T> CloudResponse<T> {
             success: true,
             error: None,
             data: Some(data),
+            agent_id: default_agent_id(),
         }
     }
 
@@ -112,6 +136,7 @@ impl<T> CloudResponse<T> {
             success: false,
             error: Some(error),
             data: None,
+            agent_id: default_agent_id(),
         }
     }
 }

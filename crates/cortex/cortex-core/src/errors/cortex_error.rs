@@ -51,6 +51,9 @@ pub enum CortexError {
 
     #[error("temporal error: {0}")]
     TemporalError(#[from] TemporalError),
+
+    #[error("multi-agent error: {0}")]
+    MultiAgentError(#[from] super::MultiAgentError),
 }
 
 /// Convenience type alias.

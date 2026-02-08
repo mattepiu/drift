@@ -126,6 +126,20 @@ export interface NativeBindings {
   cortexTemporalCreateMaterializedView(label: string, timestamp: string): unknown;
   cortexTemporalGetMaterializedView(label: string): unknown;
   cortexTemporalListMaterializedViews(): unknown;
+
+  // Multi-Agent (12)
+  cortexMultiagentRegisterAgent(name: string, capabilities: string[]): unknown;
+  cortexMultiagentDeregisterAgent(agentId: string): void;
+  cortexMultiagentGetAgent(agentId: string): unknown;
+  cortexMultiagentListAgents(statusFilter: string | null): unknown;
+  cortexMultiagentCreateNamespace(scope: string, name: string, owner: string): string;
+  cortexMultiagentShareMemory(memoryId: string, targetNamespace: string, agentId: string): unknown;
+  cortexMultiagentCreateProjection(configJson: unknown): string;
+  cortexMultiagentRetractMemory(memoryId: string, namespace: string, agentId: string): void;
+  cortexMultiagentGetProvenance(memoryId: string): unknown;
+  cortexMultiagentTraceCrossAgent(memoryId: string, maxDepth: number): unknown;
+  cortexMultiagentGetTrust(agentId: string, targetAgent: string | null): unknown;
+  cortexMultiagentSyncAgents(sourceAgent: string, targetAgent: string): unknown;
 }
 
 /**

@@ -71,6 +71,8 @@ fn build_memory(
         superseded_by: None,
         supersedes: None,
         content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 
@@ -902,6 +904,8 @@ fn ttb_18_temporal_bounds_validation() {
         superseded_by: None,
         supersedes: None,
         content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     };
 
     let result = cortex_temporal::dual_time::validate_temporal_bounds(&mem);
@@ -1004,6 +1008,8 @@ fn ttb_20_late_arriving_fact() {
         superseded_by: None,
         supersedes: None,
         content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     };
 
     let past_time = Utc::now() - Duration::days(7);
@@ -1296,6 +1302,8 @@ fn build_decision_memory(
         superseded_by: None,
         supersedes: None,
         content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 

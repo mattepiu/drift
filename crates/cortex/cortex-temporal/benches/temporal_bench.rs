@@ -63,6 +63,8 @@ fn make_memory() -> BaseMemory {
         superseded_by: None,
         supersedes: None,
         content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 
@@ -482,6 +484,8 @@ fn bench_decision_replay(c: &mut Criterion) {
             superseded_by: None,
             supersedes: None,
             content_hash: BaseMemory::compute_content_hash(&decision_content).unwrap(),
+            namespace: Default::default(),
+            source_agent: Default::default(),
         };
         writer
             .with_conn(move |conn| {

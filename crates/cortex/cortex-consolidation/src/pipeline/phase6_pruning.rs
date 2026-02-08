@@ -1,6 +1,8 @@
 //! Phase 6: Pruning — archive consolidated episodics, boost frequent, track tokensFreed.
+//! Extended for multi-agent: preserves cross-agent provenance when archiving.
 
 use cortex_core::memory::BaseMemory;
+use cortex_core::models::agent::AgentId;
 
 /// Result of the pruning phase.
 #[derive(Debug, Clone)]
@@ -11,6 +13,8 @@ pub struct PruningResult {
     pub boosted_ids: Vec<String>,
     /// Estimated tokens freed by archiving.
     pub tokens_freed: usize,
+    /// Source agents whose provenance was preserved (multi-agent only).
+    pub preserved_agents: Vec<AgentId>,
 }
 
 /// Frequency boost threshold — memories accessed more than this get a confidence boost.
@@ -26,6 +30,7 @@ pub fn plan_pruning(source_episodes: &[&BaseMemory], _consolidated_id: &str) -> 
     let mut archived_ids = Vec::new();
     let mut boosted_ids = Vec::new();
     let mut tokens_freed = 0usize;
+    let mut preserved_agents = Vec::new();
 
     for mem in source_episodes {
         // Estimate tokens from summary length (rough: 1 token ≈ 4 chars).
@@ -36,6 +41,11 @@ pub fn plan_pruning(source_episodes: &[&BaseMemory], _consolidated_id: &str) -> 
             boosted_ids.push(mem.id.clone());
         }
 
+        // Preserve cross-agent provenance: track contributing agents.
+        if mem.source_agent != AgentId::default_agent() {
+            preserved_agents.push(mem.source_agent.clone());
+        }
+
         archived_ids.push(mem.id.clone());
     }
 
@@ -43,6 +53,7 @@ pub fn plan_pruning(source_episodes: &[&BaseMemory], _consolidated_id: &str) -> 
         archived_ids,
         boosted_ids,
         tokens_freed,
+        preserved_agents,
     }
 }
 
@@ -52,6 +63,7 @@ pub fn apply_pruning(source_episodes: &mut [BaseMemory], consolidated_id: &str) 
     let mut archived_ids = Vec::new();
     let mut boosted_ids = Vec::new();
     let mut tokens_freed = 0usize;
+    let mut preserved_agents = Vec::new();
 
     for mem in source_episodes.iter_mut() {
         tokens_freed += mem.summary.len() / 4;
@@ -63,6 +75,11 @@ pub fn apply_pruning(source_episodes: &mut [BaseMemory], consolidated_id: &str) 
             mem.confidence = cortex_core::memory::Confidence::new(new_conf);
         }
 
+        // Preserve cross-agent provenance: track contributing agents.
+        if mem.source_agent != AgentId::default_agent() {
+            preserved_agents.push(mem.source_agent.clone());
+        }
+
         mem.archived = true;
         mem.superseded_by = Some(consolidated_id.to_string());
         archived_ids.push(mem.id.clone());
@@ -72,6 +89,7 @@ pub fn apply_pruning(source_episodes: &mut [BaseMemory], consolidated_id: &str) 
         archived_ids,
         boosted_ids,
         tokens_freed,
+        preserved_agents,
     }
 }
 
@@ -108,6 +126,8 @@ mod tests {
             archived: false,
             superseded_by: None,
             supersedes: None,
+            namespace: Default::default(),
+            source_agent: Default::default(),
             content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
         }
     }

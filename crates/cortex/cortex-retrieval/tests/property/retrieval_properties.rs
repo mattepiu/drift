@@ -54,6 +54,8 @@ fn arb_memory(id: String) -> impl Strategy<Value = BaseMemory> {
         archived: false,
         superseded_by: None,
         supersedes: None,
+        namespace: Default::default(),
+        source_agent: Default::default(),
         content_hash: format!("hash-{}", id),
     })
 }
@@ -96,6 +98,8 @@ proptest! {
                 archived: false,
                 superseded_by: None,
                 supersedes: None,
+                namespace: Default::default(),
+                source_agent: Default::default(),
                 content_hash: format!("hash-{i}"),
             });
         }

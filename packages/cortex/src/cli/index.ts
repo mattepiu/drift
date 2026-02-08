@@ -35,6 +35,9 @@ import { reembedCommand } from "./reembed.js";
 import { timelineCommand } from "./timeline.js";
 import { diffCommand } from "./diff.js";
 import { replayCommand } from "./replay.js";
+import { agentsCommand } from "./agents.js";
+import { namespacesCommand } from "./namespaces.js";
+import { provenanceCommand } from "./provenance.js";
 
 interface ParsedArgs {
   command: string;
@@ -84,6 +87,9 @@ function printHelp(): void {
     timeline [--from --to]          Knowledge evolution over time
     diff --from <time> --to <time>  Compare knowledge between times
     replay <decision-id>            Replay decision context
+    agents <sub> [opts]             Manage agents (list/register/deregister/info)
+    namespaces <sub> [opts]         Manage namespaces (list/create/permissions)
+    provenance <memory-id> [opts]   Show provenance chain
     help                            Show this help
 `);
 }
@@ -194,6 +200,27 @@ async function main(): Promise<void> {
           positional[0],
           flags.budget ? parseInt(flags.budget) : undefined,
         );
+        break;
+      case "agents":
+        if (!positional[0]) {
+          console.error("  Error: agents requires a subcommand (list/register/deregister/info).");
+          process.exit(1);
+        }
+        await agentsCommand(client, positional[0], positional.slice(1), flags);
+        break;
+      case "namespaces":
+        if (!positional[0]) {
+          console.error("  Error: namespaces requires a subcommand (list/create/permissions).");
+          process.exit(1);
+        }
+        await namespacesCommand(client, positional[0], positional.slice(1), flags);
+        break;
+      case "provenance":
+        if (!positional[0]) {
+          console.error("  Error: provenance requires a memory-id argument.");
+          process.exit(1);
+        }
+        await provenanceCommand(client, positional[0], flags);
         break;
       default:
         console.error(`  Unknown command: ${command}`);

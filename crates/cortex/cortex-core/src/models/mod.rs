@@ -1,3 +1,8 @@
+pub mod agent;
+pub mod cross_agent;
+pub mod namespace;
+pub mod provenance;
+
 mod audit_entry;
 mod causal_narrative;
 mod compressed_memory;
@@ -56,3 +61,15 @@ pub use temporal_query::{
 };
 pub use validation_result::{DimensionScores, HealingAction, HealingActionType, ValidationResult};
 pub use why_context::{WhyContext, WhyEntry};
+
+// Multi-agent types
+pub use agent::{AgentId, AgentRegistration, AgentStatus, SpawnConfig};
+pub use cross_agent::{
+    AgentTrust, ContradictionResolution, CrossAgentContradiction, CrossAgentRelation,
+    TrustEvidence,
+};
+pub use namespace::{
+    MemoryProjection, NamespaceACL, NamespaceId, NamespacePermission, NamespaceScope,
+    ProjectionFilter,
+};
+pub use provenance::{ProvenanceAction, ProvenanceHop, ProvenanceOrigin, ProvenanceRecord};

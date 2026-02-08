@@ -133,5 +133,7 @@ fn empty_memory_shell(memory_id: &str) -> BaseMemory {
         superseded_by: None,
         supersedes: None,
         content_hash: String::new(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }

@@ -71,6 +71,7 @@ pub fn get_edges(conn: &Connection, node_id: &str) -> CortexResult<Vec<CausalEdg
             relation,
             strength,
             evidence,
+            source_agent: None,
         });
     }
     Ok(edges)

@@ -39,6 +39,8 @@ fn make_memory(id: &str, summary: &str, mem_type: MemoryType) -> BaseMemory {
         superseded_by: None,
         supersedes: None,
         content_hash: format!("hash-{id}"),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 
@@ -189,6 +191,7 @@ fn engine_add_and_get_relationships() {
         relationship_type: RelationshipType::Supports,
         strength: 0.9,
         evidence: vec![],
+        cross_agent_relation: None,
     };
     eng.add_relationship(&edge).unwrap();
     let rels = eng.get_relationships("r1", None).unwrap();
@@ -209,6 +212,7 @@ fn engine_remove_relationship() {
         relationship_type: RelationshipType::Related,
         strength: 0.5,
         evidence: vec![],
+        cross_agent_relation: None,
     };
     eng.add_relationship(&edge).unwrap();
     eng.remove_relationship("rr1", "rr2").unwrap();
@@ -319,6 +323,7 @@ fn causal_edge(src: &str, tgt: &str, strength: f64) -> CausalEdge {
         relation: "causes".to_string(),
         strength,
         evidence: vec![],
+        source_agent: None,
     }
 }
 

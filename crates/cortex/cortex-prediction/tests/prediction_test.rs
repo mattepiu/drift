@@ -54,6 +54,8 @@ fn make_test_memory(id: &str, tags: Vec<String>, files: Vec<FileLink>) -> BaseMe
         superseded_by: None,
         supersedes: None,
         content_hash: format!("hash_{}", id),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 

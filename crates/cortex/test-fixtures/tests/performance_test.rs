@@ -84,6 +84,8 @@ fn make_memory(id: &str, summary: &str, tags: Vec<&str>) -> BaseMemory {
         superseded_by: None,
         supersedes: None,
         content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 
@@ -114,6 +116,8 @@ fn make_episodic(id: &str, cluster: &str, index: usize) -> BaseMemory {
         superseded_by: None,
         supersedes: None,
         content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 

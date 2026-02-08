@@ -20,6 +20,8 @@ members = [
     "cortex-cloud",
     "cortex-temporal",
     "cortex-napi",
+    "cortex-crdt",
+    "cortex-multiagent",
     "test-fixtures",
 ]
 
@@ -112,6 +114,8 @@ cortex-observability = { path = "cortex-observability" }
 cortex-cloud = { path = "cortex-cloud" }
 cortex-temporal = { path = "cortex-temporal" }
 cortex-napi = { path = "cortex-napi" }
+cortex-crdt = { path = "cortex-crdt" }
+cortex-multiagent = { path = "cortex-multiagent" }
 test-fixtures = { path = "test-fixtures" }
 
 # Compression

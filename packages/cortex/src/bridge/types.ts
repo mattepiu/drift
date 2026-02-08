@@ -812,9 +812,233 @@ export interface TemporalCausalQuery {
   max_depth: number;
 }
 
+// ─── Multi-Agent ─────────────────────────────────────────────────────────────
+
+/** UUID-based agent identifier. */
+export interface AgentId {
+  /** The agent's unique identifier string (UUID or "default"). */
+  0: string;
+}
+
+/** Agent lifecycle status. Tagged union discriminated by `state`. */
+export type AgentStatus =
+  | { state: "active" }
+  | { state: "idle"; since: string }
+  | { state: "deregistered"; at: string };
+
+/** Full agent metadata stored in the registry. */
+export interface AgentRegistration {
+  /** Unique agent identifier. */
+  agent_id: AgentId;
+  /** Human-readable agent name. */
+  name: string;
+  /** The agent's home namespace URI. */
+  namespace: string;
+  /** Capabilities this agent advertises (e.g., "code_review", "testing"). */
+  capabilities: string[];
+  /** Parent agent if this was spawned. */
+  parent_agent: AgentId | null;
+  /** ISO 8601 timestamp of when this agent was registered. */
+  registered_at: string;
+  /** ISO 8601 timestamp of last heartbeat. */
+  last_active: string;
+  /** Current lifecycle status. */
+  status: AgentStatus;
+}
+
+/** Namespace scope — determines visibility and default permissions. */
+export type NamespaceScope =
+  | { type: "agent"; value: AgentId }
+  | { type: "team"; value: string }
+  | { type: "project"; value: string };
+
+/** A namespace identifier composed of a scope and a name. */
+export interface NamespaceId {
+  /** The scope determines visibility and default permissions. */
+  scope: NamespaceScope;
+  /** Human-readable namespace name. */
+  name: string;
+}
+
+/** Permission levels for namespace access. */
+export type NamespacePermission = "read" | "write" | "share" | "admin";
+
+/** Access control list for a namespace. */
+export interface NamespaceACL {
+  /** The namespace this ACL applies to. */
+  namespace: NamespaceId;
+  /** Permission grants: [agent_id, permissions][]. */
+  grants: Array<[AgentId, NamespacePermission[]]>;
+}
+
+/** Filter criteria for memory projections. */
+export interface ProjectionFilter {
+  /** Only include these memory types (empty = all). */
+  memory_types: string[];
+  /** Minimum confidence threshold. */
+  min_confidence: number | null;
+  /** Minimum importance level. */
+  min_importance: string | null;
+  /** Only include memories linked to these files. */
+  linked_files: string[];
+  /** Only include memories with these tags. */
+  tags: string[];
+  /** Maximum age in days. */
+  max_age_days: number | null;
+  /** Custom predicate expression (future use). */
+  predicate: string | null;
+}
+
+/** A projection from one namespace to another with optional filtering. */
+export interface ProjectionConfig {
+  /** Unique projection identifier. */
+  id: string;
+  /** Source namespace to project from. */
+  source: NamespaceId;
+  /** Target namespace to project into. */
+  target: NamespaceId;
+  /** Filter criteria for which memories to include. */
+  filter: ProjectionFilter;
+  /** Compression level for projected memories (0–3). */
+  compression_level: number;
+  /** Whether this projection is live (auto-syncs on changes). */
+  live: boolean;
+  /** ISO 8601 timestamp of when this projection was created. */
+  created_at: string;
+  /** Agent that created this projection. */
+  created_by: AgentId;
+}
+
+/** How a memory was originally created. */
+export type ProvenanceOrigin =
+  | { type: "human" }
+  | { type: "agent_created" }
+  | { type: "derived" }
+  | { type: "imported" }
+  | { type: "projected" };
+
+/** Actions that can appear in a provenance chain. */
+export type ProvenanceAction =
+  | "created"
+  | "shared_to"
+  | "projected_to"
+  | "merged_with"
+  | "consolidated_from"
+  | "validated_by"
+  | "used_in_decision"
+  | "corrected_by"
+  | "reclassified_from"
+  | "retracted";
+
+/** A single hop in the provenance chain. */
+export interface ProvenanceHop {
+  /** The agent that performed this action. */
+  agent_id: AgentId;
+  /** What action was taken. */
+  action: ProvenanceAction;
+  /** ISO 8601 timestamp of when this hop occurred. */
+  timestamp: string;
+  /** Change in confidence at this hop (range: -1.0 to 1.0). */
+  confidence_delta: number;
+}
+
+/** Full provenance record for a memory. */
+export interface ProvenanceRecord {
+  /** The memory this provenance record belongs to. */
+  memory_id: string;
+  /** How this memory was originally created. */
+  origin: ProvenanceOrigin;
+  /** Chain of custody hops (ordered, oldest first). */
+  chain: ProvenanceHop[];
+  /** Cumulative confidence through the chain. */
+  chain_confidence: number;
+}
+
+/** Accumulated evidence for trust computation. */
+export interface TrustEvidence {
+  /** Number of memories validated as correct. */
+  validated_count: number;
+  /** Number of memories that contradicted known facts. */
+  contradicted_count: number;
+  /** Number of memories that were useful in decisions. */
+  useful_count: number;
+  /** Total memories received from the target agent. */
+  total_received: number;
+}
+
+/** Trust relationship from one agent toward another. */
+export interface AgentTrust {
+  /** The agent holding this trust assessment. */
+  agent_id: AgentId;
+  /** The agent being assessed. */
+  target_agent: AgentId;
+  /** Overall trust score in [0.0, 1.0]. */
+  overall_trust: number;
+  /** Per-domain trust scores (domain name → score). */
+  domain_trust: Record<string, number>;
+  /** Evidence supporting this trust assessment. */
+  evidence: TrustEvidence;
+  /** ISO 8601 timestamp of when this trust was last updated. */
+  last_updated: string;
+}
+
+/** How a cross-agent contradiction is resolved. */
+export type ContradictionResolution =
+  | { strategy: "trust_wins" }
+  | { strategy: "needs_human_review" }
+  | { strategy: "context_dependent" }
+  | { strategy: "temporal_supersession" };
+
+/** A detected contradiction between two agents' memories. */
+export interface CrossAgentContradiction {
+  /** First memory in the contradiction. */
+  memory_a: string;
+  /** Agent that owns memory_a. */
+  agent_a: AgentId;
+  /** Trust score of agent_a. */
+  trust_a: number;
+  /** Second memory in the contradiction. */
+  memory_b: string;
+  /** Agent that owns memory_b. */
+  agent_b: AgentId;
+  /** Trust score of agent_b. */
+  trust_b: number;
+  /** Type of contradiction. */
+  contradiction_type: string;
+  /** How this contradiction was or should be resolved. */
+  resolution: ContradictionResolution;
+}
+
+/** A single hop in a cross-agent causal trace. */
+export interface CrossAgentHop {
+  /** The agent at this hop. */
+  agent_id: string;
+  /** The memory at this hop. */
+  memory_id: string;
+  /** Confidence/strength at this hop. */
+  confidence: number;
+}
+
+/** Result of a cross-agent causal trace. */
+export interface CrossAgentTrace {
+  /** Ordered path of agent/memory hops in the trace. */
+  path: CrossAgentHop[];
+}
+
+/** Result of a multi-agent sync operation. */
+export interface MultiAgentSyncResult {
+  /** Number of deltas applied during sync. */
+  applied_count: number;
+  /** Number of deltas buffered (waiting for causal predecessors). */
+  buffered_count: number;
+  /** Error messages encountered during sync (empty on success). */
+  errors: string[];
+}
+
 // ─── Error Codes ─────────────────────────────────────────────────────────────
 
 export const CortexErrorCode = {
+  MULTI_AGENT_ERROR: "MULTI_AGENT_ERROR",
   MEMORY_NOT_FOUND: "MEMORY_NOT_FOUND",
   INVALID_TYPE: "INVALID_TYPE",
   EMBEDDING_ERROR: "EMBEDDING_ERROR",

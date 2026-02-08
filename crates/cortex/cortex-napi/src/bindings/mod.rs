@@ -8,6 +8,7 @@ pub mod health;
 pub mod learning;
 pub mod lifecycle;
 pub mod memory;
+pub mod multiagent;
 pub mod prediction;
 pub mod privacy;
 pub mod retrieval;

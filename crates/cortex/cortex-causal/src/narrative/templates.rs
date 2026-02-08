@@ -18,6 +18,7 @@ pub fn template_for(relation: CausalRelation) -> &'static str {
         CausalRelation::Supports => "{target} supports {source} with corroborating evidence.",
         CausalRelation::DerivedFrom => "{source} was derived from {target} through transformation.",
         CausalRelation::TriggeredBy => "This decision led to {source}, triggered by {target}.",
+        CausalRelation::CrossAgent(_) => "{source} has a cross-agent relationship with {target}.",
     }
 }
 
@@ -35,5 +36,6 @@ pub fn section_header(relation: CausalRelation) -> &'static str {
         CausalRelation::Enabled | CausalRelation::Supports => "Support",
         CausalRelation::Prevented | CausalRelation::Contradicts => "Conflicts",
         CausalRelation::Supersedes | CausalRelation::DerivedFrom => "Effects",
+        CausalRelation::CrossAgent(_) => "Cross-Agent",
     }
 }

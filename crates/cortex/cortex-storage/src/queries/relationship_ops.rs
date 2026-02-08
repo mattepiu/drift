@@ -96,6 +96,7 @@ pub fn get_relationships(
             relationship_type,
             strength,
             evidence,
+            cross_agent_relation: None,
         });
     }
     Ok(results)

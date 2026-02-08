@@ -18,7 +18,7 @@ fn make_memory(id: &str, summary: &str) -> BaseMemory {
         description: summary.to_string(),
         metadata: serde_json::Value::Null,
     });
-    let content_hash = BaseMemory::compute_content_hash(&content);
+    let content_hash = BaseMemory::compute_content_hash(&content).unwrap();
     BaseMemory {
         id: id.to_string(),
         memory_type: MemoryType::Semantic,
@@ -39,6 +39,8 @@ fn make_memory(id: &str, summary: &str) -> BaseMemory {
         archived: false,
         superseded_by: None,
         supersedes: None,
+        namespace: Default::default(),
+        source_agent: Default::default(),
         content_hash,
     }
 }
@@ -47,6 +49,9 @@ fn make_candidate(memory: BaseMemory) -> RrfCandidate {
     RrfCandidate {
         memory,
         rrf_score: 0.5,
+        fts5_rank: None,
+        vector_rank: None,
+        entity_rank: None,
     }
 }
 

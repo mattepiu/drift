@@ -71,6 +71,8 @@ fn make_old_episodic(summary: &str, tags: Vec<String>, access_count: u64) -> Bas
         archived: false,
         superseded_by: None,
         supersedes: None,
+        namespace: Default::default(),
+        source_agent: Default::default(),
         content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
     }
 }
@@ -217,6 +219,8 @@ fn t8_con_07_integration_dedup() {
         archived: false,
         superseded_by: None,
         supersedes: None,
+        namespace: Default::default(),
+        source_agent: Default::default(),
         content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
     };
 
@@ -284,6 +288,8 @@ fn t8_con_09_idempotent() {
         archived: false,
         superseded_by: None,
         supersedes: None,
+        namespace: Default::default(),
+        source_agent: Default::default(),
         content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
     };
 

@@ -593,6 +593,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "cortex-crdt"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "cortex-core",
+ "criterion",
+ "proptest",
+ "serde",
+ "serde_json",
+ "test-fixtures",
+ "tracing",
+ "uuid",
+]
+
+[[package]]
 name = "cortex-decay"
 version = "0.1.0"
 dependencies = [
@@ -638,6 +653,32 @@ dependencies = [
 ]
 
 [[package]]
+name = "cortex-multiagent"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "cortex-causal",
+ "cortex-cloud",
+ "cortex-consolidation",
+ "cortex-core",
+ "cortex-crdt",
+ "cortex-retrieval",
+ "cortex-session",
+ "cortex-storage",
+ "cortex-validation",
+ "dashmap",
+ "rusqlite",
+ "serde",
+ "serde_json",
+ "tempfile",
+ "test-fixtures",
+ "thiserror 2.0.18",
+ "tokio",
+ "tracing",
+ "uuid",
+]
+
+[[package]]
 name = "cortex-napi"
 version = "0.1.0"
 dependencies = [
@@ -647,9 +688,11 @@ dependencies = [
  "cortex-compression",
  "cortex-consolidation",
  "cortex-core",
+ "cortex-crdt",
  "cortex-decay",
  "cortex-embeddings",
  "cortex-learning",
+ "cortex-multiagent",
  "cortex-observability",
  "cortex-prediction",
  "cortex-privacy",
@@ -663,9 +706,11 @@ dependencies = [
  "napi",
  "napi-build",
  "napi-derive",
+ "rusqlite",
  "serde",
  "serde_json",
  "tokio",
+ "tracing",
  "uuid",
 ]
 

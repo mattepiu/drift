@@ -40,6 +40,8 @@ fn make_test_memory(id: &str) -> BaseMemory {
         superseded_by: None,
         supersedes: None,
         content_hash: "hash123".to_string(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 
@@ -232,6 +234,7 @@ fn test_relationships() {
         relationship_type: RelationshipType::Supports,
         strength: 0.8,
         evidence: vec!["test evidence".to_string()],
+        cross_agent_relation: None,
     };
 
     engine.add_relationship(&edge).unwrap();

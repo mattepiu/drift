@@ -40,6 +40,8 @@ fn make_test_memory(
         superseded_by: None,
         supersedes: None,
         content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 
@@ -193,6 +195,8 @@ fn low_importance_conversation_fades_below_01_in_6_months() {
         superseded_by: None,
         supersedes: None,
         content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     };
 
     let ctx_6_months = DecayContext {

@@ -37,6 +37,8 @@ fn make_memory(id: &str, summary: &str) -> BaseMemory {
         archived: false,
         superseded_by: None,
         supersedes: None,
+        namespace: Default::default(),
+        source_agent: Default::default(),
         content_hash: blake3::hash(summary.as_bytes()).to_hex().to_string(),
     }
 }

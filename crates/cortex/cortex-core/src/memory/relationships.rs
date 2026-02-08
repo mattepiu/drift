@@ -1,7 +1,9 @@
 use serde::{Deserialize, Serialize};
 use ts_rs::TS;
 
-/// The 13 relationship types between memories.
+use crate::models::cross_agent::CrossAgentRelation;
+
+/// The 14 relationship types between memories.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize, TS)]
 #[ts(export)]
 #[serde(rename_all = "snake_case")]
@@ -21,14 +23,16 @@ pub enum RelationshipType {
     LearnedFrom,
     AssignedTo,
     DependsOn,
+    // Multi-agent (1) — cross-agent relationship, detail in RelationshipEdge
+    CrossAgent,
 }
 
 impl RelationshipType {
     /// Total number of relationship types.
-    pub const COUNT: usize = 13;
+    pub const COUNT: usize = 14;
 
     /// All variants for iteration.
-    pub const ALL: [RelationshipType; 13] = [
+    pub const ALL: [RelationshipType; 14] = [
         Self::Supersedes,
         Self::Supports,
         Self::Contradicts,
@@ -42,6 +46,7 @@ impl RelationshipType {
         Self::LearnedFrom,
         Self::AssignedTo,
         Self::DependsOn,
+        Self::CrossAgent,
     ];
 }
 
@@ -56,4 +61,7 @@ pub struct RelationshipEdge {
     pub strength: f64,
     /// Evidence supporting this relationship.
     pub evidence: Vec<String>,
+    /// Cross-agent relation detail (only set when relationship_type == CrossAgent).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub cross_agent_relation: Option<CrossAgentRelation>,
 }

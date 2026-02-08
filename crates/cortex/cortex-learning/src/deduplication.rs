@@ -91,6 +91,8 @@ mod tests {
             archived: false,
             superseded_by: None,
             supersedes: None,
+            namespace: Default::default(),
+            source_agent: Default::default(),
             content_hash: hash.to_string(),
         }
     }

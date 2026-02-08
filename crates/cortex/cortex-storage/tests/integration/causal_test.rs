@@ -14,6 +14,7 @@ fn make_edge(src: &str, tgt: &str) -> CausalEdge {
             source: "test".to_string(),
             timestamp: chrono::Utc::now(),
         }],
+        source_agent: None,
     }
 }
 

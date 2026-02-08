@@ -3,6 +3,7 @@ pub mod consolidation_config;
 pub mod decay_config;
 pub mod defaults;
 pub mod embedding_config;
+pub mod multiagent_config;
 pub mod observability_config;
 pub mod privacy_config;
 pub mod retrieval_config;
@@ -15,6 +16,7 @@ pub use cloud_config::CloudConfig;
 pub use consolidation_config::ConsolidationConfig;
 pub use decay_config::DecayConfig;
 pub use embedding_config::EmbeddingConfig;
+pub use multiagent_config::MultiAgentConfig;
 pub use observability_config::ObservabilityConfig;
 pub use privacy_config::PrivacyConfig;
 pub use retrieval_config::RetrievalConfig;
@@ -34,6 +36,7 @@ pub struct CortexConfig {
     pub cloud: CloudConfig,
     pub observability: ObservabilityConfig,
     pub temporal: TemporalConfig,
+    pub multiagent: MultiAgentConfig,
 }
 
 impl CortexConfig {

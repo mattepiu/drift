@@ -32,6 +32,8 @@ fn make_memory(id: &str) -> BaseMemory {
         superseded_by: None,
         supersedes: None,
         content_hash: "ver_hash".to_string(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 

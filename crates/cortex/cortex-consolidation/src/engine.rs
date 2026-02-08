@@ -3,6 +3,7 @@
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
 
+use cortex_core::config::MultiAgentConfig;
 use cortex_core::errors::{ConsolidationError, CortexError, CortexResult};
 use cortex_core::memory::BaseMemory;
 use cortex_core::models::ConsolidationResult;
@@ -27,6 +28,8 @@ pub struct ConsolidationEngine {
     thresholds: TunableThresholds,
     /// Recent quality assessments for auto-tuning.
     recent_assessments: Vec<monitoring::QualityAssessment>,
+    /// Multi-agent configuration (None = single-agent mode).
+    multiagent_config: Option<MultiAgentConfig>,
 }
 
 impl ConsolidationEngine {
@@ -38,7 +41,28 @@ impl ConsolidationEngine {
             dashboard: ConsolidationDashboard::new(),
             thresholds: TunableThresholds::default(),
             recent_assessments: Vec::new(),
+            multiagent_config: None,
         }
+    }
+
+    /// Enable multi-agent consolidation with the given config.
+    ///
+    /// When enabled, consolidation extends across namespaces, delegating
+    /// cross-namespace logic to cortex-multiagent's consolidation module.
+    pub fn with_multiagent_config(mut self, config: MultiAgentConfig) -> Self {
+        if config.enabled {
+            info!("multi-agent consolidation enabled");
+            self.multiagent_config = Some(config);
+        }
+        self
+    }
+
+    /// Whether multi-agent consolidation is active.
+    pub fn is_multiagent_enabled(&self) -> bool {
+        self.multiagent_config
+            .as_ref()
+            .map(|c| c.enabled)
+            .unwrap_or(false)
     }
 
     /// Check if a consolidation is currently running.
@@ -193,6 +217,8 @@ mod tests {
             archived: false,
             superseded_by: None,
             supersedes: None,
+            namespace: Default::default(),
+            source_agent: Default::default(),
             content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
         }
     }

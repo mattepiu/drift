@@ -119,18 +119,18 @@ impl IMemoryStorage for StorageEngine {
     fn query_by_type(&self, memory_type: MemoryType) -> CortexResult<Vec<BaseMemory>> {
         self.pool
             .writer
-            .with_conn_sync(|conn| crate::queries::memory_query::query_by_type(conn, memory_type))
+            .with_conn_sync(|conn| crate::queries::memory_query::query_by_type(conn, memory_type, None))
     }
 
     fn query_by_importance(&self, min: Importance) -> CortexResult<Vec<BaseMemory>> {
         self.pool
             .writer
-            .with_conn_sync(|conn| crate::queries::memory_query::query_by_importance(conn, min))
+            .with_conn_sync(|conn| crate::queries::memory_query::query_by_importance(conn, min, None))
     }
 
     fn query_by_confidence_range(&self, min: f64, max: f64) -> CortexResult<Vec<BaseMemory>> {
         self.pool.writer.with_conn_sync(|conn| {
-            crate::queries::memory_query::query_by_confidence_range(conn, min, max)
+            crate::queries::memory_query::query_by_confidence_range(conn, min, max, None)
         })
     }
 
@@ -140,14 +140,14 @@ impl IMemoryStorage for StorageEngine {
         to: DateTime<Utc>,
     ) -> CortexResult<Vec<BaseMemory>> {
         self.pool.writer.with_conn_sync(|conn| {
-            crate::queries::memory_query::query_by_date_range(conn, from, to)
+            crate::queries::memory_query::query_by_date_range(conn, from, to, None)
         })
     }
 
     fn query_by_tags(&self, tags: &[String]) -> CortexResult<Vec<BaseMemory>> {
         self.pool
             .writer
-            .with_conn_sync(|conn| crate::queries::memory_query::query_by_tags(conn, tags))
+            .with_conn_sync(|conn| crate::queries::memory_query::query_by_tags(conn, tags, None))
     }
 
     fn search_fts5(&self, query: &str, limit: usize) -> CortexResult<Vec<BaseMemory>> {

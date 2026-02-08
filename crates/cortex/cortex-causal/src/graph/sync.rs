@@ -96,6 +96,7 @@ pub fn to_storage_edge(source_id: &str, target_id: &str, weight: &CausalEdgeWeig
                 timestamp: e.timestamp,
             })
             .collect(),
+        source_agent: None, // Single-agent edges by default.
     }
 }
 

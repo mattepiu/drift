@@ -41,6 +41,8 @@ fn make_memory(
         superseded_by: None,
         supersedes: None,
         content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 
@@ -261,6 +263,7 @@ fn stress_500_relationships() {
                     relationship_type: RelationshipType::Related,
                     strength: 0.8,
                     evidence: vec!["stress test".to_string()],
+                    cross_agent_relation: None,
                 };
                 let _ = engine.add_relationship(&edge);
             }
@@ -305,6 +308,7 @@ fn stress_causal_500_edges() {
                     source: "stress_test".to_string(),
                     timestamp: Utc::now(),
                 }],
+                source_agent: None,
             };
             let _ = engine.add_edge(&edge);
         }

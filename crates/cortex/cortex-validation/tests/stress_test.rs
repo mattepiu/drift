@@ -46,6 +46,8 @@ fn make_memory(id: &str, summary: &str, mem_type: MemoryType) -> BaseMemory {
         superseded_by: None,
         supersedes: None,
         content_hash,
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 

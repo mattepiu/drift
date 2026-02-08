@@ -200,6 +200,25 @@ mod tests {
     }
 
     #[test]
+    fn all_golden_multiagent_files_exist() {
+        let files = [
+            "golden/multiagent/crdt_merge_simple.json",
+            "golden/multiagent/crdt_merge_conflict.json",
+            "golden/multiagent/crdt_merge_confidence.json",
+            "golden/multiagent/namespace_permissions.json",
+            "golden/multiagent/namespace_default_compat.json",
+            "golden/multiagent/provenance_chain.json",
+            "golden/multiagent/provenance_correction.json",
+            "golden/multiagent/trust_scoring.json",
+            "golden/multiagent/trust_decay.json",
+            "golden/multiagent/consensus_detection.json",
+        ];
+        for f in &files {
+            assert!(fixture_exists(f), "Missing fixture: {}", f);
+        }
+    }
+
+    #[test]
     fn all_benchmark_files_exist() {
         let files = [
             "benchmarks/memories_100.json",
@@ -228,13 +247,14 @@ mod tests {
     }
 
     #[test]
-    fn all_34_golden_files_parse_as_json() {
+    fn all_44_golden_files_parse_as_json() {
         let dirs = [
             "golden/consolidation",
             "golden/retrieval",
             "golden/contradiction",
             "golden/causal",
             "golden/privacy",
+            "golden/multiagent",
         ];
         let mut total = 0;
         for dir in &dirs {
@@ -248,8 +268,8 @@ mod tests {
             }
         }
         assert_eq!(
-            total, 34,
-            "Expected 34 golden dataset files, found {}",
+            total, 44,
+            "Expected 44 golden dataset files, found {}",
             total
         );
     }

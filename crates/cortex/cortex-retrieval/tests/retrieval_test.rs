@@ -66,6 +66,8 @@ fn make_memory(
         archived: false,
         superseded_by: None,
         supersedes: None,
+        namespace: Default::default(),
+        source_agent: Default::default(),
         content_hash: cortex_core::BaseMemory::compute_content_hash(&TypedContent::Core(
             cortex_core::memory::types::CoreContent {
                 project_name: String::new(),

@@ -5,6 +5,7 @@
 
 use cortex_core::config::RetrievalConfig;
 use cortex_core::errors::CortexResult;
+use cortex_core::models::namespace::NamespaceId;
 use cortex_core::models::{CompressedMemory, RetrievalContext};
 use cortex_core::traits::{ICompressor, IMemoryStorage, IRetriever};
 use tracing::{debug, info};
@@ -23,6 +24,8 @@ pub struct RetrievalEngine<'a> {
     intent_engine: IntentEngine,
     ranking: RankingPipeline,
     config: RetrievalConfig,
+    /// Optional namespace filter for multi-agent retrieval.
+    namespace_filter: Option<NamespaceId>,
 }
 
 impl<'a> RetrievalEngine<'a> {
@@ -37,7 +40,17 @@ impl<'a> RetrievalEngine<'a> {
             intent_engine: IntentEngine::new(),
             ranking: RankingPipeline::new(config.rerank_top_k),
             config,
+            namespace_filter: None,
         }
+    }
+
+    /// Set a namespace filter for multi-agent retrieval.
+    ///
+    /// When set, only memories from the specified namespace are returned.
+    /// When `None`, all namespaces are searched (default behavior).
+    pub fn with_namespace_filter(mut self, namespace: Option<NamespaceId>) -> Self {
+        self.namespace_filter = namespace;
+        self
     }
 
     /// Run the full retrieval pipeline with an optional query embedding.

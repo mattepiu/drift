@@ -63,6 +63,8 @@ fn t8_lrn_03_dedup_prevents_duplicate() {
         archived: false,
         superseded_by: None,
         supersedes: None,
+        namespace: Default::default(),
+        source_agent: Default::default(),
         content_hash: "hash-123".to_string(),
     };
 
@@ -126,6 +128,8 @@ fn t8_lrn_05_active_learning_selects_uncertain() {
         archived: false,
         superseded_by: None,
         supersedes: None,
+        namespace: Default::default(),
+        source_agent: Default::default(),
         content_hash: "hash".to_string(),
     };
 
@@ -149,6 +153,8 @@ fn t8_lrn_05_active_learning_selects_uncertain() {
         archived: false,
         superseded_by: None,
         supersedes: None,
+        namespace: Default::default(),
+        source_agent: Default::default(),
         content_hash: "hash2".to_string(),
     };
 
@@ -214,6 +220,8 @@ fn t8_lrn_08_feedback_processor() {
         archived: false,
         superseded_by: None,
         supersedes: None,
+        namespace: Default::default(),
+        source_agent: Default::default(),
         content_hash: "hash".to_string(),
     };
 

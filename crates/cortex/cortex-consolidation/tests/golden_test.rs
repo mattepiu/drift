@@ -142,6 +142,8 @@ fn parse_memories_from_fixture(fixture: &Value) -> Vec<BaseMemory> {
                 archived: false,
                 superseded_by: None,
                 supersedes: None,
+                namespace: Default::default(),
+                source_agent: Default::default(),
                 content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
             }
         })

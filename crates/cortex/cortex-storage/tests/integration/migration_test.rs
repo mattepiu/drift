@@ -16,7 +16,7 @@ fn test_all_migrations_run_on_fresh_db() {
                     row.get(0)
                 })
                 .unwrap();
-            assert_eq!(version, 14, "schema should be at version 14");
+            assert_eq!(version, 15, "schema should be at version 15");
             Ok(())
         })
         .unwrap();
@@ -72,6 +72,14 @@ fn test_all_tables_exist() {
         "memory_snapshots",
         "drift_snapshots",
         "materialized_views",
+        // v015: multi-agent tables
+        "agent_registry",
+        "memory_namespaces",
+        "namespace_permissions",
+        "memory_projections",
+        "provenance_log",
+        "agent_trust",
+        "delta_queue",
     ];
 
     engine

@@ -5,6 +5,7 @@
 
 use chrono::Utc;
 
+use cortex_core::config::MultiAgentConfig;
 use cortex_core::intent::Intent;
 use cortex_core::memory::BaseMemory;
 use cortex_core::models::EpistemicStatus;
@@ -71,6 +72,28 @@ pub struct TemporalScoringContext {
     pub evidence_freshness: std::collections::HashMap<String, f64>,
     /// Epistemic status per memory ID. Missing entries default to Conjecture.
     pub epistemic_statuses: std::collections::HashMap<String, EpistemicStatus>,
+}
+
+/// Multi-agent trust context for scoring — provides trust-weighted ranking.
+pub struct TrustScoringContext {
+    /// Multi-agent config.
+    pub config: MultiAgentConfig,
+    /// Trust score lookup: agent_id → trust score [0.0, 1.0].
+    pub trust_scores: std::collections::HashMap<String, f64>,
+}
+
+impl TrustScoringContext {
+    /// Get the trust factor for a memory's source agent.
+    /// Returns 1.0 (no modulation) if multi-agent is disabled or no trust data.
+    pub fn trust_factor(&self, memory: &BaseMemory) -> f64 {
+        if !self.config.enabled {
+            return 1.0;
+        }
+        self.trust_scores
+            .get(&memory.source_agent.0)
+            .copied()
+            .unwrap_or(0.5) // Neutral if no trust data.
+    }
 }
 
 /// Map an epistemic status to a score value.
@@ -177,6 +200,28 @@ pub fn score_with_temporal(
     });
 
     scored
+}
+
+/// Apply trust-weighted scoring to already-scored candidates.
+///
+/// When multi-agent is enabled, each candidate's score is modulated by the
+/// trust score of its source agent. Higher-trust agents' memories rank higher.
+/// When disabled, scores are unchanged (trust_factor = 1.0).
+pub fn apply_trust_weighting(
+    candidates: &mut [ScoredCandidate],
+    trust_ctx: &TrustScoringContext,
+) {
+    for candidate in candidates.iter_mut() {
+        let trust_factor = trust_ctx.trust_factor(&candidate.memory);
+        candidate.score *= trust_factor;
+    }
+
+    // Re-sort by score descending after trust modulation.
+    candidates.sort_by(|a, b| {
+        b.score
+            .partial_cmp(&a.score)
+            .unwrap_or(std::cmp::Ordering::Equal)
+    });
 }
 
 /// Compute file proximity score [0.0, 1.0].

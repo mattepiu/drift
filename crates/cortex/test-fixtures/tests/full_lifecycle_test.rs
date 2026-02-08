@@ -81,6 +81,8 @@ fn make_episodic(cluster: &str, index: usize, tags: Vec<String>) -> BaseMemory {
         superseded_by: None,
         supersedes: None,
         content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 
@@ -349,6 +351,8 @@ fn t14_int_02_concurrent_access() {
                 superseded_by: None,
                 supersedes: None,
                 content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
+                namespace: Default::default(),
+                source_agent: Default::default(),
             }
         })
         .collect();

@@ -1,5 +1,5 @@
 /**
- * Tool registry — registers all 38 MCP tools.
+ * Tool registry — registers all 43 MCP tools.
  *
  * Each tool is a thin JSON-RPC wrapper over CortexClient methods.
  * Tools are grouped by domain and registered in a flat map for MCP dispatch.
@@ -59,7 +59,14 @@ import { driftTimeReplay } from "./temporal/drift_time_replay.js";
 import { driftKnowledgeHealth } from "./temporal/drift_knowledge_health.js";
 import { driftKnowledgeTimeline } from "./temporal/drift_knowledge_timeline.js";
 
-/** All 38 tool factory functions. */
+// Multi-Agent (5)
+import { driftAgentRegister } from "./multiagent/drift_agent_register.js";
+import { driftAgentShare } from "./multiagent/drift_agent_share.js";
+import { driftAgentProject } from "./multiagent/drift_agent_project.js";
+import { driftAgentProvenance } from "./multiagent/drift_agent_provenance.js";
+import { driftAgentTrust } from "./multiagent/drift_agent_trust.js";
+
+/** All 43 tool factory functions. */
 const TOOL_FACTORIES: ((client: CortexClient) => McpToolDefinition)[] = [
   // Memory (8)
   driftMemoryAdd,
@@ -104,13 +111,19 @@ const TOOL_FACTORIES: ((client: CortexClient) => McpToolDefinition)[] = [
   driftTimeReplay,
   driftKnowledgeHealth,
   driftKnowledgeTimeline,
+  // Multi-Agent (5)
+  driftAgentRegister,
+  driftAgentShare,
+  driftAgentProject,
+  driftAgentProvenance,
+  driftAgentTrust,
 ];
 
 /** Immutable map of tool name → tool definition. */
 export type ToolRegistry = ReadonlyMap<string, McpToolDefinition>;
 
 /**
- * Register all 33 MCP tools for a given CortexClient instance.
+ * Register all 43 MCP tools for a given CortexClient instance.
  * Returns an immutable map of tool name → definition.
  */
 export function registerTools(client: CortexClient): ToolRegistry {

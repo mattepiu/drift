@@ -1,6 +1,11 @@
 //! Session-aware deduplication.
 //!
 //! Filters already-sent memories to achieve 30–50% token savings.
+//! Multi-agent extension: dedup key includes agent_id and namespace_id,
+//! allowing different agents to have the same content in different namespaces.
+
+use cortex_core::models::agent::AgentId;
+use cortex_core::models::namespace::NamespaceId;
 
 use crate::manager::SessionManager;
 
@@ -13,6 +18,27 @@ pub struct DeduplicationResult {
     pub filtered: Vec<String>,
     /// Estimated tokens saved by deduplication.
     pub tokens_saved: usize,
+}
+
+/// Compute a dedup key that includes agent and namespace context.
+///
+/// Old key: `(session_id, content_hash)` — still works when all memories
+/// have default agent/namespace.
+/// New key: `(session_id, agent_id, namespace_id, content_hash)` — allows
+/// same content from different agents without dedup.
+pub fn dedup_key(
+    session_id: &str,
+    agent_id: &AgentId,
+    namespace_id: &NamespaceId,
+    content_hash: &str,
+) -> String {
+    format!(
+        "{}:{}:{}:{}",
+        session_id,
+        agent_id.0,
+        namespace_id.to_uri(),
+        content_hash
+    )
 }
 
 /// Filter a list of candidate memory IDs, removing those already sent in the session.

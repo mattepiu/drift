@@ -1,4 +1,5 @@
 use crate::errors::CortexResult;
+use crate::models::agent::AgentId;
 use serde::{Deserialize, Serialize};
 
 /// A directed edge in the causal graph.
@@ -9,6 +10,9 @@ pub struct CausalEdge {
     pub relation: String,
     pub strength: f64,
     pub evidence: Vec<CausalEvidence>,
+    /// The agent that created this edge. `None` for single-agent edges (backward compat).
+    #[serde(default)]
+    pub source_agent: Option<AgentId>,
 }
 
 /// Evidence supporting a causal edge.

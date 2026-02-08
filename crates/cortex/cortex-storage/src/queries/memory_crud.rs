@@ -22,9 +22,10 @@ pub fn insert_memory(conn: &Connection, memory: &BaseMemory) -> CortexResult<()>
         "INSERT INTO memories (
             id, memory_type, content, summary, transaction_time, valid_time,
             valid_until, confidence, importance, last_accessed, access_count,
-            tags, archived, superseded_by, supersedes, content_hash
+            tags, archived, superseded_by, supersedes, content_hash,
+            namespace_id, source_agent
         ) VALUES (
-            ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16
+            ?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9, ?10, ?11, ?12, ?13, ?14, ?15, ?16, ?17, ?18
         )",
         params![
             memory.id,
@@ -43,6 +44,8 @@ pub fn insert_memory(conn: &Connection, memory: &BaseMemory) -> CortexResult<()>
             memory.superseded_by,
             memory.supersedes,
             memory.content_hash,
+            memory.namespace.to_uri(),
+            memory.source_agent.0,
         ],
     )
     .map_err(|e| to_storage_err(e.to_string()))?;
@@ -103,7 +106,8 @@ pub fn get_memory(conn: &Connection, id: &str) -> CortexResult<Option<BaseMemory
         .prepare(
             "SELECT id, memory_type, content, summary, transaction_time, valid_time,
                     valid_until, confidence, importance, last_accessed, access_count,
-                    tags, archived, superseded_by, supersedes, content_hash
+                    tags, archived, superseded_by, supersedes, content_hash,
+                    namespace_id, source_agent
              FROM memories WHERE id = ?1",
         )
         .map_err(|e| to_storage_err(e.to_string()))?;
@@ -453,6 +457,18 @@ pub(crate) fn row_to_base_memory(row: &rusqlite::Row<'_>) -> CortexResult<BaseMe
         superseded_by: row.get(13).map_err(|e| to_storage_err(e.to_string()))?,
         supersedes: row.get(14).map_err(|e| to_storage_err(e.to_string()))?,
         content_hash: row.get(15).map_err(|e| to_storage_err(e.to_string()))?,
+        namespace: {
+            let ns_str: Option<String> = row.get(16).ok();
+            ns_str
+                .and_then(|s| cortex_core::models::namespace::NamespaceId::parse(&s).ok())
+                .unwrap_or_default()
+        },
+        source_agent: {
+            let agent_str: Option<String> = row.get(17).ok();
+            agent_str
+                .map(|s| cortex_core::models::agent::AgentId::from(s.as_str()))
+                .unwrap_or_default()
+        },
     })
 }
 

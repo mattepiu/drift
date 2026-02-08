@@ -1,8 +1,10 @@
 //! 8 causal relation types with semantics, strength scoring, and evidence requirements.
+//! Extended with cross-agent relation support for multi-agent memory.
 
+use cortex_core::models::cross_agent::CrossAgentRelation;
 use serde::{Deserialize, Serialize};
 
-/// The 8 causal relation types.
+/// The 8 causal relation types, plus cross-agent relations.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum CausalRelation {
@@ -22,13 +24,15 @@ pub enum CausalRelation {
     DerivedFrom,
     /// X triggered Y (event-based).
     TriggeredBy,
+    /// Cross-agent relationship (multi-agent memory).
+    CrossAgent(CrossAgentRelation),
 }
 
 impl CausalRelation {
-    /// Total number of relation types.
+    /// Total number of base relation types (excluding CrossAgent).
     pub const COUNT: usize = 8;
 
-    /// All variants for iteration.
+    /// All base variants for iteration (excluding CrossAgent).
     pub const ALL: [CausalRelation; 8] = [
         Self::Caused,
         Self::Enabled,
@@ -46,6 +50,7 @@ impl CausalRelation {
             Self::Caused | Self::Prevented => 2,
             Self::Contradicts | Self::Supersedes => 1,
             Self::Enabled | Self::Supports | Self::DerivedFrom | Self::TriggeredBy => 1,
+            Self::CrossAgent(_) => 1,
         }
     }
 
@@ -60,6 +65,7 @@ impl CausalRelation {
             Self::Supports => 0.2,
             Self::DerivedFrom => 0.3,
             Self::TriggeredBy => 0.4,
+            Self::CrossAgent(_) => 0.3,
         }
     }
 
@@ -79,6 +85,7 @@ impl CausalRelation {
             "supports" => Some(Self::Supports),
             "derived_from" => Some(Self::DerivedFrom),
             "triggered_by" => Some(Self::TriggeredBy),
+            "cross_agent" => Some(Self::CrossAgent(CrossAgentRelation::InformedBy)),
             _ => None,
         }
     }
@@ -94,6 +101,7 @@ impl CausalRelation {
             Self::Supports => "supports",
             Self::DerivedFrom => "derived_from",
             Self::TriggeredBy => "triggered_by",
+            Self::CrossAgent(_) => "cross_agent",
         }
     }
 }

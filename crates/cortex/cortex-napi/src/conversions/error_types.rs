@@ -22,6 +22,7 @@ pub mod codes {
     pub const DEGRADED_MODE: &str = "DEGRADED_MODE";
     pub const RUNTIME_NOT_INITIALIZED: &str = "RUNTIME_NOT_INITIALIZED";
     pub const TEMPORAL_ERROR: &str = "TEMPORAL_ERROR";
+    pub const MULTI_AGENT_ERROR: &str = "MULTI_AGENT_ERROR";
 }
 
 /// Map a CortexError to a structured napi::Error with an error code.
@@ -79,6 +80,9 @@ pub fn to_napi_error(err: CortexError) -> napi::Error {
         ),
         CortexError::TemporalError(ref e) => {
             (codes::TEMPORAL_ERROR, format!("Temporal error: {e}"))
+        }
+        CortexError::MultiAgentError(ref e) => {
+            (codes::MULTI_AGENT_ERROR, format!("Multi-agent error: {e}"))
         }
     };
 

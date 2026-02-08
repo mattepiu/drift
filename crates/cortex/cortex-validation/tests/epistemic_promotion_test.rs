@@ -13,7 +13,7 @@ fn make_memory(id: &str, summary: &str) -> BaseMemory {
         source_episodes: vec![],
         consolidation_confidence: 0.8,
     });
-    let content_hash = BaseMemory::compute_content_hash(&content);
+    let content_hash = BaseMemory::compute_content_hash(&content).unwrap();
     BaseMemory {
         id: id.to_string(),
         memory_type: MemoryType::Semantic,
@@ -35,6 +35,8 @@ fn make_memory(id: &str, summary: &str) -> BaseMemory {
         superseded_by: None,
         supersedes: None,
         content_hash,
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 

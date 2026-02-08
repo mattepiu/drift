@@ -6,6 +6,8 @@ use super::confidence::Confidence;
 use super::importance::Importance;
 use super::links::{ConstraintLink, FileLink, FunctionLink, PatternLink};
 use super::types::MemoryType;
+use crate::models::agent::AgentId;
+use crate::models::namespace::NamespaceId;
 
 /// Typed content wrapper — each memory type has its own content struct.
 /// Serialized as a tagged enum so the type is preserved in JSON.
@@ -86,6 +88,12 @@ pub struct BaseMemory {
     pub supersedes: Option<String>,
     /// blake3 hash of content for dedup and embedding cache.
     pub content_hash: String,
+    /// Namespace this memory belongs to. Default: agent://default/.
+    #[serde(default)]
+    pub namespace: NamespaceId,
+    /// Agent that created this memory. Default: AgentId::default_agent().
+    #[serde(default)]
+    pub source_agent: AgentId,
 }
 
 impl BaseMemory {

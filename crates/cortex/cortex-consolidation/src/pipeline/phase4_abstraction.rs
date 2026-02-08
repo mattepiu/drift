@@ -155,6 +155,8 @@ pub fn build_semantic_memory(
         superseded_by: None,
         supersedes: None,
         content_hash,
+        namespace: Default::default(),
+        source_agent: Default::default(),
     })
 }
 
@@ -191,6 +193,8 @@ mod tests {
             superseded_by: None,
             supersedes: None,
             content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
+            namespace: Default::default(),
+            source_agent: Default::default(),
         }
     }
 

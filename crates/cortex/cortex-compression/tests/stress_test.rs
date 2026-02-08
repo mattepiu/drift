@@ -47,6 +47,8 @@ fn make_memory_with_content(id: &str, importance: Importance, summary: &str) -> 
         superseded_by: None,
         supersedes: None,
         content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 

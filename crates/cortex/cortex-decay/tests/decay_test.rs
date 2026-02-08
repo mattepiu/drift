@@ -37,6 +37,8 @@ fn make_test_memory(
         superseded_by: None,
         supersedes: None,
         content_hash: "test".to_string(),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 

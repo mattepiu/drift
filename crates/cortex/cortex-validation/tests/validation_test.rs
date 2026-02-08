@@ -48,6 +48,8 @@ fn make_memory(id: &str, summary: &str, mem_type: MemoryType) -> BaseMemory {
         superseded_by: None,
         supersedes: None,
         content_hash,
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 
@@ -192,6 +194,7 @@ fn confidence_propagation_ripples_correctly() {
             relationship_type: RelationshipType::Supports,
             strength: 0.8,
             evidence: vec![],
+            cross_agent_relation: None,
         },
         RelationshipEdge {
             source_id: "m2".into(),
@@ -199,6 +202,7 @@ fn confidence_propagation_ripples_correctly() {
             relationship_type: RelationshipType::Related,
             strength: 0.6,
             evidence: vec![],
+            cross_agent_relation: None,
         },
     ];
 

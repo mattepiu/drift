@@ -60,6 +60,8 @@ fn make_episodic(summary: &str, confidence: f64, access_count: u64) -> BaseMemor
         archived: false,
         superseded_by: None,
         supersedes: None,
+        namespace: Default::default(),
+        source_agent: Default::default(),
         content_hash: BaseMemory::compute_content_hash(&content).unwrap(),
     }
 }

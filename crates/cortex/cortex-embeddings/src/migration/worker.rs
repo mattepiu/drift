@@ -125,6 +125,8 @@ mod tests {
             superseded_by: None,
             supersedes: None,
             content_hash: format!("hash-{access_count}"),
+            namespace: Default::default(),
+            source_agent: Default::default(),
         }
     }
 

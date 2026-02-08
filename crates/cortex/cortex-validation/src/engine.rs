@@ -2,6 +2,7 @@
 //! aggregates results, triggers healing actions, and promotes epistemic status.
 
 use chrono::Utc;
+use cortex_core::config::MultiAgentConfig;
 use cortex_core::errors::CortexResult;
 use cortex_core::memory::BaseMemory;
 use cortex_core::models::{DimensionScores, EpistemicStatus, HealingAction, ValidationResult};
@@ -59,11 +60,35 @@ pub struct ValidationContext<'a> {
 /// alignment dimensions. Aggregates scores and produces healing actions.
 pub struct ValidationEngine {
     config: ValidationConfig,
+    /// Multi-agent configuration (None = single-agent mode).
+    multiagent_config: Option<MultiAgentConfig>,
 }
 
 impl ValidationEngine {
     pub fn new(config: ValidationConfig) -> Self {
-        Self { config }
+        Self {
+            config,
+            multiagent_config: None,
+        }
+    }
+
+    /// Enable multi-agent validation with the given config.
+    ///
+    /// When enabled, contradiction detection extends across namespaces,
+    /// delegating cross-agent logic to cortex-multiagent's validation module.
+    pub fn with_multiagent_config(mut self, config: MultiAgentConfig) -> Self {
+        if config.enabled {
+            self.multiagent_config = Some(config);
+        }
+        self
+    }
+
+    /// Whether multi-agent validation is active.
+    pub fn is_multiagent_enabled(&self) -> bool {
+        self.multiagent_config
+            .as_ref()
+            .map(|c| c.enabled)
+            .unwrap_or(false)
     }
 
     /// Validate a memory with full context.

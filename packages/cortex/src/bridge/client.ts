@@ -7,6 +7,8 @@
 
 import { loadNativeModule, type NativeBindings } from "./index.js";
 import type {
+  AgentRegistration,
+  AgentTrust,
   BaseMemory,
   CausalNarrative,
   CacheStats,
@@ -15,6 +17,7 @@ import type {
   ConsolidationDashboard,
   ConsolidationResult,
   ConsolidationStatus,
+  CrossAgentTrace,
   DecisionReplay,
   DegradationEvent,
   DriftAlert,
@@ -25,9 +28,13 @@ import type {
   LearningResult,
   MaterializedTemporalView,
   MemoryType,
+  MultiAgentSyncResult,
   PatternStats,
   PredictionResult,
   PreloadResult,
+  ProjectionConfig,
+  ProvenanceHop,
+  ProvenanceRecord,
   RetrievalContext,
   SanitizeResult,
   SessionAnalytics,
@@ -450,5 +457,67 @@ export class CortexClient {
     return wrap(
       () => this.native.cortexTemporalListMaterializedViews() as MaterializedTemporalView[],
     );
+  }
+
+  // ─── Multi-Agent ──────────────────────────────────────────────────────
+
+  /** Register a new agent with the given name and capabilities. */
+  async registerAgent(name: string, capabilities: string[]): Promise<AgentRegistration> {
+    return wrap(() => this.native.cortexMultiagentRegisterAgent(name, capabilities) as AgentRegistration);
+  }
+
+  /** Deregister an agent by ID. */
+  async deregisterAgent(agentId: string): Promise<void> {
+    return wrap(() => this.native.cortexMultiagentDeregisterAgent(agentId));
+  }
+
+  /** Get an agent by ID. Returns null if not found. */
+  async getAgent(agentId: string): Promise<AgentRegistration | null> {
+    return wrap(() => this.native.cortexMultiagentGetAgent(agentId) as AgentRegistration | null);
+  }
+
+  /** List agents, optionally filtered by status. */
+  async listAgents(statusFilter?: string): Promise<AgentRegistration[]> {
+    return wrap(() => this.native.cortexMultiagentListAgents(statusFilter ?? null) as AgentRegistration[]);
+  }
+
+  /** Create a new namespace. Returns the namespace URI. */
+  async createNamespace(scope: string, name: string, owner: string): Promise<string> {
+    return wrap(() => this.native.cortexMultiagentCreateNamespace(scope, name, owner));
+  }
+
+  /** Share a memory to a target namespace. Returns the provenance hop. */
+  async shareMemory(memoryId: string, targetNamespace: string, agentId: string): Promise<ProvenanceHop> {
+    return wrap(() => this.native.cortexMultiagentShareMemory(memoryId, targetNamespace, agentId) as ProvenanceHop);
+  }
+
+  /** Create a memory projection between namespaces. Returns the projection ID. */
+  async createProjection(config: ProjectionConfig): Promise<string> {
+    return wrap(() => this.native.cortexMultiagentCreateProjection(config));
+  }
+
+  /** Retract (tombstone) a memory in a namespace. */
+  async retractMemory(memoryId: string, namespace: string, agentId: string): Promise<void> {
+    return wrap(() => this.native.cortexMultiagentRetractMemory(memoryId, namespace, agentId));
+  }
+
+  /** Get the full provenance record for a memory. */
+  async getProvenance(memoryId: string): Promise<ProvenanceRecord | null> {
+    return wrap(() => this.native.cortexMultiagentGetProvenance(memoryId) as ProvenanceRecord | null);
+  }
+
+  /** Trace causal relationships across agent boundaries. */
+  async traceCrossAgent(memoryId: string, maxDepth: number): Promise<CrossAgentTrace> {
+    return wrap(() => this.native.cortexMultiagentTraceCrossAgent(memoryId, maxDepth) as CrossAgentTrace);
+  }
+
+  /** Get trust scores for an agent, optionally toward a specific target. */
+  async getTrust(agentId: string, targetAgent?: string): Promise<AgentTrust> {
+    return wrap(() => this.native.cortexMultiagentGetTrust(agentId, targetAgent ?? null) as AgentTrust);
+  }
+
+  /** Synchronize memory state between two agents via delta sync. */
+  async syncAgents(sourceAgent: string, targetAgent: string): Promise<MultiAgentSyncResult> {
+    return wrap(() => this.native.cortexMultiagentSyncAgents(sourceAgent, targetAgent) as MultiAgentSyncResult);
   }
 }

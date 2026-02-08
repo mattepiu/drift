@@ -43,6 +43,8 @@ fn make_memory(id: &str, summary: &str, mem_type: MemoryType) -> BaseMemory {
         superseded_by: None,
         supersedes: None,
         content_hash: format!("hash-{id}"),
+        namespace: Default::default(),
+        source_agent: Default::default(),
     }
 }
 
@@ -237,6 +239,7 @@ fn propagation_with_edges_ripples() {
             relationship_type: cortex_core::memory::RelationshipType::Supports,
             strength: 0.8,
             evidence: vec![],
+            cross_agent_relation: None,
         },
         RelationshipEdge {
             source_id: "m2".to_string(),
@@ -244,6 +247,7 @@ fn propagation_with_edges_ripples() {
             relationship_type: cortex_core::memory::RelationshipType::Related,
             strength: 0.6,
             evidence: vec![],
+            cross_agent_relation: None,
         },
     ];
     let adjustments = propagation::propagate(

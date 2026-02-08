@@ -1,5 +1,6 @@
 //! Graph management: Arc<RwLock<StableGraph>> with DAG enforcement, sync, and pruning.
 
+pub mod cross_agent;
 pub mod dag_enforcement;
 pub mod pruning;
 pub mod stable_graph;

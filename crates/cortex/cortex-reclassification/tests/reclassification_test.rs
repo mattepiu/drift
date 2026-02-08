@@ -49,6 +49,8 @@ fn make_memory(id: &str, importance: Importance) -> BaseMemory {
         archived: false,
         superseded_by: None,
         supersedes: None,
+        namespace: Default::default(),
+        source_agent: Default::default(),
         content_hash: format!("hash_{}", id),
     }
 }

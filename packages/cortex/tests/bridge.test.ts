@@ -10,15 +10,21 @@ import { describe, it, expect, vi, beforeEach } from "vitest";
 import { CortexError } from "../src/bridge/client.js";
 import type { NativeBindings } from "../src/bridge/index.js";
 import type {
+  AgentRegistration,
+  AgentTrust,
   BaseMemory,
   CausalNarrative,
+  CrossAgentTrace,
   HealthReport,
   ConsolidationResult,
   DecisionReplay,
   DriftAlert,
   DriftSnapshot,
   MaterializedTemporalView,
+  MultiAgentSyncResult,
   PredictionResult,
+  ProvenanceHop,
+  ProvenanceRecord,
   SessionAnalytics,
   CacheStats,
   SanitizeResult,
@@ -331,6 +337,76 @@ function createMockBindings(): NativeBindings {
       auto_refresh: false,
     })),
     cortexTemporalListMaterializedViews: vi.fn(() => []),
+
+    // Multi-Agent (12)
+    cortexMultiagentRegisterAgent: vi.fn((name: string, capabilities: string[]) => ({
+      agent_id: { "0": "agent-uuid-123" },
+      name,
+      namespace: `agent://${name}/`,
+      capabilities,
+      parent_agent: null,
+      registered_at: "2026-01-15T10:00:00Z",
+      last_active: "2026-01-15T10:00:00Z",
+      status: { state: "active" },
+    })),
+    cortexMultiagentDeregisterAgent: vi.fn(),
+    cortexMultiagentGetAgent: vi.fn((agentId: string) => ({
+      agent_id: { "0": agentId },
+      name: "test-agent",
+      namespace: "agent://test-agent/",
+      capabilities: ["code_review"],
+      parent_agent: null,
+      registered_at: "2026-01-15T10:00:00Z",
+      last_active: "2026-01-15T10:00:00Z",
+      status: { state: "active" },
+    })),
+    cortexMultiagentListAgents: vi.fn(() => []),
+    cortexMultiagentCreateNamespace: vi.fn(() => "team://backend/"),
+    cortexMultiagentShareMemory: vi.fn(() => ({
+      agent_id: { "0": "agent-1" },
+      action: "shared_to",
+      timestamp: "2026-01-15T10:00:00Z",
+      confidence_delta: 0.0,
+    })),
+    cortexMultiagentCreateProjection: vi.fn(() => "proj-uuid-456"),
+    cortexMultiagentRetractMemory: vi.fn(),
+    cortexMultiagentGetProvenance: vi.fn((memoryId: string) => ({
+      memory_id: memoryId,
+      origin: { type: "agent_created" },
+      chain: [
+        {
+          agent_id: { "0": "agent-1" },
+          action: "created",
+          timestamp: "2026-01-15T10:00:00Z",
+          confidence_delta: 0.0,
+        },
+      ],
+      chain_confidence: 1.0,
+    })),
+    cortexMultiagentTraceCrossAgent: vi.fn(() => ({
+      path: [
+        { agent_id: "agent-1", memory_id: "mem-1", confidence: 0.9 },
+        { agent_id: "agent-2", memory_id: "mem-2", confidence: 0.85 },
+      ],
+    })),
+    cortexMultiagentGetTrust: vi.fn(() => ({
+      agent_id: { "0": "agent-a" },
+      target_agent: { "0": "agent-b" },
+      overall_trust: 0.75,
+      domain_trust: { code_review: 0.9 },
+      evidence: {
+        validated_count: 5,
+        contradicted_count: 1,
+        useful_count: 3,
+        total_received: 10,
+      },
+      last_updated: "2026-01-15T10:00:00Z",
+    })),
+    cortexMultiagentSyncAgents: vi.fn(() => ({
+      applied_count: 5,
+      buffered_count: 1,
+      errors: [],
+    })),
   };
 }
 
@@ -421,6 +497,43 @@ function createTestClient(bindings: NativeBindings) {
     },
     async listMaterializedViews(): Promise<MaterializedTemporalView[]> {
       return bindings.cortexTemporalListMaterializedViews() as MaterializedTemporalView[];
+    },
+    // Multi-Agent
+    async registerAgent(name: string, capabilities: string[]): Promise<AgentRegistration> {
+      return bindings.cortexMultiagentRegisterAgent(name, capabilities) as AgentRegistration;
+    },
+    async deregisterAgent(agentId: string): Promise<void> {
+      bindings.cortexMultiagentDeregisterAgent(agentId);
+    },
+    async getAgent(agentId: string): Promise<AgentRegistration | null> {
+      return bindings.cortexMultiagentGetAgent(agentId) as AgentRegistration | null;
+    },
+    async listAgents(statusFilter?: string): Promise<AgentRegistration[]> {
+      return bindings.cortexMultiagentListAgents(statusFilter ?? null) as AgentRegistration[];
+    },
+    async createNamespace(scope: string, name: string, owner: string): Promise<string> {
+      return bindings.cortexMultiagentCreateNamespace(scope, name, owner);
+    },
+    async shareMemory(memoryId: string, targetNamespace: string, agentId: string): Promise<ProvenanceHop> {
+      return bindings.cortexMultiagentShareMemory(memoryId, targetNamespace, agentId) as ProvenanceHop;
+    },
+    async createProjection(config: unknown): Promise<string> {
+      return bindings.cortexMultiagentCreateProjection(config);
+    },
+    async retractMemory(memoryId: string, namespace: string, agentId: string): Promise<void> {
+      bindings.cortexMultiagentRetractMemory(memoryId, namespace, agentId);
+    },
+    async getProvenance(memoryId: string): Promise<ProvenanceRecord | null> {
+      return bindings.cortexMultiagentGetProvenance(memoryId) as ProvenanceRecord | null;
+    },
+    async traceCrossAgent(memoryId: string, maxDepth: number): Promise<CrossAgentTrace> {
+      return bindings.cortexMultiagentTraceCrossAgent(memoryId, maxDepth) as CrossAgentTrace;
+    },
+    async getTrust(agentId: string, targetAgent?: string): Promise<AgentTrust> {
+      return bindings.cortexMultiagentGetTrust(agentId, targetAgent ?? null) as AgentTrust;
+    },
+    async syncAgents(sourceAgent: string, targetAgent: string): Promise<MultiAgentSyncResult> {
+      return bindings.cortexMultiagentSyncAgents(sourceAgent, targetAgent) as MultiAgentSyncResult;
     },
   };
 }
@@ -620,6 +733,110 @@ describe("CortexClient (via mock bindings)", () => {
     expect(Array.isArray(views)).toBe(true);
     expect(bindings.cortexTemporalListMaterializedViews).toHaveBeenCalled();
   });
+
+  // ─── Multi-Agent Tests (TMD2-TS-01) ─────────────────────────────────
+
+  it("should register an agent (TMD2-NAPI-01 round-trip)", async () => {
+    const reg = await client.registerAgent("code-reviewer", ["code_review", "testing"]);
+    expect(reg.name).toBe("code-reviewer");
+    expect(reg.capabilities).toEqual(["code_review", "testing"]);
+    expect(reg.status).toEqual({ state: "active" });
+    expect(bindings.cortexMultiagentRegisterAgent).toHaveBeenCalledWith(
+      "code-reviewer",
+      ["code_review", "testing"],
+    );
+  });
+
+  it("should deregister an agent", async () => {
+    await client.deregisterAgent("agent-uuid-123");
+    expect(bindings.cortexMultiagentDeregisterAgent).toHaveBeenCalledWith("agent-uuid-123");
+  });
+
+  it("should get an agent by ID", async () => {
+    const agent = await client.getAgent("agent-uuid-123");
+    expect(agent).not.toBeNull();
+    expect(agent!.name).toBe("test-agent");
+    expect(bindings.cortexMultiagentGetAgent).toHaveBeenCalledWith("agent-uuid-123");
+  });
+
+  it("should list agents", async () => {
+    const agents = await client.listAgents("active");
+    expect(Array.isArray(agents)).toBe(true);
+    expect(bindings.cortexMultiagentListAgents).toHaveBeenCalledWith("active");
+  });
+
+  it("should create a namespace", async () => {
+    const uri = await client.createNamespace("team", "backend", "agent-1");
+    expect(uri).toBe("team://backend/");
+    expect(bindings.cortexMultiagentCreateNamespace).toHaveBeenCalledWith(
+      "team",
+      "backend",
+      "agent-1",
+    );
+  });
+
+  it("should share a memory (TMD2-NAPI-02 round-trip)", async () => {
+    const hop = await client.shareMemory("mem-1", "team://backend/", "agent-1");
+    expect(hop.action).toBe("shared_to");
+    expect(hop.confidence_delta).toBe(0.0);
+    expect(bindings.cortexMultiagentShareMemory).toHaveBeenCalledWith(
+      "mem-1",
+      "team://backend/",
+      "agent-1",
+    );
+  });
+
+  it("should create a projection", async () => {
+    const projId = await client.createProjection({ id: "proj-1" } as unknown);
+    expect(projId).toBe("proj-uuid-456");
+    expect(bindings.cortexMultiagentCreateProjection).toHaveBeenCalled();
+  });
+
+  it("should retract a memory", async () => {
+    await client.retractMemory("mem-1", "agent://default/", "agent-1");
+    expect(bindings.cortexMultiagentRetractMemory).toHaveBeenCalledWith(
+      "mem-1",
+      "agent://default/",
+      "agent-1",
+    );
+  });
+
+  it("should get provenance (TMD2-NAPI-03 round-trip)", async () => {
+    const prov = await client.getProvenance("mem-1");
+    expect(prov).not.toBeNull();
+    expect(prov!.memory_id).toBe("mem-1");
+    expect(prov!.origin).toEqual({ type: "agent_created" });
+    expect(prov!.chain.length).toBe(1);
+    expect(prov!.chain[0].action).toBe("created");
+    expect(prov!.chain_confidence).toBe(1.0);
+    expect(bindings.cortexMultiagentGetProvenance).toHaveBeenCalledWith("mem-1");
+  });
+
+  it("should trace cross-agent causal relationships", async () => {
+    const trace = await client.traceCrossAgent("mem-1", 3);
+    expect(trace.path.length).toBe(2);
+    expect(trace.path[0].agent_id).toBe("agent-1");
+    expect(trace.path[0].memory_id).toBe("mem-1");
+    expect(trace.path[1].agent_id).toBe("agent-2");
+    expect(bindings.cortexMultiagentTraceCrossAgent).toHaveBeenCalledWith("mem-1", 3);
+  });
+
+  it("should get trust scores (TMD2-NAPI-04 round-trip)", async () => {
+    const trust = await client.getTrust("agent-a", "agent-b");
+    expect(trust.overall_trust).toBe(0.75);
+    expect(trust.domain_trust).toEqual({ code_review: 0.9 });
+    expect(trust.evidence.validated_count).toBe(5);
+    expect(trust.evidence.contradicted_count).toBe(1);
+    expect(bindings.cortexMultiagentGetTrust).toHaveBeenCalledWith("agent-a", "agent-b");
+  });
+
+  it("should sync agents (TMD2-NAPI-05 round-trip)", async () => {
+    const result = await client.syncAgents("agent-a", "agent-b");
+    expect(result.applied_count).toBe(5);
+    expect(result.buffered_count).toBe(1);
+    expect(result.errors).toEqual([]);
+    expect(bindings.cortexMultiagentSyncAgents).toHaveBeenCalledWith("agent-a", "agent-b");
+  });
 });
 
 describe("CortexError", () => {
@@ -725,5 +942,19 @@ describe("NativeBindings interface", () => {
     expect(typeof bindings.cortexTemporalCreateMaterializedView).toBe("function");
     expect(typeof bindings.cortexTemporalGetMaterializedView).toBe("function");
     expect(typeof bindings.cortexTemporalListMaterializedViews).toBe("function");
+
+    // Multi-Agent (12)
+    expect(typeof bindings.cortexMultiagentRegisterAgent).toBe("function");
+    expect(typeof bindings.cortexMultiagentDeregisterAgent).toBe("function");
+    expect(typeof bindings.cortexMultiagentGetAgent).toBe("function");
+    expect(typeof bindings.cortexMultiagentListAgents).toBe("function");
+    expect(typeof bindings.cortexMultiagentCreateNamespace).toBe("function");
+    expect(typeof bindings.cortexMultiagentShareMemory).toBe("function");
+    expect(typeof bindings.cortexMultiagentCreateProjection).toBe("function");
+    expect(typeof bindings.cortexMultiagentRetractMemory).toBe("function");
+    expect(typeof bindings.cortexMultiagentGetProvenance).toBe("function");
+    expect(typeof bindings.cortexMultiagentTraceCrossAgent).toBe("function");
+    expect(typeof bindings.cortexMultiagentGetTrust).toBe("function");
+    expect(typeof bindings.cortexMultiagentSyncAgents).toBe("function");
   });
 });
