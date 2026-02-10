@@ -26,3 +26,5 @@ napi-build = { workspace = true }
 
 [dev-dependencies]
 tempfile = "3"
+smallvec = { workspace = true }
+rusqlite = { workspace = true }

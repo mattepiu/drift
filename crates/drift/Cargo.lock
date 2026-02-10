@@ -435,8 +435,10 @@ dependencies = [
  "napi-build",
  "napi-derive",
  "petgraph",
+ "rusqlite",
  "serde",
  "serde_json",
+ "smallvec",
  "tempfile",
  "tree-sitter",
 ]

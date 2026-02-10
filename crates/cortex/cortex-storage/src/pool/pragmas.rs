@@ -19,10 +19,21 @@ pub fn apply_pragmas(conn: &Connection) -> CortexResult<()> {
         PRAGMA cache_size = -64000;
         PRAGMA busy_timeout = 5000;
         PRAGMA foreign_keys = ON;
-        PRAGMA auto_vacuum = INCREMENTAL;
         ",
     )
     .map_err(|e| to_storage_err(e.to_string()))?;
+
+    // auto_vacuum can only be set before any tables exist. On an existing DB
+    // the pragma is read-only. If it's not INCREMENTAL (2), set it and VACUUM
+    // to rewrite the file. This is a one-time migration cost per database.
+    let current_av: i64 = conn
+        .pragma_query_value(None, "auto_vacuum", |row| row.get(0))
+        .unwrap_or(0);
+    if current_av != 2 {
+        conn.execute_batch("PRAGMA auto_vacuum = INCREMENTAL; VACUUM;")
+            .map_err(|e| to_storage_err(e.to_string()))?;
+    }
+
     Ok(())
 }
 

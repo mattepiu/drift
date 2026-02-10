@@ -352,7 +352,7 @@ pub async fn drift_analyze() -> napi::Result<Vec<JsAnalysisResult>> {
                 // Use the outlier index to look up the source detection, fallback to first match
                 let source = pattern_matches.get(o.index).or_else(|| pattern_matches.first());
                 let (file, line) = match source {
-                    Some(m) => (m.file.clone(), m.line),
+                    Some(m) => (m.file.clone(), m.line as i64),
                     None => (String::new(), 0),
                 };
                 outlier_rows.push(drift_storage::batch::commands::OutlierDetectionRow {
@@ -777,7 +777,7 @@ pub async fn drift_analyze() -> napi::Result<Vec<JsAnalysisResult>> {
                 .flat_map(|pr| {
                     pr.call_sites.iter().filter_map(move |cs| {
                         cs.receiver.as_ref().map(|_| {
-                            (pr.file.clone(), cs.function_name.clone(), cs.function_name.clone())
+                            (pr.file.clone(), cs.callee_name.clone(), cs.callee_name.clone())
                         })
                     })
                 })

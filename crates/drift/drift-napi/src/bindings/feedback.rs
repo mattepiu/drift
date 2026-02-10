@@ -138,11 +138,15 @@ fn resolve_pattern_id(rt: &crate::runtime::DriftRuntime, violation_id: &str) -> 
 fn resolve_detector_id(rt: &crate::runtime::DriftRuntime, violation_id: &str) -> String {
     rt.db
         .with_reader(|conn| {
-            let mut stmt = conn
+            let result = conn
                 .prepare_cached("SELECT rule_id FROM violations WHERE id = ?1")
-                .ok()?;
-            stmt.query_row(rusqlite::params![violation_id], |row| row.get::<_, String>(0))
-                .ok()
+                .and_then(|mut stmt| {
+                    stmt.query_row([violation_id], |row| row.get::<_, String>(0))
+                });
+            match result {
+                Ok(val) => Ok(Some(val)),
+                Err(_) => Ok(None),
+            }
         })
         .ok()
         .flatten()

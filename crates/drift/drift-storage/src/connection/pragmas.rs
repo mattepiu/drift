@@ -17,12 +17,26 @@ pub fn apply_pragmas(conn: &Connection) -> Result<(), StorageError> {
         PRAGMA mmap_size = 268435456;
         PRAGMA busy_timeout = 5000;
         PRAGMA temp_store = MEMORY;
-        PRAGMA auto_vacuum = INCREMENTAL;
         ",
     )
     .map_err(|e| StorageError::SqliteError {
         message: format!("failed to apply pragmas: {e}"),
-    })
+    })?;
+
+    // auto_vacuum can only be set before any tables exist. On an existing DB
+    // the pragma is read-only. If it's not INCREMENTAL (2), set it and VACUUM
+    // to rewrite the file. This is a one-time migration cost per database.
+    let current_av: i64 = conn
+        .pragma_query_value(None, "auto_vacuum", |row| row.get(0))
+        .unwrap_or(0);
+    if current_av != 2 {
+        conn.execute_batch("PRAGMA auto_vacuum = INCREMENTAL; VACUUM;")
+            .map_err(|e| StorageError::SqliteError {
+                message: format!("failed to enable incremental auto_vacuum: {e}"),
+            })?;
+    }
+
+    Ok(())
 }
 
 /// Apply read-only pragmas to a read connection.

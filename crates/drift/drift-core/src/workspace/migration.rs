@@ -104,9 +104,18 @@ pub fn initialize_workspace_db(conn: &Connection) -> Result<(), WorkspaceError> 
         PRAGMA cache_size = -8000;
         PRAGMA mmap_size = 268435456;
         PRAGMA temp_store = MEMORY;
-        PRAGMA auto_vacuum = INCREMENTAL;
         ",
     )?;
+
+    // auto_vacuum can only be set before any tables exist. On an existing DB
+    // the pragma is read-only. If it's not INCREMENTAL (2), set it and VACUUM
+    // to rewrite the file. This is a one-time migration cost per database.
+    let current_av: i64 = conn
+        .pragma_query_value(None, "auto_vacuum", |row| row.get(0))
+        .unwrap_or(0);
+    if current_av != 2 {
+        conn.execute_batch("PRAGMA auto_vacuum = INCREMENTAL; VACUUM;")?;
+    }
 
     conn.execute_batch(WORKSPACE_SCHEMA_SQL)?;
 
