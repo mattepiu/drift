@@ -34,7 +34,7 @@ export function formatTable(data: unknown): string {
 function renderObjectTable(rows: TableRow[]): string {
   const keys = Object.keys(rows[0]);
   const widths = keys.map((k) =>
-    Math.max(k.length, ...rows.map((r) => String(r[k] ?? '').length)),
+    Math.max(k.length, ...rows.map((r) => formatCellValue(r[k]).length)),
   );
 
   const lines: string[] = [];
@@ -47,12 +47,32 @@ function renderObjectTable(rows: TableRow[]): string {
   // Rows
   for (const row of rows) {
     const line = keys
-      .map((k, i) => String(row[k] ?? '').padEnd(widths[i]))
+      .map((k, i) => formatCellValue(row[k]).padEnd(widths[i]))
       .join('  ');
     lines.push(line);
   }
 
   return lines.join('\n') + '\n';
+}
+
+/**
+ * Format a cell value for table display.
+ * Arrays are shown as counts, objects are summarized, long strings truncated.
+ */
+function formatCellValue(v: unknown): string {
+  if (v === null || v === undefined) return '';
+  if (Array.isArray(v)) {
+    if (v.length === 0) return '0';
+    // For arrays of primitives, show compact comma list
+    if (typeof v[0] !== 'object') return v.join(', ');
+    // For arrays of objects (e.g. matches), show count
+    return String(v.length);
+  }
+  if (typeof v === 'object') return JSON.stringify(v);
+  const s = String(v);
+  // Truncate very long values for table readability
+  if (s.length > 80) return s.slice(0, 77) + '...';
+  return s;
 }
 
 function renderKeyValue(obj: Record<string, unknown>): string {

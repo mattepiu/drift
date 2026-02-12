@@ -19,12 +19,16 @@ content_patterns = [
 [[patterns]]
 id = "A11Y-ALT-MISSING-001"
 category = "accessibility"
-description = "Missing alt text on image"
+description = "Image tag detected — verify alt attribute is present"
 sub_type = "alt-text"
-confidence = 0.75
+confidence = 0.60
 cwe_ids = [1263]
+# NOTE: Negative lookahead (?!...) is unsupported by Rust regex crate.
+# Original pattern used (?i)<img(?![^>]*alt\s*=)[^>]*> which cannot compile.
+# Instead we match <img src=...> tags broadly. Cross-reference with
+# A11Y-ALT-TEXT-001 (which detects alt= presence) to find truly missing cases.
 [patterns.match]
-content_patterns = ["(?i)<img(?![^>]*alt\\s*=)[^>]*>"]
+content_patterns = ["(?i)<img\\s+src\\s*=[^>]*>"]
 
 [[patterns]]
 id = "A11Y-ARIA-001"

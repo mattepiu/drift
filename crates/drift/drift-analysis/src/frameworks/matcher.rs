@@ -156,10 +156,13 @@ impl FileDetectorHandler for FrameworkMatcher {
         if self.match_limit > 0 && file_hits > self.match_limit {
             self.results.truncate(self.file_result_start + self.match_limit);
             self.files_truncated += 1;
-            eprintln!(
-                "[drift] warning: match limit ({}) reached for file '{}', truncating",
-                self.match_limit, ctx.file
-            );
+            // Only emit warning when not in quiet mode (DRIFT_QUIET=1)
+            if std::env::var("DRIFT_QUIET").as_deref() != Ok("1") {
+                eprintln!(
+                    "[drift] warning: match limit ({}) reached for file '{}', truncating",
+                    self.match_limit, ctx.file
+                );
+            }
         }
     }
 

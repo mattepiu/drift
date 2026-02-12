@@ -54,6 +54,13 @@ export function registerAnalyzeCommand(program: Command): void {
         const napi = loadNapi();
         const scanPath = path ?? process.cwd();
 
+        // Signal Rust NAPI layer to suppress debug logging
+        if (opts.quiet) {
+          process.env.DRIFT_QUIET = '1';
+        } else {
+          delete process.env.DRIFT_QUIET;
+        }
+
         try {
           // Optionally run scan first
           if (opts.scan) {

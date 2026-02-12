@@ -324,21 +324,24 @@ fn compile_regexes(
     pattern_id: &str,
     field_name: &str,
 ) -> Result<Vec<Regex>, DetectionError> {
-    patterns
-        .iter()
-        .map(|p| {
-            if p.is_empty() {
-                return Err(DetectionError::InvalidPattern(
-                    format!("empty regex in {pattern_id}.{field_name}")
-                ));
+    let mut compiled = Vec::new();
+    for p in patterns {
+        if p.is_empty() {
+            continue;
+        }
+        match Regex::new(p) {
+            Ok(re) => compiled.push(re),
+            Err(e) => {
+                // Gracefully skip unsupported patterns (e.g. lookahead/lookbehind)
+                // instead of failing the entire pack. Log a warning for diagnostics.
+                eprintln!(
+                    "[drift] warning: skipping unsupported regex in {}.{}: {} ({})",
+                    pattern_id, field_name, p, e
+                );
             }
-            Regex::new(p).map_err(|e| {
-                DetectionError::InvalidPattern(format!(
-                    "regex error in {pattern_id}.{field_name}: {e}"
-                ))
-            })
-        })
-        .collect()
+        }
+    }
+    Ok(compiled)
 }
 
 /// Build a RegexSet from pattern strings. Returns None if empty or if compilation fails.

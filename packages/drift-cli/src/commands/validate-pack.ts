@@ -33,6 +33,25 @@ export function registerValidatePackCommand(program: Command): void {
         return;
       }
 
+      // Pre-check: detect if this is a project config file instead of a framework pack.
+      // Framework packs have [framework] + [[patterns]], project configs have [scan]/[policy]/[gates].
+      const isProjectConfig =
+        /^\[scan\]/m.test(content) ||
+        /^\[policy\]/m.test(content) ||
+        /^\[gates\]/m.test(content) ||
+        /^\[reporters\]/m.test(content);
+      const hasFrameworkSection = /^\[framework\]/m.test(content);
+
+      if (isProjectConfig && !hasFrameworkSection) {
+        process.stderr.write(
+          `✗ '${file}' is a Drift project configuration file, not a framework pack.\n` +
+          `  Framework packs require a [framework] section and [[patterns]] entries.\n` +
+          `  To validate project config, use 'drift doctor' instead.\n`,
+        );
+        process.exitCode = 1;
+        return;
+      }
+
       // Validate via NAPI
       const napi = loadNapi();
       const result = napi.driftValidatePack(content);

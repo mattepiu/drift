@@ -8,6 +8,17 @@ use rayon::prelude::*;
 use crate::conversions::error_codes;
 use crate::runtime;
 
+/// Debug logging macro — suppressed when DRIFT_QUIET=1 is set.
+/// Prevents [drift-analyze] timing/status messages from leaking
+/// to stderr when the CLI is in --quiet mode.
+macro_rules! drift_log {
+    ($($arg:tt)*) => {
+        if std::env::var("DRIFT_QUIET").as_deref() != Ok("1") {
+            eprintln!($($arg)*);
+        }
+    };
+}
+
 /// Analysis result returned to TypeScript.
 #[napi(object)]
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -130,12 +141,12 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
     let framework_packs_for_learner = framework_packs.clone();
     let mut framework_matcher = drift_analysis::frameworks::FrameworkMatcher::new(framework_packs);
     let mut framework_learner = drift_analysis::frameworks::FrameworkLearner::new(framework_packs_for_learner);
-    eprintln!(
+    drift_log!(
         "[drift-analyze] framework packs loaded: {} packs, {} patterns",
         framework_matcher.pack_count(),
         framework_matcher.pattern_count(),
     );
-    eprintln!("[drift-analyze] 2a (framework load): {:?}", fw_load_timer.elapsed());
+    drift_log!("[drift-analyze] 2a (framework load): {:?}", fw_load_timer.elapsed());
 
     let mut all_results: Vec<JsAnalysisResult> = Vec::new();
     let mut all_matches: Vec<drift_analysis::engine::types::PatternMatch> = Vec::new();
@@ -311,7 +322,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
         }
         let learning_matches = framework_learner.results();
         if !learning_matches.is_empty() {
-            eprintln!("[drift-analyze] framework learning deviations: {} hits", learning_matches.len());
+            drift_log!("[drift-analyze] framework learning deviations: {} hits", learning_matches.len());
             for m in &learning_matches {
                 detection_rows.push(drift_storage::batch::commands::DetectionRow {
                     file: m.file.clone(),
@@ -333,7 +344,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
             all_matches.extend(learning_matches);
         }
     }
-    eprintln!("[drift-analyze] 2c (framework learn): {:?}", fw_learn_timer.elapsed());
+    drift_log!("[drift-analyze] 2c (framework learn): {:?}", fw_learn_timer.elapsed());
 
     // Step 2b: Collect framework matcher results and merge into all_matches
     let fw_match_timer = std::time::Instant::now();
@@ -341,7 +352,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
         use drift_analysis::engine::visitor::FileDetectorHandler;
         let framework_matches = framework_matcher.results();
         if !framework_matches.is_empty() {
-            eprintln!(
+            drift_log!(
                 "[drift-analyze] framework patterns matched: {} hits",
                 framework_matches.len(),
             );
@@ -366,7 +377,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
             all_matches.extend(framework_matches);
         }
     }
-    eprintln!("[drift-analyze] 2b (framework match): {:?}", fw_match_timer.elapsed());
+    drift_log!("[drift-analyze] 2b (framework match): {:?}", fw_match_timer.elapsed());
 
     // Step 3: Persist detections and functions via BatchWriter
     if !detection_rows.is_empty() {
@@ -588,7 +599,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
         }
     }
 
-    eprintln!("[drift-analyze] step 4 (pattern intelligence): {:?}", phase_timer.elapsed());
+    drift_log!("[drift-analyze] step 4 (pattern intelligence): {:?}", phase_timer.elapsed());
     let step_timer = std::time::Instant::now();
 
     // Step 5: Structural analysis — coupling, wrappers, crypto, constraints
@@ -630,7 +641,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
             ).map_err(storage_err)?;
         }
 
-        eprintln!("[drift-analyze] 5a (coupling): {:?}", step_timer.elapsed());
+        drift_log!("[drift-analyze] 5a (coupling): {:?}", step_timer.elapsed());
         let step_timer = std::time::Instant::now();
 
         // 5b: Wrapper detection → wrappers table (parallel)
@@ -663,7 +674,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
             ).map_err(storage_err)?;
         }
 
-        eprintln!("[drift-analyze] 5b (wrappers): {:?}", step_timer.elapsed());
+        drift_log!("[drift-analyze] 5b (wrappers): {:?}", step_timer.elapsed());
         let step_timer = std::time::Instant::now();
 
         // 5c: Crypto detection → crypto_findings table (parallel)
@@ -696,7 +707,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
             ).map_err(storage_err)?;
         }
 
-        eprintln!("[drift-analyze] 5c (crypto): {:?}", step_timer.elapsed());
+        drift_log!("[drift-analyze] 5c (crypto): {:?}", step_timer.elapsed());
         let step_timer = std::time::Instant::now();
 
         // 5d: DNA profiling → dna_genes + dna_mutations tables
@@ -786,7 +797,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
             ).map_err(storage_err)?;
         }
 
-        eprintln!("[drift-analyze] 5d (dna): {:?}", step_timer.elapsed());
+        drift_log!("[drift-analyze] 5d (dna): {:?}", step_timer.elapsed());
         let step_timer = std::time::Instant::now();
 
         // 5e: Secrets detection → secrets table (pre-compiled + parallel)
@@ -815,7 +826,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
             ).map_err(storage_err)?;
         }
 
-        eprintln!("[drift-analyze] 5e (secrets): {:?}", step_timer.elapsed());
+        drift_log!("[drift-analyze] 5e (secrets): {:?}", step_timer.elapsed());
         let step_timer = std::time::Instant::now();
 
         // 5f: Constants & magic numbers → constants table (parallel)
@@ -843,7 +854,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
             ).map_err(storage_err)?;
         }
 
-        eprintln!("[drift-analyze] 5f (constants): {:?}", step_timer.elapsed());
+        drift_log!("[drift-analyze] 5f (constants): {:?}", step_timer.elapsed());
         let step_timer = std::time::Instant::now();
 
         // 5g: Constraint verification → constraint_verifications table
@@ -901,7 +912,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
             }
         }
 
-        eprintln!("[drift-analyze] 5g (constraints): {:?}", step_timer.elapsed());
+        drift_log!("[drift-analyze] 5g (constraints): {:?}", step_timer.elapsed());
         let step_timer = std::time::Instant::now();
 
         // 5h: Environment variable extraction → env_variables table (parallel)
@@ -929,7 +940,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
             ).map_err(storage_err)?;
         }
 
-        eprintln!("[drift-analyze] 5h (env vars): {:?}", step_timer.elapsed());
+        drift_log!("[drift-analyze] 5h (env vars): {:?}", step_timer.elapsed());
         let step_timer = std::time::Instant::now();
 
         // 5i: Data access tracking → data_access table (from DataAccess-category detections)
@@ -961,7 +972,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
             ).map_err(storage_err)?;
         }
 
-        eprintln!("[drift-analyze] 5i (data access): {:?}", step_timer.elapsed());
+        drift_log!("[drift-analyze] 5i (data access): {:?}", step_timer.elapsed());
         let step_timer = std::time::Instant::now();
 
         // 5j: OWASP findings → owasp_findings table (enriched from detections with CWE/OWASP data)
@@ -998,7 +1009,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
             ).map_err(storage_err)?;
         }
 
-        eprintln!("[drift-analyze] 5j (owasp): {:?}", step_timer.elapsed());
+        drift_log!("[drift-analyze] 5j (owasp): {:?}", step_timer.elapsed());
         let step_timer = std::time::Instant::now();
 
         // 5k: Decomposition analysis → decomposition_decisions table
@@ -1075,7 +1086,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
             }
         }
 
-        eprintln!("[drift-analyze] 5k (decomposition): {:?}", step_timer.elapsed());
+        drift_log!("[drift-analyze] 5k (decomposition): {:?}", step_timer.elapsed());
         let step_timer = std::time::Instant::now();
 
         // 5l: Contract extraction → contracts + contract_mismatches tables
@@ -1182,7 +1193,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
                 ).map_err(storage_err)?;
             }
         }
-        eprintln!("[drift-analyze] 5l (contracts): {:?}", step_timer.elapsed());
+        drift_log!("[drift-analyze] 5l (contracts): {:?}", step_timer.elapsed());
     }
 
     // ── Phase 3 complete: pattern intelligence + structural ──
@@ -1640,7 +1651,7 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
         if let Err(e) = run_bridge_grounding_loop(&rt) {
             tracing::warn!(error = %e, "Post-analysis grounding loop failed (non-fatal)");
         } else {
-            eprintln!("[drift-analyze] bridge grounding: {:?}", grounding_timer.elapsed());
+            drift_log!("[drift-analyze] bridge grounding: {:?}", grounding_timer.elapsed());
         }
     }
 
@@ -1676,7 +1687,7 @@ fn run_bridge_grounding_loop(
     )
     .map_err(|e| napi::Error::from_reason(format!("[BRIDGE_ERROR] {e}")))?;
 
-    eprintln!(
+    drift_log!(
         "[drift-analyze] bridge grounding complete: {} memories grounded",
         memories.len(),
     );
