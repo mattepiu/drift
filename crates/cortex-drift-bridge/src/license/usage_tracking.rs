@@ -136,8 +136,16 @@ impl UsageTracker {
 
     /// Persist current usage counts to bridge_metrics table.
     /// Each feature count is stored as `usage:{feature_name}`.
+    ///
+    /// Cleans up stale `usage:*` rows before inserting to prevent unbounded
+    /// row accumulation (bridge_metrics has no unique constraint on metric_name).
     pub fn persist(&self, conn: &Connection) -> Result<(), rusqlite::Error> {
         let counts = self.counts.lock().unwrap();
+        // Remove previous usage rows to avoid accumulation
+        conn.execute(
+            "DELETE FROM bridge_metrics WHERE metric_name LIKE 'usage:%'",
+            [],
+        )?;
         for (feature, count) in counts.iter() {
             conn.execute(
                 "INSERT INTO bridge_metrics (metric_name, metric_value) VALUES (?1, ?2)",

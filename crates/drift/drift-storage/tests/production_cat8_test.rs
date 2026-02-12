@@ -46,7 +46,7 @@ fn t8_01_fresh_db_all_45_tables_created() {
 
     let tables = get_table_names(&conn);
 
-    // All 45 expected tables from v001–v007 (+ v006 PART2)
+    // All 46 expected tables from v001–v009 (+ v006 PART2)
     let expected_tables = [
         // v001
         "file_metadata",
@@ -101,12 +101,14 @@ fn t8_01_fresh_db_all_45_tables_created() {
         "migration_projects",
         "migration_modules",
         "migration_corrections",
+        // v009
+        "pattern_status",
     ];
 
     assert_eq!(
         expected_tables.len(),
-        45,
-        "sanity: expected_tables array must have 45 entries"
+        46,
+        "sanity: expected_tables array must have 46 entries"
     );
 
     for table_name in &expected_tables {
@@ -119,25 +121,26 @@ fn t8_01_fresh_db_all_45_tables_created() {
     // Verify total table count matches
     assert_eq!(
         tables.len(),
-        45,
-        "expected 45 tables, got {}: {:?}",
+        46,
+        "expected 46 tables, got {}: {:?}",
         tables.len(),
         tables
     );
 
-    // Verify total column count across all tables matches DD-15 audit (398)
+    // Verify total column count across all tables matches DD-15 audit
+    // v001-v007: 398 columns + v008 scan_root: 1 column + v009 pattern_status: 7 columns = 406
     let total_columns: usize = expected_tables
         .iter()
         .map(|t| get_column_count(&conn, t))
         .sum();
     assert_eq!(
-        total_columns, 398,
-        "total column count across 45 tables must be 398 (DD-15 audit)"
+        total_columns, 406,
+        "total column count across 46 tables must be 406 (DD-15 audit + v008 + v009)"
     );
 
     // Verify schema version
     let version = migrations::current_version(&conn).unwrap();
-    assert_eq!(version, 7);
+    assert_eq!(version, 9);
 }
 
 // ---- T8-02: Idempotent Re-Open ----
@@ -157,10 +160,10 @@ fn t8_02_idempotent_reopen() {
         let db = DatabaseManager::open(&db_path).unwrap();
         db.with_writer(|conn| {
             let version = migrations::current_version(conn).unwrap();
-            assert_eq!(version, 7, "version must remain 7 after re-open");
+            assert_eq!(version, 9, "version must remain 9 after re-open");
 
             let tables = get_table_names(conn);
-            assert_eq!(tables.len(), 45, "all 45 tables must still exist after re-open");
+            assert_eq!(tables.len(), 46, "all 46 tables must still exist after re-open");
             Ok(())
         })
         .unwrap();
@@ -171,7 +174,7 @@ fn t8_02_idempotent_reopen() {
         let db = DatabaseManager::open(&db_path).unwrap();
         db.with_writer(|conn| {
             let version = migrations::current_version(conn).unwrap();
-            assert_eq!(version, 7);
+            assert_eq!(version, 9);
             Ok(())
         })
         .unwrap();
@@ -216,9 +219,10 @@ fn t8_03_v006_part2_execution() {
     // audit_snapshots: id, health_score, avg_confidence, approval_ratio,
     //   compliance_rate, cross_validation_rate, duplicate_free_rate,
     //   pattern_count, category_scores, created_at = 10 columns
+    //   + scan_root (v008) = 11 columns
     assert_eq!(
         get_column_count(&conn, "audit_snapshots"),
-        10,
+        11,
         "audit_snapshots column count"
     );
 

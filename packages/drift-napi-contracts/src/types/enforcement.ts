@@ -70,6 +70,42 @@ export interface JsAuditResult {
   degradationAlerts: string[];
   autoApprovedCount: number;
   needsReviewCount: number;
+  dataCompleteness: number;
+}
+
+// ─── Pattern Status Types ────────────────────────────────────────────
+
+/** Single pattern status entry. Aligned to Rust JsPatternStatusEntry (#[napi(object)]). */
+export interface JsPatternStatusEntry {
+  patternId: string;
+  status: string;
+  approvedBy: string | null;
+  approvedAt: number | null;
+  confidenceAtApproval: number | null;
+  reason: string | null;
+}
+
+/** Aggregate counts by status. Aligned to Rust JsPatternStatusCounts (#[napi(object)]). */
+export interface JsPatternStatusCounts {
+  discovered: number;
+  approved: number;
+  ignored: number;
+}
+
+/** Result from drift_pattern_status(). Aligned to Rust JsPatternStatusResult (#[napi(object)]). */
+export interface JsPatternStatusResult {
+  patterns: JsPatternStatusEntry[];
+  total: number;
+  counts: JsPatternStatusCounts;
+}
+
+/** Result from drift_approve_pattern(). Aligned to Rust JsApprovePatternResult (#[napi(object)]). */
+export interface JsApprovePatternResult {
+  success: boolean;
+  patternId: string;
+  previousStatus: string;
+  newStatus: string;
+  message: string;
 }
 
 // ─── Feedback Types ──────────────────────────────────────────────────

@@ -27,13 +27,16 @@ pub fn handle_drift_why(
     });
 
     // Query bridge_memories for related memories
+    // Uses ESCAPE clause to prevent entity_id values containing % or _ from
+    // being interpreted as LIKE wildcards (P2-9).
     if let Some(db) = bridge_db {
         let mut stmt = db.prepare(
             "SELECT id, memory_type, summary, confidence, created_at FROM bridge_memories
-             WHERE summary LIKE ?1 OR tags LIKE ?1
+             WHERE summary LIKE ?1 ESCAPE '\\' OR tags LIKE ?1 ESCAPE '\\'
              ORDER BY confidence DESC LIMIT 10",
         )?;
-        let search = format!("%{}%", entity_id);
+        let escaped = crate::query::cortex_queries::escape_like(entity_id);
+        let search = format!("%{}%", escaped);
         let rows = stmt.query_map(rusqlite::params![search], |row| {
             Ok(json!({
                 "id": row.get::<_, String>(0)?,

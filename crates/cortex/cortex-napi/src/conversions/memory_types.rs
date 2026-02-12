@@ -14,8 +14,17 @@ pub fn memory_to_json(memory: &BaseMemory) -> napi::Result<serde_json::Value> {
 
 /// Deserialize a BaseMemory from a serde_json::Value received from JS.
 pub fn memory_from_json(value: serde_json::Value) -> napi::Result<BaseMemory> {
-    serde_json::from_value(value)
-        .map_err(|e| napi::Error::from_reason(format!("Failed to deserialize BaseMemory: {e}")))
+    serde_json::from_value(value.clone()).map_err(|e| {
+        let hint = if e.to_string().contains("missing field") {
+            format!(
+                "\nHint: The 'content' field must be {{\"type\":\"<memory_type>\",\"data\":{{...}}}}. \
+                 Example: {{\"type\":\"episodic\",\"data\":{{\"interaction\":\"...\"}}}}"
+            )
+        } else {
+            String::new()
+        };
+        napi::Error::from_reason(format!("Failed to deserialize BaseMemory: {e}{hint}"))
+    })
 }
 
 /// Serialize a Vec<BaseMemory> to JSON array.

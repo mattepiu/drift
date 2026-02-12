@@ -1586,15 +1586,26 @@ pub async fn drift_analyze(max_phase: Option<u32>) -> napi::Result<Vec<JsAnalysi
         }
 
         // BW-EVT-06: Fire on_regression_detected for score degradation alerts
+        // Uses dedup to prevent re-emitting the same regression event when
+        // scores haven't changed (P1-8). The `extra` field encodes previous
+        // and current scores so different score transitions are distinct.
         {
             use drift_core::events::types::RegressionDetectedEvent;
-            for alert in &alert_rows {
-                if alert.alert_type == "gate_score_low" {
-                    rt.dispatcher.emit_regression_detected(&RegressionDetectedEvent {
-                        pattern_id: alert.message.clone(),
-                        previous_score: alert.previous_value,
-                        current_score: alert.current_value,
-                    });
+            if let Ok(mut dedup) = rt.bridge_deduplicator.lock() {
+                for alert in &alert_rows {
+                    if alert.alert_type == "gate_score_low" {
+                        let extra = format!(
+                            "prev={:.2};curr={:.2}",
+                            alert.previous_value, alert.current_value
+                        );
+                        if !dedup.is_duplicate("on_regression_detected", &alert.message, &extra) {
+                            rt.dispatcher.emit_regression_detected(&RegressionDetectedEvent {
+                                pattern_id: alert.message.clone(),
+                                previous_score: alert.previous_value,
+                                current_score: alert.current_value,
+                            });
+                        }
+                    }
                 }
             }
         }

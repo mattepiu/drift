@@ -262,12 +262,12 @@ describe('Bridge Smoke — Return Shape Completeness', () => {
 });
 
 describe('Bridge Contract Alignment Tests', () => {
-  // BT-NAPI-11: DriftNapi interface has exactly 64 methods
-  it('BT-NAPI-11: DriftNapi has exactly 64 methods — 41 drift + 21 bridge + 2 cloud', () => {
-    expect(DRIFT_NAPI_METHOD_COUNT).toBe(64);
-    expect(DRIFT_NAPI_METHOD_NAMES.length).toBe(64);
+  // BT-NAPI-11: DriftNapi interface has exactly 66 methods
+  it('BT-NAPI-11: DriftNapi has exactly 66 methods — 43 drift + 21 bridge + 2 cloud', () => {
+    expect(DRIFT_NAPI_METHOD_COUNT).toBe(66);
+    expect(DRIFT_NAPI_METHOD_NAMES.length).toBe(66);
     const unique = new Set(DRIFT_NAPI_METHOD_NAMES);
-    expect(unique.size).toBe(64);
+    expect(unique.size).toBe(66);
   });
 
   // BT-NAPI-12: Every bridge method has a corresponding stub entry

@@ -379,12 +379,12 @@ fn roundtrip_convention_multiple_categories() {
 fn migration_v003_idempotent() {
     let conn = setup_db();
     let version = migrations::current_version(&conn).unwrap();
-    assert_eq!(version, 7);
+    assert_eq!(version, 9);
 
     // Running migrations again should be a no-op
     migrations::run_migrations(&conn).unwrap();
     let version2 = migrations::current_version(&conn).unwrap();
-    assert_eq!(version2, 7);
+    assert_eq!(version2, 9);
 }
 
 #[test]

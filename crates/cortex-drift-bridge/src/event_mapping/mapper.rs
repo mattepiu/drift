@@ -15,7 +15,7 @@ use tracing::{info, warn};
 use crate::config::EventConfig;
 use crate::errors::BridgeResult;
 use crate::license::LicenseTier;
-use crate::traits::IBridgeStorage;
+use crate::traits::{CortexMemoryWriter, IBridgeStorage};
 
 use super::memory_types::{self, EventProcessingResult};
 
@@ -24,6 +24,10 @@ use super::memory_types::{self, EventProcessingResult};
 pub struct BridgeEventHandler {
     /// Bridge storage for writing memories.
     bridge_store: Option<Arc<dyn IBridgeStorage>>,
+    /// Optional cortex.db writer for dual-write (P0-3).
+    /// When present, every memory created by the event mapper is also
+    /// written to cortex.db so it is visible to Cortex retrieval.
+    cortex_writer: Option<Arc<dyn CortexMemoryWriter>>,
     /// License tier for event filtering.
     license_tier: LicenseTier,
     /// Per-event enable/disable toggles.
@@ -41,6 +45,7 @@ impl BridgeEventHandler {
         let available = bridge_store.is_some();
         Self {
             bridge_store,
+            cortex_writer: None,
             license_tier,
             event_config: EventConfig::default(),
             available,
@@ -57,8 +62,28 @@ impl BridgeEventHandler {
         let available = bridge_store.is_some();
         Self {
             bridge_store,
+            cortex_writer: None,
             license_tier,
             event_config,
+            available,
+            error_count: AtomicU64::new(0),
+        }
+    }
+
+    /// Create a new handler with a cortex.db dual-writer (P0-3).
+    /// When `cortex_writer` is provided, every memory created by event processing
+    /// is also written to cortex.db for Cortex retrieval visibility.
+    pub fn with_cortex_writer(
+        bridge_store: Option<Arc<dyn IBridgeStorage>>,
+        license_tier: LicenseTier,
+        cortex_writer: Arc<dyn CortexMemoryWriter>,
+    ) -> Self {
+        let available = bridge_store.is_some();
+        Self {
+            bridge_store,
+            cortex_writer: Some(cortex_writer),
+            license_tier,
+            event_config: EventConfig::default(),
             available,
             error_count: AtomicU64::new(0),
         }
@@ -68,6 +93,7 @@ impl BridgeEventHandler {
     pub fn no_op() -> Self {
         Self {
             bridge_store: None,
+            cortex_writer: None,
             license_tier: LicenseTier::Community,
             event_config: EventConfig::default(),
             available: false,
@@ -138,10 +164,23 @@ impl BridgeEventHandler {
 
         let memory_id = memory.id.clone();
 
-        // Persist via bridge storage
+        // Persist via bridge storage (primary)
         if let Some(ref store) = self.bridge_store {
             store.insert_memory(&memory)?;
             store.insert_event(event_type, Some(&format!("{:?}", memory_type)), Some(&memory_id), Some(confidence))?;
+        }
+
+        // Dual-write to cortex.db if writer is available (P0-3).
+        // Failures are non-fatal — bridge storage is the source of truth.
+        if let Some(ref writer) = self.cortex_writer {
+            if let Err(e) = writer.write_memory(&memory) {
+                warn!(
+                    event = event_type,
+                    memory_id = %memory_id,
+                    error = %e,
+                    "Failed to dual-write memory to cortex.db — bridge copy is authoritative"
+                );
+            }
         }
 
         let duration_us = start.elapsed().as_micros() as u64;

@@ -180,12 +180,52 @@ pub fn query_gate_results(conn: &Connection) -> Result<Vec<GateResultRow>, Stora
     let mut stmt = conn
         .prepare_cached(
             "SELECT gate_id, status, passed, score, summary, violation_count, warning_count, execution_time_ms, details, error, run_at
-             FROM gate_results ORDER BY run_at DESC",
+             FROM (
+                 SELECT *, ROW_NUMBER() OVER (PARTITION BY gate_id ORDER BY run_at DESC) AS rn
+                 FROM gate_results
+             ) WHERE rn = 1
+             ORDER BY gate_id",
         )
         .map_err(|e| StorageError::SqliteError { message: e.to_string() })?;
 
     let rows = stmt
         .query_map([], |row| {
+            Ok(GateResultRow {
+                gate_id: row.get(0)?,
+                status: row.get(1)?,
+                passed: row.get::<_, i32>(2)? != 0,
+                score: row.get(3)?,
+                summary: row.get(4)?,
+                violation_count: row.get(5)?,
+                warning_count: row.get::<_, u32>(6).unwrap_or(0),
+                execution_time_ms: row.get(7)?,
+                details: row.get(8)?,
+                error: row.get(9)?,
+                run_at: row.get(10)?,
+            })
+        })
+        .map_err(|e| StorageError::SqliteError { message: e.to_string() })?;
+
+    rows.collect::<Result<Vec<_>, _>>()
+        .map_err(|e| StorageError::SqliteError { message: e.to_string() })
+}
+
+/// Query historical runs for a specific gate, ordered newest-first.
+pub fn query_gate_history(
+    conn: &Connection,
+    gate_id: &str,
+    limit: u32,
+) -> Result<Vec<GateResultRow>, StorageError> {
+    let mut stmt = conn
+        .prepare_cached(
+            "SELECT gate_id, status, passed, score, summary, violation_count, warning_count,
+                    execution_time_ms, details, error, run_at
+             FROM gate_results WHERE gate_id = ?1 ORDER BY run_at DESC LIMIT ?2",
+        )
+        .map_err(|e| StorageError::SqliteError { message: e.to_string() })?;
+
+    let rows = stmt
+        .query_map(params![gate_id, limit], |row| {
             Ok(GateResultRow {
                 gate_id: row.get(0)?,
                 status: row.get(1)?,
@@ -595,6 +635,249 @@ pub fn query_recent_degradation_alerts(
                 previous_value: row.get(5)?,
                 delta: row.get(6)?,
                 created_at: row.get(7)?,
+            })
+        })
+        .map_err(|e| StorageError::SqliteError { message: e.to_string() })?;
+
+    rows.collect::<Result<Vec<_>, _>>()
+        .map_err(|e| StorageError::SqliteError { message: e.to_string() })
+}
+
+/// Clear degradation alerts older than 24 hours (TTL-based cleanup).
+pub fn clear_recovered_alerts(conn: &Connection) -> Result<u64, StorageError> {
+    let deleted = conn
+        .execute(
+            "DELETE FROM degradation_alerts WHERE created_at < unixepoch() - 86400",
+            [],
+        )
+        .map_err(|e| StorageError::SqliteError { message: e.to_string() })?;
+    Ok(deleted as u64)
+}
+
+// ─── Pattern Status ──────────────────────────────────────────────────
+
+/// A pattern status row from the pattern_status table.
+#[derive(Debug, Clone)]
+pub struct PatternStatusRow {
+    pub pattern_id: String,
+    pub status: String,
+    pub approved_by: Option<String>,
+    pub approved_at: Option<i64>,
+    pub confidence_at_approval: Option<f64>,
+    pub reason: Option<String>,
+    pub updated_at: i64,
+}
+
+/// Insert or update a pattern status record.
+pub fn upsert_pattern_status(
+    conn: &Connection,
+    row: &PatternStatusRow,
+) -> Result<(), StorageError> {
+    conn.execute(
+        "INSERT INTO pattern_status (pattern_id, status, approved_by, approved_at, confidence_at_approval, reason, updated_at)
+         VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7)
+         ON CONFLICT(pattern_id) DO UPDATE SET
+           status = CASE
+             WHEN excluded.approved_by = 'auto' AND pattern_status.approved_by IS NOT NULL AND pattern_status.approved_by != 'auto'
+             THEN pattern_status.status
+             ELSE excluded.status
+           END,
+           approved_by = CASE
+             WHEN excluded.approved_by = 'auto' AND pattern_status.approved_by IS NOT NULL AND pattern_status.approved_by != 'auto'
+             THEN pattern_status.approved_by
+             ELSE excluded.approved_by
+           END,
+           approved_at = CASE
+             WHEN excluded.approved_by = 'auto' AND pattern_status.approved_by IS NOT NULL AND pattern_status.approved_by != 'auto'
+             THEN pattern_status.approved_at
+             ELSE excluded.approved_at
+           END,
+           confidence_at_approval = CASE
+             WHEN excluded.approved_by = 'auto' AND pattern_status.approved_by IS NOT NULL AND pattern_status.approved_by != 'auto'
+             THEN pattern_status.confidence_at_approval
+             ELSE excluded.confidence_at_approval
+           END,
+           reason = CASE
+             WHEN excluded.approved_by = 'auto' AND pattern_status.approved_by IS NOT NULL AND pattern_status.approved_by != 'auto'
+             THEN pattern_status.reason
+             ELSE excluded.reason
+           END,
+           updated_at = excluded.updated_at",
+        params![
+            row.pattern_id,
+            row.status,
+            row.approved_by,
+            row.approved_at,
+            row.confidence_at_approval,
+            row.reason,
+            row.updated_at,
+        ],
+    )
+    .map_err(|e| StorageError::SqliteError { message: e.to_string() })?;
+    Ok(())
+}
+
+/// Query pattern status by pattern_id. Returns None if not tracked.
+pub fn query_pattern_status(
+    conn: &Connection,
+    pattern_id: &str,
+) -> Result<Option<PatternStatusRow>, StorageError> {
+    let mut stmt = conn
+        .prepare_cached(
+            "SELECT pattern_id, status, approved_by, approved_at, confidence_at_approval, reason, updated_at
+             FROM pattern_status WHERE pattern_id = ?1",
+        )
+        .map_err(|e| StorageError::SqliteError { message: e.to_string() })?;
+
+    let result = stmt
+        .query_row(params![pattern_id], |row| {
+            Ok(PatternStatusRow {
+                pattern_id: row.get(0)?,
+                status: row.get(1)?,
+                approved_by: row.get(2)?,
+                approved_at: row.get(3)?,
+                confidence_at_approval: row.get(4)?,
+                reason: row.get(5)?,
+                updated_at: row.get(6)?,
+            })
+        });
+
+    match result {
+        Ok(row) => Ok(Some(row)),
+        Err(rusqlite::Error::QueryReturnedNoRows) => Ok(None),
+        Err(e) => Err(StorageError::SqliteError { message: e.to_string() }),
+    }
+}
+
+/// Query all pattern statuses, optionally filtered by status string.
+pub fn query_all_pattern_statuses(
+    conn: &Connection,
+    status_filter: Option<&str>,
+) -> Result<Vec<PatternStatusRow>, StorageError> {
+    let (sql, use_filter) = if status_filter.is_some() {
+        (
+            "SELECT pattern_id, status, approved_by, approved_at, confidence_at_approval, reason, updated_at
+             FROM pattern_status WHERE status = ?1 ORDER BY updated_at DESC",
+            true,
+        )
+    } else {
+        (
+            "SELECT pattern_id, status, approved_by, approved_at, confidence_at_approval, reason, updated_at
+             FROM pattern_status ORDER BY updated_at DESC",
+            false,
+        )
+    };
+
+    let mut stmt = conn
+        .prepare_cached(sql)
+        .map_err(|e| StorageError::SqliteError { message: e.to_string() })?;
+
+    let rows = if use_filter {
+        stmt.query_map(params![status_filter.unwrap()], map_pattern_status_row)
+            .map_err(|e| StorageError::SqliteError { message: e.to_string() })?
+    } else {
+        stmt.query_map([], map_pattern_status_row)
+            .map_err(|e| StorageError::SqliteError { message: e.to_string() })?
+    };
+
+    rows.collect::<Result<Vec<_>, _>>()
+        .map_err(|e| StorageError::SqliteError { message: e.to_string() })
+}
+
+/// Count patterns by status.
+pub fn count_patterns_by_status(conn: &Connection) -> Result<Vec<(String, u32)>, StorageError> {
+    let mut stmt = conn
+        .prepare_cached("SELECT status, COUNT(*) FROM pattern_status GROUP BY status")
+        .map_err(|e| StorageError::SqliteError { message: e.to_string() })?;
+
+    let rows = stmt
+        .query_map([], |row| Ok((row.get::<_, String>(0)?, row.get::<_, u32>(1)?)))
+        .map_err(|e| StorageError::SqliteError { message: e.to_string() })?;
+
+    rows.collect::<Result<Vec<_>, _>>()
+        .map_err(|e| StorageError::SqliteError { message: e.to_string() })
+}
+
+fn map_pattern_status_row(row: &rusqlite::Row) -> rusqlite::Result<PatternStatusRow> {
+    Ok(PatternStatusRow {
+        pattern_id: row.get(0)?,
+        status: row.get(1)?,
+        approved_by: row.get(2)?,
+        approved_at: row.get(3)?,
+        confidence_at_approval: row.get(4)?,
+        reason: row.get(5)?,
+        updated_at: row.get(6)?,
+    })
+}
+
+// ─── Pattern Audit Data Builder ──────────────────────────────────────
+
+/// Lightweight row returned by the audit data builder query.
+/// Joins pattern_confidence + detection counts + outlier counts + pattern_status.
+#[derive(Debug, Clone)]
+pub struct PatternAuditRow {
+    pub pattern_id: String,
+    pub category: String,
+    pub confidence: f64,
+    pub location_count: usize,
+    pub outlier_count: usize,
+    pub status: String,
+    pub has_error_issues: bool,
+}
+
+/// Build pattern audit data by joining upstream tables:
+/// - pattern_confidence for confidence scores
+/// - detections for location counts and category
+/// - outliers for outlier counts
+/// - pattern_status for current lifecycle status
+/// - violations for error-level issues
+///
+/// This is the single source of truth for `PatternAuditData` construction.
+pub fn query_patterns_for_audit(conn: &Connection) -> Result<Vec<PatternAuditRow>, StorageError> {
+    let mut stmt = conn
+        .prepare_cached(
+            "SELECT
+                pc.pattern_id,
+                COALESCE(d_cat.category, 'unknown') AS category,
+                pc.posterior_mean AS confidence,
+                COALESCE(d_cnt.loc_count, 0) AS location_count,
+                COALESCE(o_cnt.outlier_count, 0) AS outlier_count,
+                COALESCE(ps.status, 'discovered') AS status,
+                COALESCE(v_err.error_count, 0) > 0 AS has_error_issues
+             FROM pattern_confidence pc
+             LEFT JOIN (
+                 SELECT pattern_id, category,
+                        ROW_NUMBER() OVER (PARTITION BY pattern_id ORDER BY COUNT(*) DESC) AS rn
+                 FROM detections GROUP BY pattern_id, category
+             ) d_cat ON d_cat.pattern_id = pc.pattern_id AND d_cat.rn = 1
+             LEFT JOIN (
+                 SELECT pattern_id, COUNT(*) AS loc_count
+                 FROM detections GROUP BY pattern_id
+             ) d_cnt ON d_cnt.pattern_id = pc.pattern_id
+             LEFT JOIN (
+                 SELECT pattern_id, COUNT(*) AS outlier_count
+                 FROM outliers GROUP BY pattern_id
+             ) o_cnt ON o_cnt.pattern_id = pc.pattern_id
+             LEFT JOIN pattern_status ps ON ps.pattern_id = pc.pattern_id
+             LEFT JOIN (
+                 SELECT pattern_id, COUNT(*) AS error_count
+                 FROM violations WHERE severity IN ('critical', 'error') AND suppressed = 0
+                 GROUP BY pattern_id
+             ) v_err ON v_err.pattern_id = pc.pattern_id
+             ORDER BY pc.posterior_mean DESC",
+        )
+        .map_err(|e| StorageError::SqliteError { message: e.to_string() })?;
+
+    let rows = stmt
+        .query_map([], |row| {
+            Ok(PatternAuditRow {
+                pattern_id: row.get(0)?,
+                category: row.get(1)?,
+                confidence: row.get(2)?,
+                location_count: row.get::<_, i64>(3)? as usize,
+                outlier_count: row.get::<_, i64>(4)? as usize,
+                status: row.get(5)?,
+                has_error_issues: row.get::<_, i32>(6)? != 0,
             })
         })
         .map_err(|e| StorageError::SqliteError { message: e.to_string() })?;

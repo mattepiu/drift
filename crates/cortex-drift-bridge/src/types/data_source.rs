@@ -1,4 +1,41 @@
 //! GroundingDataSource: the 12 Drift subsystems that can provide grounding evidence.
+//!
+//! ## Mapping to EvidenceType
+//!
+//! 11 of 12 data sources have a corresponding `EvidenceType` variant with an
+//! evidence collector in `grounding/evidence/collector.rs`. The mapping:
+//!
+//! | GroundingDataSource | EvidenceType            | Collector? |
+//! |---------------------|-------------------------|------------|
+//! | Patterns            | PatternConfidence + PatternOccurrence + FalsePositiveRate | Yes |
+//! | Conventions         | (subsumed by PatternOccurrence) | Yes (via Patterns) |
+//! | Constraints         | ConstraintVerification  | Yes |
+//! | Coupling            | CouplingMetric          | Yes |
+//! | Dna                 | DnaHealth               | Yes |
+//! | TestTopology        | TestCoverage            | Yes |
+//! | ErrorHandling       | ErrorHandlingGaps       | Yes |
+//! | Decisions           | DecisionEvidence        | Yes |
+//! | Boundaries          | BoundaryData            | Yes |
+//! | Taint               | TaintAnalysis           | Yes |
+//! | CallGraph           | CallGraphCoverage       | Yes |
+//! | **Security**        | **(none)**              | **No** |
+//!
+//! ### Security exclusion rationale (P3-6)
+//!
+//! `Security` is intentionally excluded from the grounding evidence system.
+//! It is used only in the intent resolver (`intents/resolver.rs`) to route
+//! `security_audit` and `performance_audit` intents to relevant drift.db
+//! tables (`crypto_findings`, `owasp_findings`). Adding a grounding evidence
+//! collector for Security would require:
+//! - A new `EvidenceType::Security` variant (13th)
+//! - A collector that aggregates severity/counts from `crypto_findings` +
+//!   `owasp_findings` per file
+//! - A meaningful "support score" derivation (unclear — security findings
+//!   indicate risk, not memory validity)
+//!
+//! The cost/benefit does not justify implementation at this time. If product
+//! requirements change (e.g., "memories about security should be grounded
+//! against actual vulnerability data"), revisit this decision.
 
 use serde::{Deserialize, Serialize};
 
@@ -27,7 +64,7 @@ pub enum GroundingDataSource {
     Taint,
     /// Call graph engine.
     CallGraph,
-    /// Security analysis engine.
+    /// Security analysis engine (intent resolver only — no grounding evidence collector).
     Security,
 }
 

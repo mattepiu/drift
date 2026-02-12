@@ -88,6 +88,22 @@ pub struct BridgeHealthStatus {
     pub wal_mode: bool,
 }
 
+// ── CortexMemoryWriter trait ──
+
+/// Optional writer for dual-writing memories to cortex.db (P0-3).
+///
+/// Implemented in drift-napi when cortex.db is available. The bridge crate
+/// does not depend on cortex-storage — this trait decouples the two. When
+/// provided to `BridgeEventHandler`, every memory created by the event mapper
+/// is also written to cortex.db so it is visible to Cortex retrieval.
+///
+/// Failures are non-fatal: bridge storage is the source of truth. Cortex
+/// write failures are logged but do not fail the event processing pipeline.
+pub trait CortexMemoryWriter: Send + Sync {
+    /// Write a memory to cortex.db. Returns Ok(()) on success.
+    fn write_memory(&self, memory: &cortex_core::memory::BaseMemory) -> BridgeResult<()>;
+}
+
 // ── IBridgeStorage trait ──
 
 /// Abstraction over bridge.db storage operations.

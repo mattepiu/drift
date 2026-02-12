@@ -16,9 +16,34 @@ use drift_storage::DriftStorageEngine;
 use cortex_drift_bridge::BridgeConfig;
 use cortex_drift_bridge::event_mapping::{BridgeEventHandler, EventDeduplicator};
 use cortex_drift_bridge::storage::engine::BridgeStorageEngine;
-use cortex_drift_bridge::traits::IBridgeStorage;
+use cortex_drift_bridge::traits::{CortexMemoryWriter, IBridgeStorage};
 
 use crate::conversions::error_codes;
+
+// ─── CortexStorageWriter (P0-3) ──────────────────────────────────────────
+
+/// Adapter from `cortex_storage::StorageEngine` to bridge's `CortexMemoryWriter`.
+///
+/// This is the dual-write endpoint: when cortex.db exists, bridge memories
+/// are also written to cortex.db's `memories` table via cortex-storage's
+/// full transactional insert (memory + links + audit).
+struct CortexStorageWriter {
+    engine: cortex_storage::StorageEngine,
+}
+
+impl CortexMemoryWriter for CortexStorageWriter {
+    fn write_memory(
+        &self,
+        memory: &cortex_core::memory::BaseMemory,
+    ) -> cortex_drift_bridge::errors::BridgeResult<()> {
+        use cortex_core::traits::IMemoryStorage;
+        self.engine.create(memory).map_err(|e| {
+            cortex_drift_bridge::errors::BridgeError::StorageWrite(format!(
+                "cortex.db dual-write failed: {e}"
+            ))
+        })
+    }
+}
 
 /// Global singleton — lock-free after first `initialize()` call.
 static RUNTIME: OnceLock<Arc<DriftRuntime>> = OnceLock::new();
@@ -57,6 +82,10 @@ pub struct RuntimeOptions {
     pub config_toml: Option<String>,
     /// Path to bridge.db. If None, defaults to .drift/bridge.db (sibling of drift.db).
     pub bridge_db_path: Option<PathBuf>,
+    /// Path to cortex.db. If Some and the file exists, bridge memories are
+    /// dual-written to cortex.db for Cortex retrieval visibility (P0-3).
+    /// When None or the file doesn't exist, bridge operates in standalone mode.
+    pub cortex_db_path: Option<PathBuf>,
 }
 
 impl DriftRuntime {
@@ -146,15 +175,50 @@ impl DriftRuntime {
                 .join("bridge.db")
         });
 
+        // Optionally open cortex.db for dual-write (P0-3).
+        // When cortex_db_path is provided and the file exists, bridge memories
+        // are also written to cortex.db so they are visible to Cortex retrieval.
+        let cortex_writer: Option<Arc<dyn CortexMemoryWriter>> = opts
+            .cortex_db_path
+            .as_ref()
+            .filter(|p| p.exists())
+            .and_then(|cortex_path| {
+                match cortex_storage::StorageEngine::open(cortex_path) {
+                    Ok(engine) => {
+                        tracing::info!(
+                            path = %cortex_path.display(),
+                            "cortex.db opened for bridge dual-write"
+                        );
+                        Some(Arc::new(CortexStorageWriter { engine }) as Arc<dyn CortexMemoryWriter>)
+                    }
+                    Err(e) => {
+                        tracing::warn!(
+                            error = %e,
+                            path = %cortex_path.display(),
+                            "Failed to open cortex.db for dual-write — bridge will write to bridge.db only"
+                        );
+                        None
+                    }
+                }
+            });
+
         match BridgeStorageEngine::open(&bridge_db_path) {
             Ok(engine) => {
                 let store: Arc<BridgeStorageEngine> = Arc::new(engine);
                 // Register BridgeEventHandler with the dispatcher so drift_analyze()
-                // events automatically create bridge memories (BW-EVT-01)
-                let handler = BridgeEventHandler::new(
-                    Some(Arc::clone(&store) as Arc<dyn IBridgeStorage>),
-                    bridge_config.license_tier,
-                );
+                // events automatically create bridge memories (BW-EVT-01).
+                // When cortex_writer is available, memories are dual-written (P0-3).
+                let handler = match cortex_writer {
+                    Some(ref writer) => BridgeEventHandler::with_cortex_writer(
+                        Some(Arc::clone(&store) as Arc<dyn IBridgeStorage>),
+                        bridge_config.license_tier,
+                        Arc::clone(writer),
+                    ),
+                    None => BridgeEventHandler::new(
+                        Some(Arc::clone(&store) as Arc<dyn IBridgeStorage>),
+                        bridge_config.license_tier,
+                    ),
+                };
                 dispatcher.register(Arc::new(handler));
 
                 bridge_db = Some(store);

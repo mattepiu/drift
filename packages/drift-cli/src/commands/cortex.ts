@@ -7,13 +7,25 @@
 
 import type { Command } from 'commander';
 import { CortexClient } from '@drift/cortex';
+import * as fs from 'fs';
+import * as path from 'path';
+import { formatOutput, type OutputFormat } from '../output/index.js';
 
 let cortexClient: CortexClient | null = null;
 
 async function getCortex(dbPath?: string): Promise<CortexClient> {
   if (cortexClient) return cortexClient;
+
+  const resolvedPath = dbPath ?? '.cortex/cortex.db';
+  const dir = path.dirname(resolvedPath);
+
+  // Ensure parent directory exists (mirrors setup.ts:82–84)
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir, { recursive: true });
+  }
+
   cortexClient = await CortexClient.initialize({
-    dbPath: dbPath ?? '.cortex/cortex.db',
+    dbPath: resolvedPath,
   });
   return cortexClient;
 }
@@ -29,7 +41,7 @@ export function registerCortexCommand(program: Command): void {
     .description('Show Cortex health dashboard')
     .option('--db <path>', 'Cortex database path')
     .option('-f, --format <format>', 'Output format: json, table', 'json')
-    .action(async (opts: { db?: string; format?: string }) => {
+    .action(async (opts: { db?: string; format: OutputFormat }) => {
       try {
         const client = await getCortex(opts.db);
         const [health, consolidation, degradations] = await Promise.all([
@@ -37,7 +49,13 @@ export function registerCortexCommand(program: Command): void {
           client.consolidationStatus(),
           client.degradations(),
         ]);
-        process.stdout.write(JSON.stringify({ health, consolidation, degradation_count: degradations.length, degradations }, null, 2) + '\n');
+        const result = {
+          health,
+          consolidation,
+          degradation_count: degradations.length,
+          degradations,
+        };
+        process.stdout.write(formatOutput(result, opts.format));
       } catch (err) {
         process.stderr.write(`Error: ${err instanceof Error ? err.message : err}\n`);
         process.exitCode = 1;
@@ -49,12 +67,13 @@ export function registerCortexCommand(program: Command): void {
     .command('search <query>')
     .description('Search memories (hybrid semantic + keyword)')
     .option('--limit <n>', 'Max results', '10')
+    .option('-f, --format <format>', 'Output format: json, table', 'json')
     .option('--db <path>', 'Cortex database path')
-    .action(async (query: string, opts: { limit: string; db?: string }) => {
+    .action(async (query: string, opts: { limit: string; format: OutputFormat; db?: string }) => {
       try {
         const client = await getCortex(opts.db);
         const results = await client.memorySearch(query, parseInt(opts.limit, 10));
-        process.stdout.write(JSON.stringify(results, null, 2) + '\n');
+        process.stdout.write(formatOutput(results, opts.format));
       } catch (err) {
         process.stderr.write(`Error: ${err instanceof Error ? err.message : err}\n`);
         process.exitCode = 1;
@@ -80,12 +99,13 @@ export function registerCortexCommand(program: Command): void {
     .command('list')
     .description('List memories')
     .option('--type <type>', 'Filter by memory type')
+    .option('-f, --format <format>', 'Output format: json, table', 'json')
     .option('--db <path>', 'Cortex database path')
-    .action(async (opts: { type?: string; db?: string }) => {
+    .action(async (opts: { type?: string; format: OutputFormat; db?: string }) => {
       try {
         const client = await getCortex(opts.db);
         const memories = await client.memoryList(opts.type as never);
-        process.stdout.write(JSON.stringify(memories, null, 2) + '\n');
+        process.stdout.write(formatOutput(memories, opts.format));
       } catch (err) {
         process.stderr.write(`Error: ${err instanceof Error ? err.message : err}\n`);
         process.exitCode = 1;
@@ -125,9 +145,12 @@ export function registerCortexCommand(program: Command): void {
   // ─── Add ─────────────────────────────────────────────────────────────
   cortex
     .command('add <type>')
-    .description('Create a new memory')
+    .description('Add a memory to Cortex. Content auto-wrapped with type if needed.')
     .requiredOption('--summary <text>', 'Memory summary')
-    .requiredOption('--content <json>', 'Memory content as JSON')
+    .requiredOption(
+      '--content <json>',
+      'Memory content as JSON. Can be {"type":"episodic","data":{...}} or just the data object.',
+    )
     .option('--tags <tags>', 'Comma-separated tags')
     .option('--db <path>', 'Cortex database path')
     .action(async (type: string, opts: { summary: string; content: string; tags?: string; db?: string }) => {
@@ -135,10 +158,18 @@ export function registerCortexCommand(program: Command): void {
         const client = await getCortex(opts.db);
         const { registerTools, callTool } = await import('@drift/cortex');
         const registry = registerTools(client);
+
+        let content = JSON.parse(opts.content);
+
+        // Auto-wrap: if content lacks 'type' field, wrap with the memory type argument
+        if (!content.type) {
+          content = { type, data: content };
+        }
+
         const result = await callTool(registry, 'drift_memory_add', {
           memory_type: type,
           summary: opts.summary,
-          content: JSON.parse(opts.content),
+          content,
           tags: opts.tags?.split(',') ?? [],
         });
         process.stdout.write(JSON.stringify(result, null, 2) + '\n');
@@ -207,12 +238,13 @@ export function registerCortexCommand(program: Command): void {
     .description('Predict needed memories for current task')
     .option('--files <files...>', 'Active file paths')
     .option('--intent <intent>', 'Current intent')
+    .option('-f, --format <format>', 'Output format: json, table', 'json')
     .option('--db <path>', 'Cortex database path')
-    .action(async (opts: { files?: string[]; intent?: string; db?: string }) => {
+    .action(async (opts: { files?: string[]; intent?: string; format: OutputFormat; db?: string }) => {
       try {
         const client = await getCortex(opts.db);
         const result = await client.predict(opts.files, undefined, opts.intent);
-        process.stdout.write(JSON.stringify(result, null, 2) + '\n');
+        process.stdout.write(formatOutput(result, opts.format));
       } catch (err) {
         process.stderr.write(`Error: ${err instanceof Error ? err.message : err}\n`);
         process.exitCode = 1;

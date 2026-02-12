@@ -114,7 +114,7 @@ fn t24_01_no_drift_db_file() {
             .map_err(|e| drift_core::errors::StorageError::SqliteError {
                 message: e.to_string(),
             })?;
-        assert_eq!(version, 7, "Fresh DB must be at migration v7");
+        assert_eq!(version, 9, "Fresh DB must be at migration v9");
         Ok(())
     })
     .unwrap();

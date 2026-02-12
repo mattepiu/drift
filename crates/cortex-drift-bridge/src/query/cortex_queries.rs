@@ -68,15 +68,19 @@ pub fn get_memories_by_type(
 }
 
 /// Find memories by tag (substring match in JSON array).
+///
+/// Uses SQLite `ESCAPE` clause to prevent `%` and `_` in tag values from
+/// being interpreted as LIKE wildcards (P1-6).
 pub fn get_memories_by_tag(
     conn: &Connection,
     tag: &str,
     limit: usize,
 ) -> BridgeResult<Vec<MemoryRow>> {
-    let pattern = format!("%\"{}\"%" , tag);
+    let escaped_tag = escape_like(tag);
+    let pattern = format!("%\"{}\"%" , escaped_tag);
     let mut stmt = conn.prepare(
         "SELECT id, memory_type, content, summary, confidence, importance, tags, linked_patterns, created_at
-         FROM bridge_memories WHERE tags LIKE ?1 ORDER BY created_at DESC LIMIT ?2",
+         FROM bridge_memories WHERE tags LIKE ?1 ESCAPE '\\' ORDER BY created_at DESC LIMIT ?2",
     )?;
     let rows = stmt.query_map(rusqlite::params![pattern, limit as i64], |row| {
         Ok(MemoryRow {
@@ -116,6 +120,23 @@ pub fn count_memories_by_type(conn: &Connection, memory_type: &str) -> BridgeRes
         |row| row.get(0),
     )?;
     Ok(count as u64)
+}
+
+/// Escape SQLite LIKE wildcards (`%`, `_`, `\`) in a string.
+///
+/// Used with `LIKE pattern ESCAPE '\'` to prevent user-supplied values
+/// from being interpreted as wildcards.
+pub(crate) fn escape_like(input: &str) -> String {
+    let mut out = String::with_capacity(input.len());
+    for ch in input.chars() {
+        match ch {
+            '\\' => out.push_str("\\\\"),
+            '%' => out.push_str("\\%"),
+            '_' => out.push_str("\\_"),
+            other => out.push(other),
+        }
+    }
+    out
 }
 
 /// Raw row from bridge_memories table.

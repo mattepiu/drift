@@ -121,6 +121,7 @@ pub fn drift_conventions(
 }
 
 /// Query aggregated patterns (detections) with keyset pagination.
+/// Enriches each detection with its pattern_status lifecycle state.
 #[napi]
 pub fn drift_patterns(
     category: Option<String>,
@@ -140,14 +141,29 @@ pub fn drift_patterns(
         }
     }).map_err(storage_err)?;
 
-    let items: Vec<_> = detections.iter().map(|d| serde_json::json!({
-        "file": d.file,
-        "line": d.line,
-        "pattern_id": d.pattern_id,
-        "category": d.category,
-        "confidence": d.confidence,
-        "detection_method": d.detection_method,
-    })).collect();
+    // Load pattern statuses to enrich each detection
+    let statuses = rt.storage.with_reader(|conn| {
+        drift_storage::queries::enforcement::query_all_pattern_statuses(conn, None)
+    }).unwrap_or_default();
+    let status_map: std::collections::HashMap<String, String> = statuses
+        .into_iter()
+        .map(|s| (s.pattern_id, s.status))
+        .collect();
+
+    let items: Vec<_> = detections.iter().map(|d| {
+        let status = status_map.get(&d.pattern_id)
+            .cloned()
+            .unwrap_or_else(|| "discovered".to_string());
+        serde_json::json!({
+            "file": d.file,
+            "line": d.line,
+            "pattern_id": d.pattern_id,
+            "category": d.category,
+            "confidence": d.confidence,
+            "detection_method": d.detection_method,
+            "status": status,
+        })
+    }).collect();
 
     Ok(serde_json::json!({
         "patterns": items,

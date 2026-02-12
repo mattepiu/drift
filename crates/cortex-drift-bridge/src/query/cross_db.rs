@@ -65,11 +65,14 @@ pub fn count_matching_patterns(
     Ok(total)
 }
 
-/// Get the latest scan timestamp from drift.db.
+/// Get the latest completed scan timestamp from drift.db.
 /// Requires drift.db to be ATTACHed as "drift".
+///
+/// Queries `scan_history` (v001) for the most recent `completed_at` value
+/// among scans with `status = 'completed'`.
 pub fn latest_scan_timestamp(conn: &Connection) -> BridgeResult<Option<i64>> {
     let result = conn.query_row(
-        "SELECT MAX(created_at) FROM drift.drift_scans",
+        "SELECT MAX(completed_at) FROM drift.scan_history WHERE status = 'completed'",
         [],
         |row| row.get::<_, Option<i64>>(0),
     );

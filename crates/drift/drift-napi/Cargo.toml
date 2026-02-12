@@ -24,6 +24,7 @@ rayon = { workspace = true }
 cortex-drift-bridge = { path = "../../cortex-drift-bridge" }
 cortex-causal = { path = "../../cortex/cortex-causal" }
 cortex-core = { path = "../../cortex/cortex-core" }
+cortex-storage = { path = "../../cortex/cortex-storage" }
 rusqlite = { workspace = true }
 tracing = { workspace = true }
 

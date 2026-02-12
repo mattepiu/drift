@@ -17,9 +17,9 @@ describe('CLI E2E Pipeline', () => {
   });
 
   // T9-CLI-01: Full pipeline creates a working program with all commands
-  it('T9-CLI-01: createProgram registers all 30 commands', () => {
+  it('T9-CLI-01: createProgram registers all 31 commands', () => {
     const program = createProgram();
-    expect(program.commands.length).toBe(30);
+    expect(program.commands.length).toBe(31);
 
     const names = program.commands.map((c) => c.name());
     // Core pipeline
@@ -46,6 +46,7 @@ describe('CLI E2E Pipeline', () => {
     expect(names).toContain('dismiss');
     expect(names).toContain('suppress');
     expect(names).toContain('explain');
+    expect(names).toContain('approve');
 
     // Advanced
     expect(names).toContain('simulate');

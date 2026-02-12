@@ -20,6 +20,7 @@ import { registerCortexTools, CORTEX_CACHEABLE_TOOLS, CORTEX_MUTATION_TOOLS } fr
 const MUTATION_TOOLS = new Set([
   'drift_scan_progress', 'drift_cancel_scan', 'drift_analyze',
   'drift_dismiss', 'drift_fix', 'drift_suppress', 'drift_gc',
+  'drift_approve_pattern',
   // Bridge mutation tools
   'drift_bridge_ground', 'drift_bridge_ground_all', 'drift_bridge_learn',
 ]);
@@ -31,7 +32,7 @@ const CACHEABLE_TOOLS = new Set([
   'drift_test_topology', 'drift_error_handling', 'drift_quality_gate',
   'drift_constants', 'drift_constraints', 'drift_audit', 'drift_owasp',
   'drift_crypto', 'drift_decomposition', 'drift_contracts',
-  'drift_outliers', 'drift_conventions', 'drift_dna_profile',
+  'drift_outliers', 'drift_conventions', 'drift_dna_profile', 'drift_pattern_status',
   'drift_wrappers', 'drift_callers', 'drift_impact_analysis',
   // Bridge cacheable tools
   'drift_bridge_status', 'drift_bridge_health', 'drift_bridge_events',
@@ -350,6 +351,28 @@ export function buildToolCatalog(): Map<string, InternalTool> {
     category: 'feedback',
     estimatedTokens: '~50',
     handler: async (p) => loadNapi().driftSuppressViolation(p.violationId as string, p.reason as string ?? 'suppressed'),
+  });
+
+  // PH-TOOL-28: drift_approve_pattern — approve or ignore a pattern
+  register(catalog, {
+    name: 'drift_approve_pattern',
+    description: 'Approve or ignore a pattern. Sets lifecycle status (approved/ignored/discovered). User approval overrides auto-approval.',
+    category: 'feedback',
+    estimatedTokens: '~100',
+    handler: async (p) => loadNapi().driftApprovePattern(
+      p.patternId as string,
+      (p.status as string) ?? 'approved',
+      (p.reason as string | undefined) ?? null,
+    ),
+  });
+
+  // PH-TOOL-29: drift_pattern_status — query pattern lifecycle statuses
+  register(catalog, {
+    name: 'drift_pattern_status',
+    description: 'Query pattern lifecycle statuses. Shows discovered/approved/ignored patterns with counts. Filter by status.',
+    category: 'exploration',
+    estimatedTokens: '~300-800',
+    handler: async (p) => loadNapi().driftPatternStatus((p.status as string | undefined) ?? null),
   });
 
   // PH-TOOL-23: drift_scan_progress

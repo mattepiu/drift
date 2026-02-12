@@ -143,6 +143,11 @@ impl BridgeRuntime {
             if let Err(e) = storage::apply_retention(&conn, is_community) {
                 warn!(error = %e, "Retention cleanup failed during initialization — non-fatal");
             }
+
+            // Restore usage counts from previous session (P2-7)
+            if let Err(e) = self.usage_tracker.load(&conn) {
+                warn!(error = %e, "Failed to load usage tracker state — starting fresh");
+            }
         }
 
         self.available.store(true, Ordering::SeqCst);
@@ -157,6 +162,15 @@ impl BridgeRuntime {
 
     /// Shutdown the bridge, closing all connections.
     pub fn shutdown(&mut self) {
+        // Persist usage counts before closing connections (P2-7)
+        if let Some(ref db) = self.cortex_db {
+            if let Ok(conn) = db.lock() {
+                if let Err(e) = self.usage_tracker.persist(&conn) {
+                    warn!(error = %e, "Failed to persist usage tracker state on shutdown");
+                }
+            }
+        }
+
         self.drift_db = None;
         self.cortex_db = None;
         self.bridge_db = None;

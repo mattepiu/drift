@@ -7,6 +7,8 @@ pub mod v004_graph;
 pub mod v005_structural;
 pub mod v006_enforcement;
 pub mod v007_advanced;
+pub mod v008_enforcement_fixes;
+pub mod v009_pattern_status;
 
 use drift_core::errors::StorageError;
 use rusqlite::Connection;
@@ -28,6 +30,8 @@ pub fn run_migrations(conn: &Connection) -> Result<(), StorageError> {
         (v005_structural::MIGRATION_SQL, 5),
         (v006_enforcement::MIGRATION_SQL, 6),
         (v007_advanced::MIGRATION_SQL, 7),
+        (v008_enforcement_fixes::MIGRATION_SQL, 8),
+        (v009_pattern_status::MIGRATION_SQL, 9),
     ];
 
     for (sql, version) in migrations {

@@ -67,6 +67,9 @@ pub enum BridgeError {
 
     #[error("Invalid input: {0}")]
     InvalidInput(String),
+
+    #[error("Storage write failed: {0}")]
+    StorageWrite(String),
 }
 
 pub type BridgeResult<T> = Result<T, BridgeError>;

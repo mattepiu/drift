@@ -54,6 +54,9 @@ impl RecoveryAction {
 
             // Cortex error: fallback
             super::BridgeError::Cortex(_) => Self::Fallback,
+
+            // Storage write (e.g., cortex dual-write): ignore — bridge copy is authoritative
+            super::BridgeError::StorageWrite(_) => Self::Ignore,
         }
     }
 }

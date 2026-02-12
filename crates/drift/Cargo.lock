@@ -565,6 +565,7 @@ dependencies = [
  "cortex-causal",
  "cortex-core",
  "cortex-drift-bridge",
+ "cortex-storage",
  "drift-analysis",
  "drift-context",
  "drift-core",

@@ -71,7 +71,12 @@ function createMockClient(): CortexClient {
       archived: ["old-1", "old-2"],
       metrics: { precision: 0.9, compression_ratio: 2.5, lift: 0.15, stability: 0.88 },
     })),
-    getValidationCandidates: vi.fn(async () => [MOCK_MEMORY]),
+    getValidationCandidates: vi.fn(async (min?: number, max?: number) =>
+      max === 0.15 ? [] : [MOCK_MEMORY],
+    ),
+    validationRun: vi.fn(async () => ({ total_checked: 1 })),
+    decayRun: vi.fn(async () => ({ processed: 10, archived: 1, updated: 9 })),
+    reembed: vi.fn(async () => ({ total_memories: 1, reembedded: 1 })),
     sessionCleanup: vi.fn(async () => 3),
     memoryArchive: vi.fn(),
     memoryList: vi.fn(async () => [MOCK_MEMORY]),

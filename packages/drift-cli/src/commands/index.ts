@@ -33,6 +33,7 @@ import { registerCortexCommand } from './cortex.js';
 import { registerBridgeCommand } from './bridge.js';
 import { registerValidatePackCommand } from './validate-pack.js';
 import { registerCloudCommand } from './cloud.js';
+import { registerApproveCommand } from './approve.js';
 
 /**
  * Register all CLI commands on the program.
@@ -60,6 +61,7 @@ export function registerAllCommands(program: Command): void {
   registerDismissCommand(program);
   registerSuppressCommand(program);
   registerExplainCommand(program);
+  registerApproveCommand(program);
   // Advanced
   registerSimulateCommand(program);
   registerContextCommand(program);

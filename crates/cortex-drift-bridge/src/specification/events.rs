@@ -343,8 +343,23 @@ fn lookup_or_create_reference(id: &str, bridge_store: Option<&dyn IBridgeStorage
         }
     }
 
-    // Fallback: minimal causal reference node (not a fake Insight)
-    create_causal_reference(id)
+    // Fallback: create a minimal causal reference node and persist it so the
+    // causal graph has a durable anchor (P2-5). Uses the upstream id as the
+    // primary key, so repeated calls for the same id are idempotent (SQLite
+    // `id TEXT PRIMARY KEY` rejects duplicates gracefully).
+    let memory = create_causal_reference(id);
+    if let Some(store) = bridge_store {
+        if let Err(e) = store.insert_memory(&memory) {
+            // Non-fatal: the causal edge can still use the in-memory node.
+            // Duplicate id (already persisted by a parallel call) is expected.
+            warn!(
+                error = %e,
+                upstream_id = id,
+                "Failed to persist causal reference node — edge will use in-memory node"
+            );
+        }
+    }
+    memory
 }
 
 /// Create a minimal causal reference node for edge creation.

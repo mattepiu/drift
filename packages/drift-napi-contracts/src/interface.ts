@@ -5,14 +5,14 @@
  * `crates/drift/drift-napi/src/bindings/*.rs`. Function names and parameter
  * types MUST match Rust exactly. When Rust disagrees with TypeScript, Rust wins.
  *
- * 64 methods total, grouped by Rust binding module:
+ * 66 methods total, grouped by Rust binding module:
  * - Lifecycle (4): lifecycle.rs
  * - Scanner (3): scanner.rs
  * - Analysis (4): analysis.rs
  * - Patterns (4): patterns.rs
  * - Graph (5): graph.rs
  * - Structural (9): structural.rs
- * - Enforcement (5): enforcement.rs
+ * - Enforcement (7): enforcement.rs
  * - Feedback (3): feedback.rs
  * - Advanced (4): advanced.rs
  * - Bridge (21): bridge.rs
@@ -58,6 +58,8 @@ import type {
   JsGateResult,
   JsFeedbackInput,
   JsFeedbackResult,
+  JsPatternStatusResult,
+  JsApprovePatternResult,
   GcResult,
 } from './types/enforcement.js';
 import type {
@@ -84,11 +86,12 @@ import type {
 
 export interface DriftNapi {
   // ─── Lifecycle (4) — lifecycle.rs ────────────────────────────────────
-  // Rust: driftInitialize(db_path: Option<String>, project_root: Option<String>, config_toml: Option<String>)
+  // Rust: driftInitialize(db_path: Option<String>, project_root: Option<String>, config_toml: Option<String>, cortex_db_path: Option<String>)
   driftInitialize(
     dbPath?: string,
     projectRoot?: string,
     configToml?: string,
+    cortexDbPath?: string,
   ): void;
 
   // Rust: driftShutdown()
@@ -207,7 +210,7 @@ export interface DriftNapi {
   // Rust: drift_decomposition(root: String)
   driftDecomposition(root: string): JsDecompositionResult;
 
-  // ─── Enforcement (5) — enforcement.rs ────────────────────────────────
+  // ─── Enforcement (7) — enforcement.rs ────────────────────────────────
   // Rust: drift_check(_root: String)
   driftCheck(root: string): JsCheckResult;
 
@@ -222,6 +225,18 @@ export interface DriftNapi {
 
   // Rust: drift_report(format: String) -> String
   driftReport(format: string): string;
+
+  // Rust: drift_approve_pattern(pattern_id: String, status: String, reason: Option<String>)
+  driftApprovePattern(
+    patternId: string,
+    status: string,
+    reason: string | null,
+  ): JsApprovePatternResult;
+
+  // Rust: drift_pattern_status(status_filter: Option<String>)
+  driftPatternStatus(
+    statusFilter: string | null,
+  ): JsPatternStatusResult;
 
   // ─── Feedback (3) — feedback.rs ──────────────────────────────────────
   // Rust: drift_dismiss_violation(input: JsFeedbackInput)
@@ -338,7 +353,7 @@ export interface DriftNapi {
 }
 
 /** Total number of methods in the DriftNapi interface. */
-export const DRIFT_NAPI_METHOD_COUNT = 64;
+export const DRIFT_NAPI_METHOD_COUNT = 66;
 
 /** All method names in the DriftNapi interface, for runtime validation. */
 export const DRIFT_NAPI_METHOD_NAMES: ReadonlyArray<keyof DriftNapi> = [
@@ -377,12 +392,14 @@ export const DRIFT_NAPI_METHOD_NAMES: ReadonlyArray<keyof DriftNapi> = [
   'driftOwaspAnalysis',
   'driftCryptoAnalysis',
   'driftDecomposition',
-  // Enforcement (5)
+  // Enforcement (7)
   'driftCheck',
   'driftAudit',
   'driftViolations',
   'driftGates',
   'driftReport',
+  'driftApprovePattern',
+  'driftPatternStatus',
   // Feedback (3)
   'driftDismissViolation',
   'driftFixViolation',

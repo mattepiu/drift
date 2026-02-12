@@ -46,6 +46,8 @@ import type {
   JsGateResult,
   JsFeedbackInput,
   JsFeedbackResult,
+  JsPatternStatusResult,
+  JsApprovePatternResult,
   GcResult,
 } from './types/enforcement.js';
 
@@ -57,6 +59,7 @@ export function createStubNapi(): DriftNapi {
       _dbPath?: string,
       _projectRoot?: string,
       _configToml?: string,
+      _cortexDbPath?: string,
     ): void {
       // no-op
     },
@@ -365,6 +368,7 @@ export function createStubNapi(): DriftNapi {
         degradationAlerts: [],
         autoApprovedCount: 0,
         needsReviewCount: 0,
+        dataCompleteness: 1,
       };
     },
 
@@ -378,6 +382,30 @@ export function createStubNapi(): DriftNapi {
 
     driftReport(_format: string): string {
       return '';
+    },
+
+    driftApprovePattern(
+      _patternId: string,
+      _status: string,
+      _reason: string | null,
+    ): JsApprovePatternResult {
+      return {
+        success: true,
+        patternId: _patternId,
+        previousStatus: 'discovered',
+        newStatus: _status,
+        message: `Stub: pattern ${_patternId} set to ${_status}`,
+      };
+    },
+
+    driftPatternStatus(
+      _statusFilter: string | null,
+    ): JsPatternStatusResult {
+      return {
+        patterns: [],
+        total: 0,
+        counts: { discovered: 0, approved: 0, ignored: 0 },
+      };
     },
 
     // ─── Feedback (3) ────────────────────────────────────────────────

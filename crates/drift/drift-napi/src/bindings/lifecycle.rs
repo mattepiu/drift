@@ -24,17 +24,21 @@ use crate::runtime::{self, RuntimeOptions};
 /// @param db_path - Optional path to drift.db. Defaults to `.drift/drift.db`.
 /// @param project_root - Optional project root for scanning and config resolution.
 /// @param config_toml - Optional TOML configuration string. Overrides file-based config.
+/// @param cortex_db_path - Optional path to cortex.db. When provided and the file
+///   exists, bridge memories are dual-written to cortex.db for Cortex retrieval.
 #[napi(js_name = "driftInitialize")]
 pub fn drift_initialize(
     db_path: Option<String>,
     project_root: Option<String>,
     config_toml: Option<String>,
+    cortex_db_path: Option<String>,
 ) -> napi::Result<()> {
     let opts = RuntimeOptions {
         db_path: db_path.map(PathBuf::from),
         project_root: project_root.map(PathBuf::from),
         config_toml,
         bridge_db_path: None,
+        cortex_db_path: cortex_db_path.map(PathBuf::from),
     };
 
     runtime::initialize(opts)

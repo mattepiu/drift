@@ -9,7 +9,7 @@ import { formatOutput, type OutputFormat } from '../output/index.js';
 export function registerCloudCommand(program: Command): void {
   const cloud = program
     .command('cloud')
-    .description('Drift Cloud: sync metadata to hosted dashboard');
+    .description('Cloud sync operations. Run `drift cloud login` to get started.');
 
   // ── drift cloud login ──
   cloud
@@ -228,6 +228,22 @@ export function registerCloudCommand(program: Command): void {
           config = JSON.parse(await readFile(configPath, 'utf-8'));
         } catch {
           // Not configured
+        }
+
+        if (!config && !loggedIn) {
+          process.stderr.write(
+            'Cloud sync is not configured.\n\n' +
+            'To set up cloud sync:\n' +
+            '  1. drift cloud login          — authenticate with your account\n' +
+            '  2. drift cloud configure      — set up project sync\n' +
+            '  3. drift cloud status         — verify configuration\n\n' +
+            'Configuration is stored in:\n' +
+            `  Config:      ~/.drift/cloud-config.json\n` +
+            `  Credentials: ~/.drift/cloud-credentials.json\n\n` +
+            'Note: Cloud features are optional. Drift works fully offline.\n',
+          );
+          process.exitCode = 1;
+          return;
         }
 
         let syncState = null;

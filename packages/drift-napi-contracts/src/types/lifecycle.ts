@@ -10,6 +10,8 @@ export interface InitOptions {
   projectRoot?: string;
   /** TOML configuration string. Overrides file-based config. */
   configToml?: string;
+  /** Path to cortex.db. When provided and the file exists, bridge memories are dual-written to cortex.db for Cortex retrieval. */
+  cortexDbPath?: string;
 }
 
 /**

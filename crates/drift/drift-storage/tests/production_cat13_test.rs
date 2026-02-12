@@ -433,6 +433,7 @@ fn t13_04_tier_assignment_coverage() {
         "constraints",
         "contracts",
         "dna_genes",
+        "pattern_status",
     ]
     .into_iter()
     .collect();
@@ -475,8 +476,8 @@ fn t13_04_tier_assignment_coverage() {
     // ── Verify expected table count ──
     assert_eq!(
         all_tables.len(),
-        45,
-        "Expected 45 tables after all migrations, got {}. Tables: {:?}",
+        46,
+        "Expected 46 tables after all migrations, got {}. Tables: {:?}",
         all_tables.len(),
         all_tables
     );

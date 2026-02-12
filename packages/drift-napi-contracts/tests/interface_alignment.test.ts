@@ -40,6 +40,7 @@ describe('Interface Alignment — Contract Integrity', () => {
       // enforcement.rs
       'driftCheck', 'driftAudit', 'driftViolations', 'driftGates',
       'driftReport', 'driftGC',
+      'driftApprovePattern', 'driftPatternStatus',
       // feedback.rs
       'driftDismissViolation', 'driftFixViolation', 'driftSuppressViolation',
       // advanced.rs
@@ -69,14 +70,14 @@ describe('Interface Alignment — Contract Integrity', () => {
     }
   });
 
-  // TH-NAPI-03: DriftNapi has exactly 64 functions (41 drift + 21 bridge + 2 cloud)
-  it('TH-NAPI-03: DriftNapi has exactly 64 functions — prevents accidental add/remove', () => {
-    expect(DRIFT_NAPI_METHOD_COUNT).toBe(64);
-    expect(DRIFT_NAPI_METHOD_NAMES.length).toBe(64);
+  // TH-NAPI-03: DriftNapi has exactly 66 functions (43 drift + 21 bridge + 2 cloud)
+  it('TH-NAPI-03: DriftNapi has exactly 66 functions — prevents accidental add/remove', () => {
+    expect(DRIFT_NAPI_METHOD_COUNT).toBe(66);
+    expect(DRIFT_NAPI_METHOD_NAMES.length).toBe(66);
 
     // Also verify no duplicates
     const unique = new Set(DRIFT_NAPI_METHOD_NAMES);
-    expect(unique.size).toBe(64);
+    expect(unique.size).toBe(66);
   });
 
   // TH-NAPI-04: No function uses `any` type

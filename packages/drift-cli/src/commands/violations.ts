@@ -14,8 +14,19 @@ export function registerViolationsCommand(program: Command): void {
     .option('-q, --quiet', 'Suppress all output except errors')
     .action(async (path: string | undefined, opts: { format: OutputFormat; quiet?: boolean }) => {
       const napi = loadNapi();
+      const violationsPath = path ?? process.cwd();
       try {
-        const result = napi.driftViolations(path ?? process.cwd());
+        const result = napi.driftViolations(violationsPath);
+
+        if ((result as unknown[]).length === 0 && !opts.quiet) {
+          process.stderr.write(
+            'No violations found. This may mean:\n' +
+            '  (a) Your code is fully compliant\n' +
+            '  (b) No rules are configured — check drift.toml [rules] section\n' +
+            '  (c) Analysis has not been run — try `drift scan && drift analyze`\n\n',
+          );
+        }
+
         if (!opts.quiet) {
           process.stdout.write(formatOutput(result, opts.format));
         }
