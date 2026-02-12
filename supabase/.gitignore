@@ -1,0 +1,8 @@
+# Secrets
+.env
+.env.local
+.env.*.local
+.env.cloud
+
+# Supabase CLI local state
+.supabase/
